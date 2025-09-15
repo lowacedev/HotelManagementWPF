@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels;
+using HotelManagementWPF.ViewModels.Base;
 using HotelManagementWPF.Views.Room;
 
 namespace HotelManagementWPF
@@ -63,7 +64,7 @@ namespace HotelManagementWPF
             {
                 case "rooms":
                     var roomService = new RoomService();
-                    var roomViewModel = new RoomViewModel(roomService);
+                    var roomViewModel = new RoomViewModel();
                     var roomView = new RoomView();
                     roomView.DataContext = roomViewModel;
                     MainContentArea.Content = roomView;
