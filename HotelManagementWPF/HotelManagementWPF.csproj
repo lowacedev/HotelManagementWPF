@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Syncfusion.SfScheduler.WPF" Version="31.1.19" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Icons\dashboard.png" />
   </ItemGroup>
 

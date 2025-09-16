@@ -81,6 +81,11 @@ namespace HotelManagementWPF
                     MainContentArea.Content = roomView;
                     break;
 
+                case "bookings":
+                    var bookingView = new HotelManagementWPF.Views.Booking.BookingView();
+                    MainContentArea.Content = bookingView;
+                    break;
+
                 case "dashboard":
                     MainContentArea.Content = new TextBlock
                     {
