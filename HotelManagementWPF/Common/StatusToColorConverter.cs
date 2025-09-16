@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -13,15 +14,15 @@ namespace HotelManagementWPF.Common
             {
                 return status switch
                 {
-                    RoomStatus.Available => Colors.Green,
-                    RoomStatus.Booked => Colors.Red,
-                    RoomStatus.Reserved => Colors.Orange,
-                    RoomStatus.Waitlist => Colors.Blue,
-                    RoomStatus.Blocked => Colors.Gray,
-                    _ => Colors.Gray
+                    RoomStatus.Available => new SolidColorBrush(Color.FromRgb(74, 144, 226)), // blue
+                    RoomStatus.Booked => new SolidColorBrush(Color.FromRgb(255, 99, 99)), // red
+                    RoomStatus.Reserved => new SolidColorBrush(Color.FromRgb(76, 175, 80)), // green
+                    RoomStatus.Waitlist => new SolidColorBrush(Color.FromRgb(255, 167, 38)), // orange
+                    RoomStatus.Blocked => new SolidColorBrush(Color.FromRgb(160, 160, 160)), // gray
+                    _ => new SolidColorBrush(Color.FromRgb(160, 160, 160))
                 };
             }
-            return Colors.Gray;
+            return new SolidColorBrush(Color.FromRgb(160, 160, 160));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
