@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels;
-using HotelManagementWPF.ViewModels.Base;
 using HotelManagementWPF.Views.Room;
 
 namespace HotelManagementWPF
@@ -33,18 +32,30 @@ namespace HotelManagementWPF
                 ? new GridLength(60)
                 : new GridLength(220);
 
+            // Hide logo image and logo text when collapsed
+            HeaderLogoImage.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
             HeaderLogoText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
             ManagementHeader.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
             OperationsHeader.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
 
-            DashboardButton.Content = _isSidebarCollapsed ? null : "Dashboard";
-            GuestsButton.Content = _isSidebarCollapsed ? null : "Guests";
-            UsersButton.Content = _isSidebarCollapsed ? null : "Users";
-            RoomsButton.Content = _isSidebarCollapsed ? null : "Rooms";
-            BookingsButton.Content = _isSidebarCollapsed ? null : "Bookings";
-            InventoryButton.Content = _isSidebarCollapsed ? null : "Inventory";
-            BillingButton.Content = _isSidebarCollapsed ? null : "Billing";
-            ServicesButton.Content = _isSidebarCollapsed ? null : "Services";
+            // Hide or show the label text inside each button so the icons/images remain visible when collapsed
+            DashboardText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            GuestsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            UsersText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            RoomsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            BookingsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            InventoryText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            BillingText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            ServicesText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+
+            // Optionally adjust alignment of images when collapsed (keeps them centered)
+            var buttons = new[] { DashboardButton, GuestsButton, UsersButton, RoomsButton,
+                                  BookingsButton, InventoryButton, BillingButton, ServicesButton };
+
+            foreach (var button in buttons)
+            {
+                button.HorizontalContentAlignment = _isSidebarCollapsed ? HorizontalAlignment.Center : HorizontalAlignment.Left;
+            }
         }
 
         private void NavigationButton_Click(object sender, RoutedEventArgs e)

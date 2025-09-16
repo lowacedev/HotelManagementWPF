@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:HotelManagementWPF.ViewModels"
-             xmlns:common="clr-namespace:HotelManagementWPF.Common"
+          
              Background="White">
 
     <UserControl.Resources>
@@ -47,8 +47,7 @@
             </Style.Triggers>
         </Style>
 
-        <common:StatusToForegroundConverter x:Key="StatusToForegroundConverter" />
-        <common:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter" />
+        
     </UserControl.Resources>
 
     <Grid Margin="24">

@@ -12,7 +12,9 @@
     <None Remove="Resources\Icons\billings.png" />
     <None Remove="Resources\Icons\bookings.png" />
     <None Remove="Resources\Icons\dashboard.png" />
+    <None Remove="Resources\Icons\guests.png" />
     <None Remove="Resources\Icons\inventory.png" />
+    <None Remove="Resources\Icons\logo.png" />
     <None Remove="Resources\Icons\rooms.png" />
     <None Remove="Resources\Icons\services.png" />
     <None Remove="Resources\Icons\users.png" />
@@ -25,7 +27,9 @@
   <ItemGroup>
     <Resource Include="Resources\Icons\billings.png" />
     <Resource Include="Resources\Icons\bookings.png" />
+    <Resource Include="Resources\Icons\guests.png" />
     <Resource Include="Resources\Icons\inventory.png" />
+    <Resource Include="Resources\Icons\logo.png" />
     <Resource Include="Resources\Icons\rooms.png" />
     <Resource Include="Resources\Icons\services.png" />
     <Resource Include="Resources\Icons\users.png" />
