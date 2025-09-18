@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using HotelManagementWPF.Models;
 using HotelManagementWPF.ViewModels.Base;
+using DatabaseProject;
 
 namespace HotelManagementWPF.ViewModels
 {
@@ -20,27 +22,16 @@ namespace HotelManagementWPF.ViewModels
 
         public RoomViewModel()
         {
-            // Sample data
-            _allRooms = new ObservableCollection<Room>
-            {
-                new Room { RoomNumber = "#001", BedType = "Double bed", Price = 120, Status = RoomStatus.Available },
-                new Room { RoomNumber = "#002", BedType = "Single bed", Price = 100, Status = RoomStatus.Booked },
-                new Room { RoomNumber = "#003", BedType = "VIP", Price = 200, Status = RoomStatus.Booked },
-                new Room { RoomNumber = "#004", BedType = "VIP", Price = 200, Status = RoomStatus.Reserved },
-                new Room { RoomNumber = "#005", BedType = "Single bed", Price = 100, Status = RoomStatus.Reserved },
-                new Room { RoomNumber = "#006", BedType = "Double bed", Price = 120, Status = RoomStatus.Waitlist },
-                new Room { RoomNumber = "#007", BedType = "Double bed", Price = 120, Status = RoomStatus.Reserved },
-                new Room { RoomNumber = "#008", BedType = "Single bed", Price = 100, Status = RoomStatus.Blocked }
-            };
-
+            _allRooms = new ObservableCollection<Room>();
             PaginatedRooms = new ObservableCollection<Room>();
+
+            LoadRoomsFromDatabase();
+
             FilterCommand = new RelayCommand<string>(param => FilterRooms(param));
             AddRoomCommand = new RelayCommand(() => AddRoom());
             PreviousPageCommand = new RelayCommand(() => PreviousPage(), () => CurrentPage > 1);
             NextPageCommand = new RelayCommand(() => NextPage(), () => CurrentPage < TotalPages);
             GoToPageCommand = new RelayCommand<int>(page => GoToPage(page));
-
-            UpdatePagination();
         }
 
         public ObservableCollection<Room> PaginatedRooms
@@ -56,7 +47,14 @@ namespace HotelManagementWPF.ViewModels
         public int CurrentPage
         {
             get => _currentPage;
-            set { _currentPage = value; OnPropertyChanged(); }
+            set
+            {
+                if (_currentPage != value)
+                {
+                    _currentPage = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public int TotalPages => (int)Math.Ceiling((double)FilteredRooms.Count / _pageSize);
@@ -85,7 +83,7 @@ namespace HotelManagementWPF.ViewModels
 
         private void AddRoom()
         {
-            // UI only: show dialog or add logic here if needed
+            // Implement UI logic for adding a new room if needed
         }
 
         private void PreviousPage()
@@ -117,6 +115,9 @@ namespace HotelManagementWPF.ViewModels
 
         private void UpdatePagination()
         {
+            if (PaginatedRooms == null)
+                return;
+
             PaginatedRooms.Clear();
             var rooms = FilteredRooms.Skip((CurrentPage - 1) * _pageSize).Take(_pageSize);
             foreach (var room in rooms)
@@ -124,6 +125,55 @@ namespace HotelManagementWPF.ViewModels
 
             (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(PageNumbers));
+        }
+
+        private void LoadRoomsFromDatabase()
+        {
+            var db = new DbConnections();
+            var dataTable = new DataTable();
+
+            string query = "SELECT room_id, roomNumber, roomType, price, roomStatus FROM tbl_Room";
+
+            try
+            {
+                db.readDatathroughAdapter(query, dataTable);
+                _allRooms.Clear();
+
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    var room = new Room
+                    {
+                        RoomNumber = "#" + row["roomNumber"].ToString(),
+                        BedType = row["roomType"].ToString(),
+                        Price = Convert.ToInt32(row["price"]),
+                        Status = ParseRoomStatus(row["roomStatus"].ToString())
+                    };
+                    _allRooms.Add(room);
+                }
+
+                CurrentPage = 1;
+                UpdatePagination();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading rooms: {ex.Message}");
+            }
+        }
+
+        private RoomStatus ParseRoomStatus(string status)
+        {
+            return status switch
+            {
+                "Available" => RoomStatus.Available,
+                "Booked" => RoomStatus.Booked,
+                "Reserved" => RoomStatus.Reserved,
+                "Waitlist" => RoomStatus.Waitlist,
+                "Blocked" => RoomStatus.Blocked,
+                _ => RoomStatus.Available,
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

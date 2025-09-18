@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace HotelManagementWPF.Models
@@ -27,6 +27,7 @@ namespace HotelManagementWPF.Models
         // Kept for compatibility with various UIs that bind to Price
         public decimal PricePerNight { get; set; }
 
+        // Property for setting/getting Price, if needed
         public decimal Price
         {
             get => PricePerNight;
@@ -47,5 +48,8 @@ namespace HotelManagementWPF.Models
 
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
+
+        // New property for formatted price with Peso sign
+        public string FormattedPrice => $"₱{PricePerNight:N2}";
     }
 }
