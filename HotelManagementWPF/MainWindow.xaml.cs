@@ -74,8 +74,8 @@ namespace HotelManagementWPF
             switch (section.ToLower())
             {
                 case "rooms":
-                    var roomService = new RoomService();
-                    var roomViewModel = new RoomViewModel();
+                    var windowService = new WindowService(); 
+                    var roomViewModel = new RoomViewModel(windowService);
                     var roomView = new RoomView();
                     roomView.DataContext = roomViewModel;
                     MainContentArea.Content = roomView;

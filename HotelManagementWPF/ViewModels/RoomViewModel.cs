@@ -1,3 +1,7 @@
+using DatabaseProject;
+using HotelManagementWPF.Models;
+using HotelManagementWPF.Services;
+using HotelManagementWPF.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,26 +10,26 @@ using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using HotelManagementWPF.Models;
-using HotelManagementWPF.ViewModels.Base;
-using DatabaseProject;
 
 namespace HotelManagementWPF.ViewModels
 {
     public class RoomViewModel : INotifyPropertyChanged
     {
+        private readonly IWindowService _windowService;
         private ObservableCollection<Room> _allRooms;
         private ObservableCollection<Room> _paginatedRooms;
         private RoomStatus? _selectedFilter;
         private int _currentPage = 1;
         private int _pageSize = 10;
+        private bool _isAddRoomFormVisible;
 
-        public RoomViewModel()
+
+
+        public RoomViewModel(IWindowService windowService)
         {
+            _windowService = windowService;
             _allRooms = new ObservableCollection<Room>();
             PaginatedRooms = new ObservableCollection<Room>();
-
-            LoadRoomsFromDatabase();
 
             FilterCommand = new RelayCommand<string>(param => FilterRooms(param));
             AddRoomCommand = new RelayCommand(() => AddRoom());
@@ -33,12 +37,17 @@ namespace HotelManagementWPF.ViewModels
             NextPageCommand = new RelayCommand(() => NextPage(), () => CurrentPage < TotalPages);
             GoToPageCommand = new RelayCommand<int>(page => GoToPage(page));
         }
-
+        private void AddRoom()
+        {
+            _windowService.ShowAddRoomForm();
+        }
         public ObservableCollection<Room> PaginatedRooms
         {
             get => _paginatedRooms;
             set { _paginatedRooms = value; OnPropertyChanged(); }
         }
+
+      
 
         public int TotalRooms => _allRooms.Count;
         public int AvailableRooms => _allRooms.Count(r => r.Status == RoomStatus.Available);
@@ -67,6 +76,8 @@ namespace HotelManagementWPF.ViewModels
         public ICommand NextPageCommand { get; }
         public ICommand GoToPageCommand { get; }
 
+      
+
         private List<Room> FilteredRooms =>
             _selectedFilter == null ? _allRooms.ToList() : _allRooms.Where(r => r.Status == _selectedFilter).ToList();
 
@@ -81,11 +92,7 @@ namespace HotelManagementWPF.ViewModels
             UpdatePagination();
         }
 
-        private void AddRoom()
-        {
-            // Implement UI logic for adding a new room if needed
-        }
-
+     
         private void PreviousPage()
         {
             if (CurrentPage > 1)
