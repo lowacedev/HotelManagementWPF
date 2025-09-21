@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HotelManagementWPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,15 @@ namespace HotelManagementWPF.Views.Room
     /// </summary>
     public partial class EditRoomFormView : Window
     {
-        public EditRoomFormView()
+        public EditRoomFormView(Models.Room room)
         {
             InitializeComponent();
+            DataContext = new EditRoomViewModel(room);
         }
-    }
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+        }
 }

@@ -1,9 +1,10 @@
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using HotelManagementWPF.ViewModels.Booking;
-using HotelManagementWPF.Views.Booking;
-using Syncfusion.UI.Xaml.Scheduler;
 
 namespace HotelManagementWPF.Views.Booking
 {
@@ -13,37 +14,45 @@ namespace HotelManagementWPF.Views.Booking
         {
             InitializeComponent();
             DataContext = new BookingViewModel();
-            BookingScheduler.CellTapped += new EventHandler<CellTappedEventArgs>(BookingScheduler_CellTapped);
         }
+    }
 
-        private void BookingScheduler_CellTapped(object? sender, CellTappedEventArgs e)
+    // Status to Background Color Converter for booking statuses
+    public class StatusToBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // Only open booking form for empty cells (no appointment)
-            if (e.Appointments == null || e.Appointments.Count == 0)
+            if (value is string status)
             {
-                // Get room and date info from cell
-                var resource = e.Resource as dynamic;
-                string roomNumber = resource?.Name ?? "";
-                string roomType = resource?.Type ?? "";
-                DateTime checkInDate = e.DateTime;
-                OpenBookingForm(roomNumber, roomType, checkInDate);
+                return status switch
+                {
+                    "Active" => new SolidColorBrush(Color.FromRgb(76, 175, 80)), // Green
+                    "Completed" => new SolidColorBrush(Color.FromRgb(52, 152, 219)), // Blue
+                    "Cancelled" => new SolidColorBrush(Color.FromRgb(231, 76, 60)), // Red
+                    _ => new SolidColorBrush(Color.FromRgb(149, 165, 166)) // Gray
+                };
             }
+            return new SolidColorBrush(Color.FromRgb(149, 165, 166));
         }
 
-        // This method can be called from the CellTemplate's Button click event handler
-        public void OpenBookingForm(string roomNumber, string roomType, DateTime checkInDate)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var form = new BookingFormView();
-            var vm = new BookingFormViewModel();
-            vm.PreFill(roomNumber, roomType, checkInDate);
-            form.DataContext = vm;
-            form.Owner = Window.GetWindow(this);    
-            form.ShowDialog();
+            throw new NotImplementedException();
+        }
+    }
+
+    // Status to Foreground Color Converter for booking statuses
+    public class StatusToForegroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // All statuses use white text for better contrast
+            return new SolidColorBrush(Colors.White);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
+            throw new NotImplementedException();
         }
     }
 }

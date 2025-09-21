@@ -3,12 +3,12 @@ using System.Windows;
 
 namespace HotelManagementWPF.Views.Room
 {
-    public partial class EditRoomFormView : Window
+    public partial class AddRoomFormView : Window
     {
-        public EditRoomFormView(Models.Room room)
+        public AddRoomFormView()
         {
             InitializeComponent();
-            DataContext = new EditRoomViewModel(room);
+       
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

@@ -41,4 +41,8 @@
     <Resource Include="Resources\Icons\users.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Guest\" />
+  </ItemGroup>
+
 </Project>

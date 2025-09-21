@@ -37,6 +37,7 @@ namespace HotelManagementWPF.ViewModels
             PreviousPageCommand = new RelayCommand(() => PreviousPage(), () => CurrentPage > 1);
             NextPageCommand = new RelayCommand(() => NextPage(), () => CurrentPage < TotalPages);
             GoToPageCommand = new RelayCommand<int>(page => GoToPage(page));
+            EditRoomCommand = new RelayCommand<Room>(EditRoom);
         }
         private void AddRoom()
         {
@@ -45,8 +46,7 @@ namespace HotelManagementWPF.ViewModels
 
         public ICommand EditRoomCommand { get; private set; }
 
-        // In your constructor or initialization:
-        EditRoomCommand = new RelayCommand<RoomModel>(EditRoom);
+     
 
 private void EditRoom(Room room)
         {

@@ -2,77 +2,272 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using HotelManagementWPF.Models;
+using System.Windows.Input;
+using System.Windows;
+using System.Linq;
+using HotelManagementWPF.ViewModels.Base;
+using HotelManagementWPF.Views.Booking;
 
 namespace HotelManagementWPF.ViewModels.Booking
 {
     public class BookingViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<RoomResource> Rooms { get; set; }
-        public ObservableCollection<BookingAppointment> Bookings { get; set; }
-        public AppointmentMapping AppointmentMapping { get; set; }
-        public ResourceMapping ResourceMapping { get; set; }
+        private ObservableCollection<BookingData> _bookings;
+        private ObservableCollection<BookingData> _filteredBookings;
+        private string _currentFilter = "All";
+        private string _searchText = string.Empty;
+        private int _currentPage = 1;
+        private const int _itemsPerPage = 10;
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                ApplyFiltersAndSearch();
+            }
+        }
+
+        public ObservableCollection<BookingData> Bookings
+        {
+            get => _bookings;
+            set
+            {
+                _bookings = value;
+                OnPropertyChanged();
+                UpdatePagination();
+            }
+        }
+
+        public ObservableCollection<BookingData> FilteredBookings
+        {
+            get => _filteredBookings;
+            set
+            {
+                _filteredBookings = value;
+                OnPropertyChanged();
+                UpdatePagination();
+            }
+        }
+
+        public ObservableCollection<BookingData> PaginatedBookings { get; set; }
+        public ObservableCollection<int> PageNumbers { get; set; }
+
+        public int TotalBookings => Bookings?.Count ?? 0;
+        public int ActiveBookings => Bookings?.Count(b => b.Status == "Active") ?? 0;
+        public int CompletedBookings => Bookings?.Count(b => b.Status == "Completed") ?? 0;
+        public int CancelledBookings => Bookings?.Count(b => b.Status == "Cancelled") ?? 0;
+
+        public ICommand FilterCommand { get; }
+        public ICommand AddBookingCommand { get; }
+        public ICommand EditBookingCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand GoToPageCommand { get; }
 
         public BookingViewModel()
         {
-            Rooms = new ObservableCollection<RoomResource>
-            {
-                new RoomResource { Id = 1, Name = "Room 1", Type = "Deluxe Suite" },
-                new RoomResource { Id = 2, Name = "Room 2", Type = "Standard Room" },
-                new RoomResource { Id = 3, Name = "Room 3", Type = "Executive Room" },
-                new RoomResource { Id = 4, Name = "Room 4", Type = "Deluxe Suite" },
-                new RoomResource { Id = 5, Name = "Room 5", Type = "Standard Room" },
-                new RoomResource { Id = 6, Name = "Room 6", Type = "Standard Room" },
-                new RoomResource { Id = 7, Name = "Room 7", Type = "Executive Room" },
-                new RoomResource { Id = 8, Name = "Room 8", Type = "Deluxe Suite" }
-            };
+            PaginatedBookings = new ObservableCollection<BookingData>();
+            PageNumbers = new ObservableCollection<int>();
 
-            Bookings = new ObservableCollection<BookingAppointment>
+            // Initialize with sample data
+            Bookings = new ObservableCollection<BookingData>
             {
-                new BookingAppointment {
-                    Subject = "Said el hadrry",
-                    StartTime = new DateTime(2025,2,9,9,2,0),
-                    EndTime = new DateTime(2025,2,9,11,2,0),
-                    RoomId = 1,
-                    StatusColor = "#FFA726"
+                new BookingData {
+                    Id = 1,
+                    Guest = "Said el hadrry",
+                    Room = "Room 1",
+                    CheckIn = new DateTime(2025, 2, 9),
+                    CheckOut = new DateTime(2025, 2, 11),
+                    Status = "Active"
                 },
-                new BookingAppointment {
-                    Subject = "Said el hadrry",
-                    StartTime = new DateTime(2025,2,10,9,2,0),
-                    EndTime = new DateTime(2025,2,19,9,2,0),
-                    RoomId = 2,
-                    StatusColor = "#2196F3"
+                new BookingData {
+                    Id = 2,
+                    Guest = "Said el hadrry",
+                    Room = "Room 2",
+                    CheckIn = new DateTime(2025, 2, 10),
+                    CheckOut = new DateTime(2025, 2, 19),
+                    Status = "Active"
                 },
-                new BookingAppointment {
-                    Subject = "Jane cooper",
-                    StartTime = new DateTime(2025,2,11,11,2,0),
-                    EndTime = new DateTime(2025,2,16,11,2,0),
-                    RoomId = 4,
-                    StatusColor = "#2196F3"
+                new BookingData {
+                    Id = 3,
+                    Guest = "Jane Cooper",
+                    Room = "Room 4",
+                    CheckIn = new DateTime(2025, 2, 11),
+                    CheckOut = new DateTime(2025, 2, 16),
+                    Status = "Active"
                 },
-                new BookingAppointment {
-                    Subject = "Said el hadrry",
-                    StartTime = new DateTime(2025,2,1,9,2,0),
-                    EndTime = new DateTime(2025,2,9,9,2,0),
-                    RoomId = 6,
-                    StatusColor = "#FF5722"
+                new BookingData {
+                    Id = 4,
+                    Guest = "Said el hadrry",
+                    Room = "Room 6",
+                    CheckIn = new DateTime(2025, 2, 1),
+                    CheckOut = new DateTime(2025, 2, 9),
+                    Status = "Completed"
+                },
+                new BookingData {
+                    Id = 5,
+                    Guest = "John Smith",
+                    Room = "Room 3",
+                    CheckIn = new DateTime(2025, 1, 15),
+                    CheckOut = new DateTime(2025, 1, 20),
+                    Status = "Completed"
+                },
+                new BookingData {
+                    Id = 6,
+                    Guest = "Emma Wilson",
+                    Room = "Room 5",
+                    CheckIn = new DateTime(2025, 3, 1),
+                    CheckOut = new DateTime(2025, 3, 5),
+                    Status = "Cancelled"
                 }
             };
 
-            AppointmentMapping = new AppointmentMapping
-            {
-                Subject = nameof(BookingAppointment.Subject),
-                StartTime = nameof(BookingAppointment.StartTime),
-                EndTime = nameof(BookingAppointment.EndTime),
-                ResourceId = nameof(BookingAppointment.RoomId),
-                AppointmentBackground = nameof(BookingAppointment.StatusColor)
-            };
+            FilteredBookings = new ObservableCollection<BookingData>(Bookings);
 
-            ResourceMapping = new ResourceMapping
+            // Initialize commands
+            FilterCommand = new RelayCommand<string>(FilterBookings);
+            AddBookingCommand = new RelayCommand(AddBooking);
+            EditBookingCommand = new RelayCommand<BookingData>(EditBooking);
+            PreviousPageCommand = new RelayCommand(PreviousPage, () => _currentPage > 1);
+            NextPageCommand = new RelayCommand(NextPage, () => _currentPage < TotalPages);
+            GoToPageCommand = new RelayCommand<int>(GoToPage);
+
+            UpdatePagination();
+        }
+
+        private void FilterBookings(string filter)
+        {
+            _currentFilter = filter;
+            _currentPage = 1;
+            ApplyFiltersAndSearch();
+        }
+
+        private void ApplyFiltersAndSearch()
+        {
+            var filtered = Bookings.AsEnumerable();
+
+            // Apply status filter
+            if (_currentFilter != "All")
             {
-                Id = nameof(RoomResource.Id),
-                Name = nameof(RoomResource.Name)
-            };
+                filtered = filtered.Where(b => b.Status == _currentFilter);
+            }
+
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(_searchText))
+            {
+                var searchLower = _searchText.ToLower();
+                filtered = filtered.Where(b =>
+                    b.Guest.ToLower().Contains(searchLower) ||
+                    b.Room.ToLower().Contains(searchLower) ||
+                    b.Status.ToLower().Contains(searchLower));
+            }
+
+            FilteredBookings = new ObservableCollection<BookingData>(filtered);
+            UpdatePagination();
+            OnPropertyChanged(nameof(TotalBookings));
+            OnPropertyChanged(nameof(ActiveBookings));
+            OnPropertyChanged(nameof(CompletedBookings));
+            OnPropertyChanged(nameof(CancelledBookings));
+        }
+
+        private void AddBooking()
+        {
+            var form = new BookingFormView();
+            var vm = new BookingFormViewModel();
+            form.DataContext = vm;
+
+            // Center the dialog
+            form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            if (Application.Current.MainWindow != null)
+            {
+                form.Owner = Application.Current.MainWindow;
+            }
+
+            form.ShowDialog();
+        }
+
+        private void EditBooking(BookingData booking)
+        {
+            if (booking == null) return;
+
+            var form = new BookingFormView();
+            var vm = new BookingFormViewModel();
+            // Pre-fill with booking data for editing
+            vm.FullName = booking.Guest;
+            vm.RoomNumber = booking.Room;
+            vm.CheckInDate = booking.CheckIn;
+            vm.CheckOutDate = booking.CheckOut;
+            // Set other properties as needed
+
+            form.DataContext = vm;
+
+            // Center the dialog - you'll need to pass the parent window
+            // This requires accessing the current window from the view
+            form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            // Note: To properly set the owner, you'll need to modify this method
+            // to accept the parent window as a parameter, or use Application.Current.MainWindow
+            if (Application.Current.MainWindow != null)
+            {
+                form.Owner = Application.Current.MainWindow;
+            }
+
+            form.ShowDialog();
+        }
+
+        private int TotalPages => (int)Math.Ceiling((double)(FilteredBookings?.Count ?? 0) / _itemsPerPage);
+
+        private void UpdatePagination()
+        {
+            if (FilteredBookings == null) return;
+
+            // Update paginated items
+            var skip = (_currentPage - 1) * _itemsPerPage;
+            var paginatedItems = FilteredBookings.Skip(skip).Take(_itemsPerPage);
+
+            PaginatedBookings.Clear();
+            foreach (var item in paginatedItems)
+            {
+                PaginatedBookings.Add(item);
+            }
+
+            // Update page numbers
+            PageNumbers.Clear();
+            for (int i = 1; i <= TotalPages; i++)
+            {
+                PageNumbers.Add(i);
+            }
+
+            OnPropertyChanged(nameof(PaginatedBookings));
+            OnPropertyChanged(nameof(PageNumbers));
+        }
+
+        private void PreviousPage()
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                UpdatePagination();
+            }
+        }
+
+        private void NextPage()
+        {
+            if (_currentPage < TotalPages)
+            {
+                _currentPage++;
+                UpdatePagination();
+            }
+        }
+
+        private void GoToPage(int pageNumber)
+        {
+            _currentPage = pageNumber;
+            UpdatePagination();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -80,6 +275,21 @@ namespace HotelManagementWPF.ViewModels.Booking
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
+    public class BookingData
+    {
+        public int Id { get; set; }
+        public required string Guest { get; set; }
+        public required string Room { get; set; }
+        public DateTime CheckIn { get; set; }
+        public DateTime CheckOut { get; set; }
+        public required string Status { get; set; }
+
+        public string CheckInFormatted => CheckIn.ToString("MMM dd, yyyy");
+        public string CheckOutFormatted => CheckOut.ToString("MMM dd, yyyy");
+        public int Nights => (CheckOut - CheckIn).Days;
+    }
+
+    // Keep the old classes for backward compatibility if needed elsewhere
     public class RoomResource
     {
         public required int Id { get; set; }
