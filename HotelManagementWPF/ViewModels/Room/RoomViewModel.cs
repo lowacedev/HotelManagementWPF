@@ -2,6 +2,7 @@ using DatabaseProject;
 using HotelManagementWPF.Models;
 using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels.Base;
+using Syncfusion.Windows.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,6 +41,19 @@ namespace HotelManagementWPF.ViewModels
         private void AddRoom()
         {
             _windowService.ShowAddRoomForm();
+        }
+
+        public ICommand EditRoomCommand { get; private set; }
+
+        // In your constructor or initialization:
+        EditRoomCommand = new RelayCommand<RoomModel>(EditRoom);
+
+private void EditRoom(Room room)
+        {
+            if (room == null) return;
+
+            _windowService.ShowEditRoomForm(room);
+
         }
         public ObservableCollection<Room> PaginatedRooms
         {

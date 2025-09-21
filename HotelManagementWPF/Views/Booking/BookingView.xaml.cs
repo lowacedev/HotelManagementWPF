@@ -40,5 +40,10 @@ namespace HotelManagementWPF.Views.Booking
             form.Owner = Window.GetWindow(this);    
             form.ShowDialog();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

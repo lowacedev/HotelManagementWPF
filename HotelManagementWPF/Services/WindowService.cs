@@ -22,5 +22,18 @@ namespace HotelManagementWPF.Services
             addRoomForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             addRoomForm.ShowDialog(); 
         }
+
+        public void ShowEditRoomForm(Models.Room room)
+        {
+            var editForm = new Views.Room.EditRoomFormView(room);
+            editForm.Owner = Application.Current.MainWindow;
+            var result = editForm.ShowDialog();
+
+            if (result == true)
+            {
+                // Refresh the room list after successful edit
+                // You might want to raise an event or call a refresh method
+            }
+        }
     }
 }

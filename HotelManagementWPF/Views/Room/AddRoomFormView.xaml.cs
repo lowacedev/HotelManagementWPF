@@ -1,32 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HotelManagementWPF.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace HotelManagementWPF.Views.Room
 {
-    /// <summary>
-    /// Interaction logic for AddRoomForm.xaml
-    /// </summary>
-    public partial class AddRoomFormView : Window
+    public partial class EditRoomFormView : Window
     {
-        public AddRoomFormView()
+        public EditRoomFormView(Models.Room room)
         {
             InitializeComponent();
+            DataContext = new EditRoomViewModel(room);
         }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            DialogResult = false;
+            Close();
         }
     }
 }

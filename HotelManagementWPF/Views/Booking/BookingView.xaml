@@ -73,20 +73,7 @@
                 <Button Content="Month" Style="{StaticResource SubHeaderButton}"/>
             </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center">
-                <TextBox Width="180" Height="32" Margin="0,0,8,0" VerticalAlignment="Center">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Foreground" Value="#2C3E50"/>
-                            <Setter Property="FontFamily" Value="Segoe UI"/>
-                            <Setter Property="FontSize" Value="14"/>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-                <Button Content="&#xE713;" FontFamily="Segoe MDL2 Assets" Width="32" Height="32"/>
-                <Button Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" Width="32" Height="32"/>
-                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Width="32" Height="32"/>
-            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center"/>
         </Grid>
         <!-- Scheduler -->
         <Border Grid.Row="2" Background="{StaticResource SurfaceBrush}" CornerRadius="8" Padding="0">

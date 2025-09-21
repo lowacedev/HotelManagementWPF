@@ -10,5 +10,5 @@ namespace HotelManagementWPF.Services
     {
         void ShowAddRoomDialog();
         void ShowAddRoomForm();
+        void ShowEditRoomForm(Models.Room room);
     }
-}

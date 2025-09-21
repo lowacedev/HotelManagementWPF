@@ -7,7 +7,6 @@
 
     <UserControl.Resources>
 
-
         <!-- Optimized Button Styles with Templates for Better Performance -->
         <Style x:Key="PillButton" TargetType="Button">
             <Setter Property="Background" Value="White" />
@@ -88,6 +87,48 @@
                                 <Setter Property="RenderTransform">
                                     <Setter.Value>
                                         <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Three Dots Edit Button Style -->
+        <Style x:Key="EditButton" TargetType="Button">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="6">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Ellipse Width="3" Height="3" Fill="#95A5A6" Margin="0,1"/>
+                                <Ellipse Width="3" Height="3" Fill="#95A5A6" Margin="0,1"/>
+                                <Ellipse Width="3" Height="3" Fill="#95A5A6" Margin="0,1"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F8F9FA"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -314,6 +355,19 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+
+                        <!-- Edit Button Column -->
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource EditButton}"
+                                            Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="Edit Room"
+                                            Margin="16,0"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -363,24 +417,6 @@
                 </Button>
             </Grid>
         </Grid>
-
-        <!-- Loading Overlay -->
-        <Border x:Name="LoadingOverlay" 
-                Background="#80FFFFFF" 
-                Visibility="Collapsed">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <ProgressBar IsIndeterminate="True" 
-                           Width="200" 
-                           Height="4" 
-                           Background="#E0E0E0" 
-                           Foreground="#3498DB"/>
-                <TextBlock Text="Loading rooms..." 
-                         Margin="0,16,0,0" 
-                         FontSize="14" 
-                         Foreground="#5D6D7E" 
-                         HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
 
     </Grid>
 </UserControl>
