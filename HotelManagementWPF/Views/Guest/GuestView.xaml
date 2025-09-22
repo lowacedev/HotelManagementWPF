@@ -7,33 +7,64 @@
 
     <UserControl.Resources>
 
-        <!-- Optimized Button Styles with Templates for Better Performance -->
-        <Style x:Key="PillButton" TargetType="Button">
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#E0E0E0" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="12,8" />
-            <Setter Property="Margin" Value="0,0,8,0" />
-            <Setter Property="Foreground" Value="#2C3E50" />
-            <Setter Property="Cursor" Value="Hand" />
+        <!-- Search TextBox Style (BookingView Style) -->
+        <Style x:Key="SearchTextBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="250"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
+                    <ControlTemplate TargetType="TextBox">
                         <Border x:Name="Border" 
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="20"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8">
+                            <Grid>
+                                <!-- Search Icon -->
+                                <Path Fill="#95A5A6"
+                                      Margin="12,0,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      Width="16" Height="16"
+                                      Stretch="Fill"
+                                      Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+
+                                <!-- Placeholder Text -->
+                                <TextBlock x:Name="PlaceholderText"
+                                         Text="Search guests by name, phone number..."
+                                         Foreground="#95A5A6"
+                                         VerticalAlignment="Center"
+                                         Margin="40,0,12,0"
+                                         IsHitTestVisible="False"
+                                         Visibility="Visible"/>
+
+                                <!-- Text Input Area -->
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                            Focusable="False"
+                                            HorizontalScrollBarVisibility="Hidden"
+                                            VerticalScrollBarVisibility="Hidden"
+                                            Margin="40,8,12,8"
+                                            VerticalAlignment="Center"/>
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#F8F9FA"/>
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#2C3E50"/>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3498DB"/>
+                                <Setter TargetName="PlaceholderText" Property="Visibility" Value="Collapsed"/>
                             </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#E9ECEF"/>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3498DB"/>
+                            </Trigger>
+                            <!-- Hide placeholder when text is not empty -->
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -217,42 +248,29 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- Filter and Action Header -->
-            <Grid Grid.Row="1" Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+        <!-- Search and Action Header -->
+<Grid Grid.Row="1" Margin="0,0,0,20">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
 
-                <!-- Enhanced Filter Buttons -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
-                    <Button Style="{StaticResource PillButton}" 
-                            Command="{Binding FilterCommand}" 
-                            CommandParameter="Male" Click="Button_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="8" Height="8" Fill="#3498DB" Margin="0,0,6,0"/>
-                            <TextBlock Text="{Binding MaleGuests, StringFormat=Male ({0})}" FontWeight="Medium"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource PillButton}" 
-                            Command="{Binding FilterCommand}" 
-                            CommandParameter="Female">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="8" Height="8" Fill="#E91E63" Margin="0,0,6,0"/>
-                            <TextBlock Text="{Binding FemaleGuests, StringFormat=Female ({0})}" FontWeight="Medium"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+    <!-- Search TextBox (same sizing as BookingView) -->
+    <TextBox Grid.Column="0" 
+             Style="{StaticResource SearchTextBox}"
+             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+             Margin="0,0,12,0"
+             MinWidth="250"   
+             MaxWidth="400"   
+             HorizontalAlignment="Left"/>
 
-                <!-- Enhanced Add Button -->
+    <!-- Add Guest Button -->
                 <Button Grid.Column="1" 
-                        Style="{StaticResource AddButton}" 
-                        Command="{Binding AddGuestCommand}"
-                        HorizontalAlignment="Right">
+        Style="{StaticResource AddButton}" 
+        Command="{Binding AddGuestCommand}">
                     <TextBlock Text="Add New Guest" FontSize="13"/>
                 </Button>
             </Grid>
-
             <!-- Optimized DataGrid with Virtualization -->
             <Border Grid.Row="2" 
                     Background="White" 

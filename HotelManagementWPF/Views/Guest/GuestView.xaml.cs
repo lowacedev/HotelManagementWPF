@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HotelManagementWPF.Services;
+using HotelManagementWPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,12 +24,14 @@ namespace HotelManagementWPF.Views.Guest
         public GuestView()
         {
             InitializeComponent();
+            DataContext = new GuestViewModel(new WindowService());
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddGuestButton_Click(object sender, RoutedEventArgs e)
         {
-
+            // This will trigger both the Click event and Command if both are set
+            // The Command binding will handle the actual logic
         }
     }
 }

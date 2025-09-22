@@ -1,6 +1,4 @@
-﻿using HotelManagementWPF.Services;
-using HotelManagementWPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,20 +15,18 @@ using System.Windows.Shapes;
 namespace HotelManagementWPF.Views.User
 {
     /// <summary>
-    /// Interaction logic for UserView.xaml
+    /// Interaction logic for AddUserFormView.xaml
     /// </summary>
-    public partial class UserView : UserControl
+    public partial class AddUserFormView : Window
     {
-        public UserView()
+        public AddUserFormView()
         {
             InitializeComponent();
-            DataContext = new UserViewModel(new WindowService());
         }
 
-        private void AddUserButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            // This will trigger both the Click event and Command if both are set
-            // The Command binding will handle the actual logic
+            this.Close();
         }
     }
 }

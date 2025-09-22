@@ -1,6 +1,9 @@
 ﻿using HotelManagementWPF.Views.Room;
 using HotelManagementWPF.Views.Booking;
 using HotelManagementWPF.ViewModels.Booking;
+using HotelManagementWPF.Views.Guest;
+using HotelManagementWPF.Views.User;
+using HotelManagementWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +42,7 @@ namespace HotelManagementWPF.Services
             }
         }
 
-        // New Booking methods
+        // Booking methods
         public void ShowAddBookingForm()
         {
             var form = new BookingFormView();
@@ -68,6 +71,40 @@ namespace HotelManagementWPF.Services
             form.Owner = Application.Current.MainWindow;
             form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             form.ShowDialog();
+        }
+
+        // Guest methods
+        public void ShowAddGuestForm()
+        {
+            var addGuestForm = new AddGuestFormView();
+            addGuestForm.Owner = Application.Current.MainWindow;
+            addGuestForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            addGuestForm.ShowDialog();
+        }
+
+        // User methods
+        public void ShowAddUserForm()
+        {
+            var addUserForm = new AddUserFormView();
+            var vm = new AddUserFormViewModel();
+            addUserForm.DataContext = vm;
+            addUserForm.Owner = Application.Current.MainWindow;
+            addUserForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            addUserForm.ShowDialog();
+        }
+
+        public void ShowEditUserForm(ViewModels.User user)
+        {
+            if (user == null) return;
+
+            // You can implement an EditUserFormView similar to AddUserFormView
+            // For now, this is just a placeholder
+            // var editForm = new EditUserFormView();
+            // var vm = new EditUserFormViewModel(user);
+            // editForm.DataContext = vm;
+            // editForm.Owner = Application.Current.MainWindow;
+            // editForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            // editForm.ShowDialog();
         }
     }
 }
