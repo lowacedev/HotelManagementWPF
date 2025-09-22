@@ -10,5 +10,7 @@
         <common:StatusToForegroundConverter x:Key="StatusToForegroundConverter"/>
         <common:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <common:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter"/>
+
     </Application.Resources>
 </Application>

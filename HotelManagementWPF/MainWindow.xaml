@@ -321,17 +321,20 @@
                 Background="White"
                 BorderBrush="#E0E0E0"
                 BorderThickness="0,0,0,1">
+            
             <Grid Margin="20,0">
+                
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+                <TextBlock x:Name="HeaderTitle"            
+                   Text="" 
+                   FontSize="28" 
+                   FontWeight="Bold" 
+                   Foreground="#2C3E50" 
+                   VerticalAlignment="Center"/>
                 <!-- Search Box -->
-                <TextBox Grid.Column="0"
-                         x:Name="SearchBox"
-                         Style="{StaticResource SearchBoxStyle}"
-                         Width="500"
-                         HorizontalAlignment="Left"/>
                 <!-- User Profile Section -->
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"

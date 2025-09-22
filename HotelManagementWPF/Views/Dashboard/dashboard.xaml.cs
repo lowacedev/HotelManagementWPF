@@ -10,23 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HotelManagementWPF.Views.Guest
+namespace HotelManagementWPF.Views.Dashboard
 {
     /// <summary>
-    /// Interaction logic for AddGuestFormView.xaml
+    /// Interaction logic for dashboard.xaml
     /// </summary>
-    public partial class AddGuestFormView : Window
+    public partial class dashboard : UserControl
     {
-        public AddGuestFormView()
+        public dashboard()
         {
             InitializeComponent();
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

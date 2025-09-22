@@ -4,6 +4,9 @@ using System.Windows.Media;
 using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels;
 using HotelManagementWPF.Views.Room;
+using HotelManagementWPF.Views.Dashboard;
+using HotelManagementWPF.Views.Guest;
+using HotelManagementWPF.Views.User;
 
 namespace HotelManagementWPF
 {
@@ -17,6 +20,8 @@ namespace HotelManagementWPF
 
             // Load default dashboard at startup
             NavigateToSection("dashboard");
+            this.WindowState = WindowState.Maximized;
+
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -74,26 +79,37 @@ namespace HotelManagementWPF
             switch (section.ToLower())
             {
                 case "rooms":
-                    var windowService = new WindowService(); 
+                    var windowService = new WindowService();
                     var roomViewModel = new RoomViewModel(windowService);
                     var roomView = new RoomView();
                     roomView.DataContext = roomViewModel;
                     MainContentArea.Content = roomView;
+                    // Update header title
+                    HeaderTitle.Text = "Room Management";
                     break;
 
                 case "bookings":
                     var bookingView = new HotelManagementWPF.Views.Booking.BookingView();
                     MainContentArea.Content = bookingView;
+                    HeaderTitle.Text = "Booking Management";
                     break;
 
                 case "dashboard":
-                    MainContentArea.Content = new TextBlock
-                    {
-                        Text = "Welcome to the Dashboard",
-                        FontSize = 24,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
+                    var dashboardView = new dashboard(); // this is your UserControl
+                    MainContentArea.Content = dashboardView;
+                    HeaderTitle.Text = "Dashboard";
+                    break;
+
+                case "guests":
+                    var guestView = new GuestView(); // 👈 Load your GuestView
+                    MainContentArea.Content = guestView;
+                    HeaderTitle.Text = "Guest Management";
+                    break;
+
+                case "users":
+                    var userView = new UserView();   // 👈 Load your UserView
+                    MainContentArea.Content = userView;
+                    HeaderTitle.Text = "User Management";
                     break;
 
                 default:
@@ -104,6 +120,7 @@ namespace HotelManagementWPF
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center
                     };
+                    HeaderTitle.Text = "Hotel Management System"; // fallback title
                     break;
             }
         }

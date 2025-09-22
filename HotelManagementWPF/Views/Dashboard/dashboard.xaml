@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="HotelManagementWPF.Views.Dashboard.dashboard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="900" d:DesignWidth="1400">
+
+    <Grid Background="#F5F7FB" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Overview Section -->
+        <Border Background="White" CornerRadius="15" Padding="20" Margin="0 0 0 20">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Today's Check-in" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="23" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Today's Check-out" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="13" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="In Hotel" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="60" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3">
+                    <TextBlock Text="Available Rooms" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="10" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Occupied Rooms" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="90" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Room Types -->
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0 0 0 20">
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Single Sharing" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="2 Deals" Foreground="Gray"/>
+                    <TextBlock Text="$568 / day" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Double Sharing" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="2 Deals" Foreground="Gray"/>
+                    <TextBlock Text="$1,068 / day" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Triple Sharing" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="1 Deal" Foreground="Gray"/>
+                    <TextBlock Text="$1,568 / day" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="VIP Suite" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="1 Deal" Foreground="Gray"/>
+                    <TextBlock Text="$2,568 / day" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Bottom Section -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="773*"/>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="587*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10,0,10,21">
+                <StackPanel>
+                    <TextBlock Text="Analytics" FontWeight="Bold" FontSize="16"/>
+
+                </StackPanel>
+            </Border>
+
+            <!-- Room Status -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="42,0,0,232" Grid.Column="3">
+                <StackPanel>
+                    <TextBlock Text="Room Status" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="Occupied Rooms: 90"/>
+                    <TextBlock Text="Vacant Rooms: 10"/>
+                    <TextBlock Text="Total Rooms: 100"/>
+                </StackPanel>
+            </Border>
+
+
+        </Grid>
+
+
+    </Grid>
+</UserControl>

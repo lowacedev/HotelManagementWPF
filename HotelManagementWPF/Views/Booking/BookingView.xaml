@@ -285,15 +285,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Title Section -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Booking Management" FontSize="28" FontWeight="Bold" Foreground="#2C3E50" VerticalAlignment="Center"/>
-                <Border Background="#3498DB" CornerRadius="12" Padding="8,4" Margin="16,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding TotalBookings, StringFormat={}{0} Total}" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
-                </Border>
-            </StackPanel>
-        </Grid>
+
 
         <!-- Filter and Action Header -->
         <Grid Grid.Row="1" Margin="0,0,0,20">

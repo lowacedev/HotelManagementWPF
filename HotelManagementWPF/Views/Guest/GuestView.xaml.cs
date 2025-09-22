@@ -22,6 +22,12 @@ namespace HotelManagementWPF.Views.Guest
         public GuestView()
         {
             InitializeComponent();
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
