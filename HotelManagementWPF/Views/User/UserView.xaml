@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="HotelManagementWPF.Views.User.UserView"
+﻿<UserControl x:Class="HotelManagementWPF.Views.Users.UserView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:HotelManagementWPF.ViewModels"
-             xmlns:local="clr-namespace:HotelManagementWPF.Views.User"
+             xmlns:local="clr-namespace:HotelManagementWPF.Views.Users"
              Background="White">
 
     <UserControl.Resources>
@@ -358,7 +358,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource EditButton}"
-                                            Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
                                             ToolTip="Edit User"
                                             Margin="16,0"/>

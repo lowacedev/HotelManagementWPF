@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace HotelManagementWPF.Views.User
+namespace HotelManagementWPF.Views.Users
 {
     /// <summary>
     /// Interaction logic for UserView.xaml

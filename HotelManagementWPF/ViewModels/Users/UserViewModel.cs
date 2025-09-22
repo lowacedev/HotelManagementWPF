@@ -116,6 +116,8 @@ namespace HotelManagementWPF.ViewModels
         private void ExecuteEditUser(User user)
         {
             if (user == null) return;
+            _windowService.ShowEditUserForm(user);
+
 
             // Implement edit user functionality
             // You can create a ShowEditUserForm method in IWindowService

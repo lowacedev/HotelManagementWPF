@@ -6,7 +6,7 @@ using HotelManagementWPF.ViewModels;
 using HotelManagementWPF.Views.Room;
 using HotelManagementWPF.Views.Dashboard;
 using HotelManagementWPF.Views.Guest;
-using HotelManagementWPF.Views.User;
+using HotelManagementWPF.Views.Users;
 
 namespace HotelManagementWPF
 {

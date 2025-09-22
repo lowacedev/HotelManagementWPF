@@ -11,22 +11,22 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using HotelManagementWPF.ViewModels.Users;
+using HotelManagementWPF.Models;
+using HotelManagementWPF.ViewModels;
+
 
 namespace HotelManagementWPF.Views.Users
 {
     /// <summary>
-    /// Interaction logic for AddUserFormView.xaml
+    /// Interaction logic for EditUserFormView.xaml
     /// </summary>
-    public partial class AddUserFormView : Window
+    public partial class EditUserFormView : Window
     {
-        public AddUserFormView()
+        public EditUserFormView()
         {
             InitializeComponent();
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
+         
         }
     }
 }

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HotelManagementWPF.ViewModels.Booking;
+using HotelManagementWPF.ViewModels;
+using HotelManagementWPF.Views;
 
 namespace HotelManagementWPF.Services
 {
     public interface IWindowService
     {
-        // Existing Room methods
+        // Room methods
         void ShowAddRoomDialog();
         void ShowAddRoomForm();
         void ShowEditRoomForm(Models.Room room);
@@ -23,6 +25,6 @@ namespace HotelManagementWPF.Services
 
         // User methods
         void ShowAddUserForm();
-        void ShowEditUserForm(ViewModels.User user);
+        void ShowEditUserForm(User user);
     }
 }

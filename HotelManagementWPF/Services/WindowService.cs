@@ -2,8 +2,10 @@
 using HotelManagementWPF.Views.Booking;
 using HotelManagementWPF.ViewModels.Booking;
 using HotelManagementWPF.Views.Guest;
-using HotelManagementWPF.Views.User;
+using HotelManagementWPF.Views.Users;
 using HotelManagementWPF.ViewModels;
+using HotelManagementWPF.ViewModels.Users;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,14 +99,12 @@ namespace HotelManagementWPF.Services
         {
             if (user == null) return;
 
-            // You can implement an EditUserFormView similar to AddUserFormView
-            // For now, this is just a placeholder
-            // var editForm = new EditUserFormView();
-            // var vm = new EditUserFormViewModel(user);
-            // editForm.DataContext = vm;
-            // editForm.Owner = Application.Current.MainWindow;
-            // editForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            // editForm.ShowDialog();
+            var editForm = new EditUserFormView();
+            var vm = new EditUserFormViewModel(user);
+            editForm.DataContext = vm;
+            editForm.Owner = Application.Current.MainWindow;
+            editForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            editForm.ShowDialog();
         }
     }
 }
