@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HotelManagementWPF.Views.Dashboard
+namespace HotelManagementWPF.Views.Inventory
 {
     /// <summary>
-    /// Interaction logic for dashboard.xaml
+    /// Interaction logic for InventoryView.xaml
     /// </summary>
-    public partial class dashboard : UserControl
+    public partial class InventoryView : UserControl
     {
-        public dashboard()
+        public InventoryView()
         {
             InitializeComponent();
         }

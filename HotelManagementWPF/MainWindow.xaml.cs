@@ -7,12 +7,18 @@ using HotelManagementWPF.Views.Room;
 using HotelManagementWPF.Views.Dashboard;
 using HotelManagementWPF.Views.Guest;
 using HotelManagementWPF.Views.Users;
+using HotelManagementWPF.Views.Employees;
+using HotelManagementWPF.Views.Inventory;
+using HotelManagementWPF.Views.Inventory.Items;
+using HotelManagementWPF.Views.Inventory.Suppliers;
+using HotelManagementWPF.Views.Inventory.Reports;
 
 namespace HotelManagementWPF
 {
     public partial class MainWindow : Window
     {
         private bool _isSidebarCollapsed = false;
+        private bool _isInventoryDropdownExpanded = false;
 
         public MainWindow()
         {
@@ -21,12 +27,32 @@ namespace HotelManagementWPF
             // Load default dashboard at startup
             NavigateToSection("dashboard");
             this.WindowState = WindowState.Maximized;
-
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
         {
             ToggleSidebar();
+        }
+
+        private void InventoryDropdown_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleInventoryDropdown();
+        }
+
+        private void ToggleInventoryDropdown()
+        {
+            _isInventoryDropdownExpanded = !_isInventoryDropdownExpanded;
+
+            InventoryDropdownContent.Visibility = _isInventoryDropdownExpanded 
+                ? Visibility.Visible 
+                : Visibility.Collapsed;
+
+            // Rotate the arrow
+            var rotateTransform = new RotateTransform();
+            rotateTransform.Angle = _isInventoryDropdownExpanded ? 180 : 0;
+            rotateTransform.CenterX = 6; // Half the width of the arrow
+            rotateTransform.CenterY = 4; // Half the height of the arrow
+            InventoryDropdownArrow.RenderTransform = rotateTransform;
         }
 
         private void ToggleSidebar()
@@ -36,6 +62,20 @@ namespace HotelManagementWPF
             SidebarColumn.Width = _isSidebarCollapsed
                 ? new GridLength(60)
                 : new GridLength(220);
+
+            // Adjust the hamburger button position and logo panel margin when collapsed
+            if (_isSidebarCollapsed)
+            {
+                // Move hamburger button more to the left and adjust logo panel
+                LogoPanel.Margin = new Thickness(5, 0, 0, 0);
+                HamburgerButton.Margin = new Thickness(-15, 0, 0, 0);
+            }
+            else
+            {
+                // Reset to original positions
+                LogoPanel.Margin = new Thickness(0, 0, 0, 0);
+                HamburgerButton.Margin = new Thickness(0, 0, 0, 0);
+            }
 
             // Hide logo image and logo text when collapsed
             HeaderLogoImage.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
@@ -50,12 +90,54 @@ namespace HotelManagementWPF
             RoomsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
             BookingsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
             InventoryText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            BillingText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            PayrollText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
             ServicesText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            EmployeesText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+
+            // When sidebar is collapsed, show inventory sub-items as individual buttons but hide their text
+            // When expanded, hide the sub-items (they'll be in the dropdown)
+            if (_isSidebarCollapsed)
+            {
+                // Show the inventory sub-items as separate buttons when collapsed
+                InventoryDropdownContent.Visibility = Visibility.Visible;
+                InventoryDropdownContent.Margin = new Thickness(0, 0, 0, 0); // Remove left margin when collapsed
+                ItemsText.Visibility = Visibility.Collapsed;
+                SuppliersText.Visibility = Visibility.Collapsed;
+                ReportsText.Visibility = Visibility.Collapsed;
+                
+                // Reset dropdown state since we're showing items directly
+                if (_isInventoryDropdownExpanded)
+                {
+                    _isInventoryDropdownExpanded = false;
+                    var rotateTransform = new RotateTransform();
+                    rotateTransform.Angle = 0;
+                    rotateTransform.CenterX = 6;
+                    rotateTransform.CenterY = 4;
+                    InventoryDropdownArrow.RenderTransform = rotateTransform;
+                }
+            }
+            else
+            {
+                // When expanded, restore the left margin for proper indentation
+                InventoryDropdownContent.Margin = new Thickness(20, 0, 0, 0);
+                
+                // When expanded, hide sub-items (they'll be controlled by dropdown)
+                if (!_isInventoryDropdownExpanded)
+                {
+                    InventoryDropdownContent.Visibility = Visibility.Collapsed;
+                }
+                ItemsText.Visibility = Visibility.Visible;
+                SuppliersText.Visibility = Visibility.Visible;
+                ReportsText.Visibility = Visibility.Visible;
+            }
+
+            // Hide dropdown arrow when collapsed
+            InventoryDropdownButton.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
 
             // Optionally adjust alignment of images when collapsed (keeps them centered)
             var buttons = new[] { DashboardButton, GuestsButton, UsersButton, RoomsButton,
-                                  BookingsButton, InventoryButton, BillingButton, ServicesButton };
+                                  BookingsButton, InventoryButton, PayrollButton, ServicesButton, EmployeesButton,
+                                  ItemsButton, SuppliersButton, ReportsButton };
 
             foreach (var button in buttons)
             {
@@ -84,7 +166,6 @@ namespace HotelManagementWPF
                     var roomView = new RoomView();
                     roomView.DataContext = roomViewModel;
                     MainContentArea.Content = roomView;
-                    // Update header title
                     HeaderTitle.Text = "Room Management";
                     break;
 
@@ -95,21 +176,73 @@ namespace HotelManagementWPF
                     break;
 
                 case "dashboard":
-                    var dashboardView = new dashboard(); // this is your UserControl
+                    var dashboardView = new DashboardView();
                     MainContentArea.Content = dashboardView;
                     HeaderTitle.Text = "Dashboard";
                     break;
 
                 case "guests":
-                    var guestView = new GuestView(); // 👈 Load your GuestView
+                    var guestView = new GuestView();
                     MainContentArea.Content = guestView;
                     HeaderTitle.Text = "Guest Management";
                     break;
 
                 case "users":
-                    var userView = new UserView();   // 👈 Load your UserView
+                    var userView = new UserView();
                     MainContentArea.Content = userView;
                     HeaderTitle.Text = "User Management";
+                    break;
+
+                case "employees":
+                    var employeeView = new EmployeesView();
+                    MainContentArea.Content = employeeView;
+                    HeaderTitle.Text = "Employee Management";
+                    break;
+
+                case "inventory":
+                    var inventoryView = new InventoryView();
+                    MainContentArea.Content = inventoryView;
+                    HeaderTitle.Text = "Inventory Management";
+                    break;
+
+                case "items":
+                    var itemsView = new ItemsView();
+                    MainContentArea.Content = itemsView;
+                    HeaderTitle.Text = "Items";
+                    break;
+
+                case "suppliers":
+                    var suppliersView = new SuppliersView();
+                    MainContentArea.Content = suppliersView;
+                    HeaderTitle.Text = "Suppliers";
+                    break;
+
+                case "reports":
+                    var reportsView = new ReportsView();
+                    MainContentArea.Content = reportsView;
+                    HeaderTitle.Text = "Inventory Reports";
+                    break;
+
+                case "payroll":
+                    MainContentArea.Content = new TextBlock
+                    {
+                        Text = "Payroll Management (coming soon...)",
+                        FontSize = 20,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                    HeaderTitle.Text = "Payroll Management";
+                    break;
+
+                case "services":
+                    MainContentArea.Content = new TextBlock
+                    {
+                        Text = "Services Management (coming soon...)",
+                        FontSize = 20,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                    HeaderTitle.Text = "Services Management";
                     break;
 
                 default:
@@ -120,15 +253,16 @@ namespace HotelManagementWPF
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center
                     };
-                    HeaderTitle.Text = "Hotel Management System"; // fallback title
+                    HeaderTitle.Text = "Hotel Management System";
                     break;
             }
         }
 
         private void UpdateSelectedButton(Button selectedButton)
         {
-            var buttons = new[] { DashboardButton, GuestsButton, UsersButton, RoomsButton,
-                                  BookingsButton, InventoryButton, BillingButton, ServicesButton };
+            var buttons = new[] { DashboardButton, GuestsButton, UsersButton, EmployeesButton, RoomsButton,
+                      BookingsButton, InventoryButton, ItemsButton, SuppliersButton, ReportsButton,
+                      PayrollButton, ServicesButton };
 
             foreach (var button in buttons)
             {
