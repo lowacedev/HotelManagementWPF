@@ -1,0 +1,272 @@
+﻿<Window x:Class="HotelManagementWPF.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Summit Hospitality - Login" 
+        Height="494" 
+        Width="924"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Window.Resources>
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF2E8B8B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF258A8A"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FF1E7A7A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Padding="{TemplateBinding Padding}"
+                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF2E8B8B"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern PasswordBox Style -->
+        <Style x:Key="ModernPasswordBoxStyle" TargetType="PasswordBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Padding="{TemplateBinding Padding}"
+                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF2E8B8B"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Eye Button Style -->
+        <Style x:Key="EyeButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#10000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Link Button Style -->
+        <Style x:Key="LinkButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#FF2E8B8B"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}" 
+                                 Foreground="{TemplateBinding Foreground}"
+                                 FontSize="{TemplateBinding FontSize}"
+                                 TextDecorations="Underline"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FF258A8A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Close Button Style -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#FF666666"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFFF4444"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="0,0,0,36">
+        <!-- Main Container with shadow -->
+        <Border Background="White" CornerRadius="12" Margin="20">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Direction="315" ShadowDepth="5" Opacity="0.2" BlurRadius="15"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Side - Hotel Image -->
+                <Border Grid.Column="0" CornerRadius="12,0,0,12" ClipToBounds="True">
+                    <Grid>
+                        <Image Source="/Resources/Icons/hotel2.jpg" Stretch="UniformToFill"
+                                RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <!-- Dark overlay for better contrast -->
+                        <Border Background="#40000000"/>
+                    </Grid>
+                </Border>
+
+                <!-- Right Side - Login Form -->
+                <Grid Grid.Column="1" Background="#FFF5F5F5">
+                    <!-- Close Button -->
+                    <Button x:Name="CloseButton" 
+                            Style="{StaticResource CloseButtonStyle}"
+                            Content="×"
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Top"
+                            Margin="15,15,15,0"
+                            Click="CloseButton_Click"/>
+
+                    <!-- Login Content -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="320" Margin="40">
+                        <!-- Logo and Title -->
+                        <StackPanel HorizontalAlignment="Center" Margin="0,0,0,40">
+                            <!-- Logo placeholder - you can replace with actual logo -->
+                        </StackPanel>
+
+                        <!-- Sign In Title -->
+                        <TextBlock Text="Sign in" FontSize="28" FontWeight="SemiBold" Foreground="#FF333333" 
+                                 HorizontalAlignment="Left" Margin="0,0,0,30"/>
+
+                        <!-- Username Field -->
+                        <StackPanel Margin="0,0,0,20">
+                            <TextBlock Text="Username" FontSize="12" FontWeight="Medium" Foreground="#FF666666" Margin="2,0,0,8"/>
+                            <TextBox x:Name="UsernameTextBox" Style="{StaticResource ModernTextBoxStyle}"/>
+                        </StackPanel>
+
+                        <!-- Password Field -->
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Password" FontSize="12" FontWeight="Medium" Foreground="#FF666666" Margin="2,0,0,8"/>
+                            <Grid>
+                                <PasswordBox x:Name="PasswordBox" Style="{StaticResource ModernPasswordBoxStyle}"/>
+                                <TextBox x:Name="PasswordTextBox" Style="{StaticResource ModernTextBoxStyle}" 
+                                       Visibility="Collapsed"/>
+                                <Button x:Name="TogglePasswordVisibilityButton" 
+                                      Style="{StaticResource EyeButtonStyle}"
+                                      HorizontalAlignment="Right" 
+                                      VerticalAlignment="Center" 
+                                      Margin="0,0,15,0"
+                                      Click="TogglePasswordVisibility_Click">
+                                    <Image x:Name="EyeIcon" Source="/Resources/Icons/eye.png" Width="20" Height="20" Opacity="0.5"/>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Forgot Password Link -->
+                        <Button x:Name="ForgotPasswordButton" 
+                              Style="{StaticResource LinkButtonStyle}"
+                              Content="Forgot Password?"
+                              HorizontalAlignment="Right" 
+                              Margin="0,0,0,25"
+                              Click="ForgotPassword_Click"/>
+
+                        <!-- Login Button -->
+                        <Button x:Name="LoginButton" 
+                              Style="{StaticResource ModernButtonStyle}"
+                              Content="LOGIN"
+                              Width="320"
+                              Height="45"
+                              Margin="0,0,0,20"
+                              Click="Login_Click"/>
+
+                        <!-- Additional Options (Optional) -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

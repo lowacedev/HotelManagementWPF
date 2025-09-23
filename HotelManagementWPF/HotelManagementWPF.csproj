@@ -13,7 +13,10 @@
     <None Remove="Resources\Icons\bookings.png" />
     <None Remove="Resources\Icons\dashboard.png" />
     <None Remove="Resources\Icons\employees.png" />
+    <None Remove="Resources\Icons\eye.png" />
     <None Remove="Resources\Icons\guests.png" />
+    <None Remove="Resources\Icons\hotel.jpeg" />
+    <None Remove="Resources\Icons\hotel2.jpg" />
     <None Remove="Resources\Icons\inventory.png" />
     <None Remove="Resources\Icons\items.png" />
     <None Remove="Resources\Icons\logo.png" />
@@ -22,6 +25,8 @@
     <None Remove="Resources\Icons\services.png" />
     <None Remove="Resources\Icons\suppliers.png" />
     <None Remove="Resources\Icons\users.png" />
+    <None Remove="Views\hotel1.jpg" />
+    <None Remove="Views\hotel2.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +44,9 @@
     <Resource Include="Resources\Icons\billings.png" />
     <Resource Include="Resources\Icons\bookings.png" />
     <Resource Include="Resources\Icons\employees.png" />
+    <Resource Include="Resources\Icons\eye.png" />
     <Resource Include="Resources\Icons\guests.png" />
+    <Resource Include="Resources\Icons\hotel.jpeg" />
     <Resource Include="Resources\Icons\inventory.png" />
     <Resource Include="Resources\Icons\items.png" />
     <Resource Include="Resources\Icons\logo.png" />
@@ -48,6 +55,8 @@
     <Resource Include="Resources\Icons\services.png" />
     <Resource Include="Resources\Icons\suppliers.png" />
     <Resource Include="Resources\Icons\users.png" />
+    <Resource Include="Views\hotel1.jpg" />
+    <Resource Include="Views\hotel2.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +64,10 @@
     <Folder Include="Views\Services\" />
     <Folder Include="Views\Payroll\" />
     <Folder Include="Views\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\hotel2.jpg" />
   </ItemGroup>
 
 </Project>
