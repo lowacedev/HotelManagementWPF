@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HotelManagementWPF.Views.Inventory.Reports
+namespace HotelManagementWPF.Views.Services
 {
     /// <summary>
-    /// Interaction logic for ReportsView.xaml
+    /// Interaction logic for ServiceView.xaml
     /// </summary>
-    public partial class ReportsView : UserControl
+    public partial class ServiceView : UserControl
     {
-        public ReportsView()
+        public ServiceView()
         {
             InitializeComponent();
         }

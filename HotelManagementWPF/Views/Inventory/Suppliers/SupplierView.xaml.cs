@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HotelManagementWPF.Views.Inventory.Items
+namespace HotelManagementWPF.Views.Inventory.Suppliers
 {
     /// <summary>
-    /// Interaction logic for ItemsView.xaml
+    /// Interaction logic for SuppliersView.xaml
     /// </summary>
-    public partial class ItemsView : UserControl
+    public partial class SupplierView : UserControl
     {
-        public ItemsView()
+        public SupplierView()
         {
             InitializeComponent();
         }

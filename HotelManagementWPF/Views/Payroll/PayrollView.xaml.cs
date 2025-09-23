@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HotelManagementWPF.Views.Employees
+namespace HotelManagementWPF.Views.Payroll
 {
     /// <summary>
-    /// Interaction logic for EmployeesView.xaml
+    /// Interaction logic for PayrollView.xaml
     /// </summary>
-    public partial class EmployeesView : UserControl
+    public partial class PayrollView : UserControl
     {
-        public EmployeesView()
+        public PayrollView()
         {
             InitializeComponent();
         }

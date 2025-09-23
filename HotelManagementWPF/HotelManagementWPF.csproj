@@ -25,8 +25,6 @@
     <None Remove="Resources\Icons\services.png" />
     <None Remove="Resources\Icons\suppliers.png" />
     <None Remove="Resources\Icons\users.png" />
-    <None Remove="Views\hotel1.jpg" />
-    <None Remove="Views\hotel2.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,15 +53,10 @@
     <Resource Include="Resources\Icons\services.png" />
     <Resource Include="Resources\Icons\suppliers.png" />
     <Resource Include="Resources\Icons\users.png" />
-    <Resource Include="Views\hotel1.jpg" />
-    <Resource Include="Views\hotel2.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Views\Housekeeping\" />
-    <Folder Include="Views\Services\" />
-    <Folder Include="Views\Payroll\" />
-    <Folder Include="Views\Services\" />
   </ItemGroup>
 
   <ItemGroup>

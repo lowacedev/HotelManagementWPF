@@ -12,6 +12,9 @@ using HotelManagementWPF.Views.Inventory;
 using HotelManagementWPF.Views.Inventory.Items;
 using HotelManagementWPF.Views.Inventory.Suppliers;
 using HotelManagementWPF.Views.Inventory.Reports;
+using HotelManagementWPF.Views.Payroll;
+using HotelManagementWPF.Views.Services;
+
 
 namespace HotelManagementWPF
 {
@@ -194,7 +197,7 @@ namespace HotelManagementWPF
                     break;
 
                 case "employees":
-                    var employeeView = new EmployeesView();
+                    var employeeView = new EmployeeView();
                     MainContentArea.Content = employeeView;
                     HeaderTitle.Text = "Employee Management";
                     break;
@@ -206,53 +209,38 @@ namespace HotelManagementWPF
                     break;
 
                 case "items":
-                    var itemsView = new ItemsView();
-                    MainContentArea.Content = itemsView;
+                    var itemView = new ItemView();
+                    MainContentArea.Content = itemView;
                     HeaderTitle.Text = "Items";
                     break;
 
                 case "suppliers":
-                    var suppliersView = new SuppliersView();
-                    MainContentArea.Content = suppliersView;
+                    var supplierView = new SupplierView();
+                    MainContentArea.Content = supplierView;
                     HeaderTitle.Text = "Suppliers";
                     break;
 
                 case "reports":
-                    var reportsView = new ReportsView();
-                    MainContentArea.Content = reportsView;
+                    var reportView = new ReportView();
+                    MainContentArea.Content = reportView;
                     HeaderTitle.Text = "Inventory Reports";
                     break;
 
                 case "payroll":
-                    MainContentArea.Content = new TextBlock
-                    {
-                        Text = "Payroll Management (coming soon...)",
-                        FontSize = 20,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
+                    var payrollView = new PayrollView();
+                    MainContentArea.Content = payrollView;
+        
                     HeaderTitle.Text = "Payroll Management";
                     break;
 
                 case "services":
-                    MainContentArea.Content = new TextBlock
-                    {
-                        Text = "Services Management (coming soon...)",
-                        FontSize = 20,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
+                    var serviceView = new ServiceView();
+                    MainContentArea.Content = serviceView;
+                  
                     HeaderTitle.Text = "Services Management";
                     break;
 
                 default:
-                    MainContentArea.Content = new TextBlock
-                    {
-                        Text = $"Section: {section} (coming soon...)",
-                        FontSize = 20,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    };
                     HeaderTitle.Text = "Hotel Management System";
                     break;
             }
