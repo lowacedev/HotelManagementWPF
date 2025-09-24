@@ -239,6 +239,20 @@
                         </Button>
 
                         <Button Style="{StaticResource NavButtonStyle}" 
+        x:Name="EmployeesButton"
+        Click="NavigationButton_Click"
+        Tag="Employees">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/Icons/employees.png" Width="20" Height="20" Margin="0,0,15,0"/>
+                                <TextBlock x:Name="EmployeesText" 
+                   Text="Employees" 
+                   Foreground="White" 
+                   VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+
+                        <Button Style="{StaticResource NavButtonStyle}" 
                             x:Name="RoomsButton"
                             Click="NavigationButton_Click"
                             Tag="Rooms">
@@ -269,30 +283,101 @@
                         <TextBlock x:Name="OperationsHeader"
                                Text="Operations" 
                                Style="{StaticResource SectionHeaderStyle}"/>
+                        <!-- Replace the current Expander section with this -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <Button Style="{StaticResource NavButtonStyle}" 
-                            x:Name="InventoryButton"
-                            Click="NavigationButton_Click"
-                            Tag="Inventory">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="Resources/Icons/inventory.png" Width="20" Height="20" Margin="0,0,15,0"/>
+                            <!-- Main Inventory Button with Dropdown Arrow -->
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                                <TextBlock x:Name="InventoryText" 
-                                       Text="Inventory" 
-                                       Foreground="White" 
-                                       VerticalAlignment="Center"/>
+                                <!-- Main Inventory Button -->
+                                <Button Grid.Column="0" 
+                Style="{StaticResource NavButtonStyle}" 
+                x:Name="InventoryButton"
+                Click="NavigationButton_Click"
+                Tag="Inventory"
+                Margin="5,2,0,2">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="Resources/Icons/inventory.png" Width="20" Height="20" Margin="0,0,15,0"/>
+                                        <TextBlock x:Name="InventoryText" 
+                          Text="Inventory" 
+                          Foreground="White" 
+                          VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Dropdown Toggle Button -->
+                                <Button Grid.Column="1"
+                x:Name="InventoryDropdownButton"
+                Click="InventoryDropdown_Click"
+                Background="Transparent" 
+                BorderThickness="0" 
+                Width="30" 
+                Height="40"
+                Margin="0,2,5,2"
+                VerticalAlignment="Stretch">
+                                    <Path x:Name="InventoryDropdownArrow"
+                  Data="M7,10 L12,15 L17,10" 
+                  Stroke="White" 
+                  StrokeThickness="1.5" 
+                  Stretch="Uniform"
+                  Width="12" Height="8"/>
+                                </Button>
+                            </Grid>
+
+                            <!-- Dropdown Content -->
+                            <StackPanel Grid.Row="1" 
+                x:Name="InventoryDropdownContent"
+                Visibility="Collapsed"
+                Margin="20,0,0,0">
+
+                                <Button Style="{StaticResource NavButtonStyle}" 
+                x:Name="ItemsButton"
+                Click="NavigationButton_Click"
+                Tag="Items">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="Resources/Icons/items.png" Width="18" Height="18" Margin="0,0,12,0"/>
+                                        <TextBlock x:Name="ItemsText" Text="Items" Foreground="White" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource NavButtonStyle}" 
+                x:Name="SuppliersButton"
+                Click="NavigationButton_Click"
+                Tag="Suppliers">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="Resources/Icons/suppliers.png" Width="18" Height="18" Margin="0,0,12,0"/>
+                                        <TextBlock x:Name="SuppliersText" Text="Suppliers" Foreground="White" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource NavButtonStyle}" 
+                x:Name="ReportsButton"
+                Click="NavigationButton_Click"
+                Tag="Reports">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="Resources/Icons/reports.png" Width="18" Height="18" Margin="0,0,12,0"/>
+                                        <TextBlock x:Name="ReportsText" Text="Reports" Foreground="White" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
-                        </Button>
-
+                        </Grid>
                         <Button Style="{StaticResource NavButtonStyle}" 
-                            x:Name="BillingButton"
+                            x:Name="PayrollButton"
                             Click="NavigationButton_Click"
-                            Tag="Billing">
+                            Tag="Payroll">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="Resources/Icons/billings.png" Width="20" Height="20" Margin="0,0,15,0"/>
 
-                                <TextBlock x:Name="BillingText" 
-                                       Text="Billing" 
+                                <TextBlock x:Name="PayrollText" 
+                                       Text="Payroll" 
                                        Foreground="White" 
                                        VerticalAlignment="Center"/>
                             </StackPanel>
