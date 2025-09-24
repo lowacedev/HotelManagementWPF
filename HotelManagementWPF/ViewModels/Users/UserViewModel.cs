@@ -109,7 +109,8 @@ namespace HotelManagementWPF.ViewModels
 
         private void ExecuteAddUser()
         {
-            //_windowService.ShowAddUserForm();
+            // Fixed: Uncommented the window service call
+            _windowService.ShowAddUserForm();
             LoadUsers(); // refresh after adding
         }
 
@@ -151,6 +152,8 @@ namespace HotelManagementWPF.ViewModels
             catch (Exception ex)
             {
                 // handle exception if needed
+                System.Windows.MessageBox.Show($"Error loading users: {ex.Message}", "Error",
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
 
             _users = new ObservableCollection<User>(usersFromDb);

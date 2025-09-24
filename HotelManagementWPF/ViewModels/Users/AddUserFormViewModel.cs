@@ -12,13 +12,25 @@ namespace HotelManagementWPF.ViewModels
         private string _name = string.Empty;
         private string _email = string.Empty;
         private string _role = string.Empty;
-        public string Username { get; set; }
-        public string Password { get; set; }
+       
         public AddUserFormViewModel()
         {
             InitializeCommands();
             InitializeRoleOptions();
         }
+
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value;
+                OnPropertyChanged();
+                ((RelayCommand)AddUserCommand).RaiseCanExecuteChanged();
+            }
+        }
+
 
         private void InitializeCommands()
         {

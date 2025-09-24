@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HotelManagementWPF.ViewModels;
+using HotelManagementWPF.ViewModels.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,12 +24,23 @@ namespace HotelManagementWPF.Views.Users
         public AddUserFormView()
         {
             InitializeComponent();
+            DataContext = new AddUserFormViewModel();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AddUserFormViewModel vm)
+            {
+                vm.Password = PasswordBox.Password;
+            }
+        }
+
 
         private bool isPasswordVisible = false;
         private void TogglePasswordVisibility_Click(object sender, RoutedEventArgs e)

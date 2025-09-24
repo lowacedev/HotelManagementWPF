@@ -309,7 +309,7 @@
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   VirtualizingPanel.IsVirtualizing="True"
                   ScrollViewer.CanContentScroll="True"
-                  HorizontalScrollBarVisibility="Auto"> 
+                  HorizontalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
                             <!-- Name Column -->
                             <DataGridTextColumn Header="Name"
@@ -399,7 +399,12 @@
                  MinWidth="250"
                  MaxWidth="400"
                  HorizontalAlignment="Left"/>
-        <Button Style="{StaticResource AddButton}" Command="{Binding AddUserCommand}" HorizontalAlignment="right" Margin="464,15,25,1129" Click="Button_Click">
+
+        <!-- FIXED: Removed the Click event handler and kept only the Command -->
+        <Button Style="{StaticResource AddButton}" 
+                Command="{Binding AddUserCommand}" 
+                HorizontalAlignment="right" 
+                Margin="464,15,25,1129">
             <TextBlock Text="Add New User" FontSize="13"/>
         </Button>
 
