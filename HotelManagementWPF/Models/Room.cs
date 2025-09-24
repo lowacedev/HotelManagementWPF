@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HotelManagementWPF.Models
 {
+
     public enum RoomStatus
     {
         Available,
@@ -14,6 +15,7 @@ namespace HotelManagementWPF.Models
 
     public class Room
     {
+
         public int Id { get; set; }
 
         [Required]
@@ -51,5 +53,7 @@ namespace HotelManagementWPF.Models
 
         // New property for formatted price with Peso sign
         public string FormattedPrice => $"₱{PricePerNight:N2}";
+
+        public int RoomId { get; internal set; }
     }
 }

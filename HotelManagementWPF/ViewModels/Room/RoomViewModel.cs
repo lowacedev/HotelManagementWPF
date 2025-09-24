@@ -1,8 +1,6 @@
 using DatabaseProject;
 using HotelManagementWPF.Models;
 using HotelManagementWPF.Services;
-using HotelManagementWPF.ViewModels.Base;
-using Syncfusion.Windows.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,166 +14,73 @@ namespace HotelManagementWPF.ViewModels
 {
     public class RoomViewModel : INotifyPropertyChanged
     {
-        private readonly IWindowService _windowService;
-        private ObservableCollection<Room> _allRooms;
-        private ObservableCollection<Room> _paginatedRooms;
+        private readonly DbConnections _db = new();
+        private ObservableCollection<Room> _allRooms = new();
+        private ObservableCollection<Room> _paginatedRooms = new();
         private RoomStatus? _selectedFilter;
         private int _currentPage = 1;
-        private int _pageSize = 10;
-        private bool _isAddRoomFormVisible;
-
-
+        private readonly int _pageSize = 10;
 
         public RoomViewModel(IWindowService windowService)
         {
-            _windowService = windowService;
-            _allRooms = new ObservableCollection<Room>();
-            PaginatedRooms = new ObservableCollection<Room>();
-
-            FilterCommand = new RelayCommand<string>(param => FilterRooms(param));
-            AddRoomCommand = new RelayCommand(() => AddRoom());
-            PreviousPageCommand = new RelayCommand(() => PreviousPage(), () => CurrentPage > 1);
-            NextPageCommand = new RelayCommand(() => NextPage(), () => CurrentPage < TotalPages);
+            LoadRoomsCommand = new RelayCommand(() => LoadRooms());
+            NextPageCommand = new RelayCommand(() => NextPage(), () => CanGoNext());
+            PreviousPageCommand = new RelayCommand(() => PreviousPage(), () => CanGoPrevious());
             GoToPageCommand = new RelayCommand<int>(page => GoToPage(page));
-            EditRoomCommand = new RelayCommand<Room>(EditRoom);
+            FilterCommand = new RelayCommand<string>(param => FilterRooms(param));
+            AddRoomCommand = new RelayCommand(() => windowService.ShowAddRoomForm());
+            EditRoomCommand = new RelayCommand<Room>(room => windowService.ShowEditRoomForm(room));
+
+            LoadRooms();
         }
-        private void AddRoom()
-        {
-            _windowService.ShowAddRoomForm();
-        }
 
-        public ICommand EditRoomCommand { get; private set; }
-
-     
-
-private void EditRoom(Room room)
-        {
-            if (room == null) return;
-
-            _windowService.ShowEditRoomForm(room);
-
-        }
         public ObservableCollection<Room> PaginatedRooms
         {
             get => _paginatedRooms;
             set { _paginatedRooms = value; OnPropertyChanged(); }
         }
 
-      
+        public ICommand LoadRoomsCommand { get; }
+        public ICommand NextPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
+        public ICommand GoToPageCommand { get; }
+        public ICommand FilterCommand { get; }
+        public ICommand AddRoomCommand { get; }
+        public ICommand EditRoomCommand { get; }
 
         public int TotalRooms => _allRooms.Count;
         public int AvailableRooms => _allRooms.Count(r => r.Status == RoomStatus.Available);
         public int BookedRooms => _allRooms.Count(r => r.Status == RoomStatus.Booked);
-
-        public int CurrentPage
-        {
-            get => _currentPage;
-            set
-            {
-                if (_currentPage != value)
-                {
-                    _currentPage = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public int TotalPages => (int)Math.Ceiling((double)FilteredRooms.Count / _pageSize);
-
         public List<int> PageNumbers => Enumerable.Range(1, TotalPages).ToList();
-
-        public ICommand FilterCommand { get; }
-        public ICommand AddRoomCommand { get; }
-        public ICommand PreviousPageCommand { get; }
-        public ICommand NextPageCommand { get; }
-        public ICommand GoToPageCommand { get; }
-
-      
 
         private List<Room> FilteredRooms =>
             _selectedFilter == null ? _allRooms.ToList() : _allRooms.Where(r => r.Status == _selectedFilter).ToList();
 
-        private void FilterRooms(string param)
+        public void LoadRooms()
         {
-            if (string.IsNullOrEmpty(param) || param == "All")
-                _selectedFilter = null;
-            else
-                _selectedFilter = Enum.Parse<RoomStatus>(param);
-
-            CurrentPage = 1;
-            UpdatePagination();
-        }
-
-     
-        private void PreviousPage()
-        {
-            if (CurrentPage > 1)
-            {
-                CurrentPage--;
-                UpdatePagination();
-            }
-        }
-
-        private void NextPage()
-        {
-            if (CurrentPage < TotalPages)
-            {
-                CurrentPage++;
-                UpdatePagination();
-            }
-        }
-
-        private void GoToPage(int page)
-        {
-            if (page >= 1 && page <= TotalPages)
-            {
-                CurrentPage = page;
-                UpdatePagination();
-            }
-        }
-
-        private void UpdatePagination()
-        {
-            if (PaginatedRooms == null)
-                return;
-
-            PaginatedRooms.Clear();
-            var rooms = FilteredRooms.Skip((CurrentPage - 1) * _pageSize).Take(_pageSize);
-            foreach (var room in rooms)
-                PaginatedRooms.Add(room);
-
-            (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
-
-            OnPropertyChanged(nameof(TotalPages));
-            OnPropertyChanged(nameof(PageNumbers));
-        }
-
-        private void LoadRoomsFromDatabase()
-        {
-            var db = new DbConnections();
-            var dataTable = new DataTable();
-
-            string query = "SELECT room_id, roomNumber, roomType, price, roomStatus FROM tbl_Room";
-
+            var dt = new DataTable();
+            string query = "SELECT room_id, roomNumber, roomType, price, roomStatus FROM tbl_Room"; // Adjust table/columns if needed
             try
             {
-                db.readDatathroughAdapter(query, dataTable);
+                _db.readDatathroughAdapter(query, dt);
                 _allRooms.Clear();
 
-                foreach (DataRow row in dataTable.Rows)
+                foreach (DataRow row in dt.Rows)
                 {
                     var room = new Room
                     {
+                        Id = Convert.ToInt32(row["room_id"]),
                         RoomNumber = "#" + row["roomNumber"].ToString(),
                         BedType = row["roomType"].ToString(),
-                        Price = Convert.ToInt32(row["price"]),
-                        Status = ParseRoomStatus(row["roomStatus"].ToString())
+                        PricePerNight = Convert.ToDecimal(row["price"]),
+                        Status = ParseStatus(row["roomStatus"].ToString())
                     };
                     _allRooms.Add(room);
                 }
 
-                CurrentPage = 1;
+                // Set the current page to the last page to show the latest data
+                _currentPage = TotalPages > 0 ? TotalPages : 1;
                 UpdatePagination();
             }
             catch (Exception ex)
@@ -184,9 +89,9 @@ private void EditRoom(Room room)
             }
         }
 
-        private RoomStatus ParseRoomStatus(string status)
+        private RoomStatus ParseStatus(string statusStr)
         {
-            return status switch
+            return statusStr switch
             {
                 "Available" => RoomStatus.Available,
                 "Booked" => RoomStatus.Booked,
@@ -197,8 +102,108 @@ private void EditRoom(Room room)
             };
         }
 
+        private void FilterRooms(string param)
+        {
+            if (string.IsNullOrEmpty(param) || param == "All")
+                _selectedFilter = null;
+            else
+                _selectedFilter = Enum.Parse<RoomStatus>(param);
+
+            _currentPage = 1;
+            UpdatePagination();
+        }
+
+        private void UpdatePagination()
+        {
+            var totalPages = TotalPages;
+            if (_currentPage < 1) _currentPage = 1;
+            if (_currentPage > totalPages) _currentPage = totalPages;
+
+            var pageRooms = FilteredRooms.Skip((_currentPage - 1) * _pageSize).Take(_pageSize).ToList();
+
+            // Refresh the collection for UI
+            PaginatedRooms.Clear();
+            foreach (var r in pageRooms)
+                PaginatedRooms.Add(r);
+
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(PageNumbers));
+            ((RelayCommand)NextPageCommand).RaiseCanExecuteChanged();
+            ((RelayCommand)PreviousPageCommand).RaiseCanExecuteChanged();
+        }
+
+        private bool CanGoNext() => _currentPage < TotalPages;
+        private bool CanGoPrevious() => _currentPage > 1;
+
+        private void NextPage()
+        {
+            if (CanGoNext())
+            {
+                _currentPage++;
+                UpdatePagination();
+            }
+        }
+
+        private void PreviousPage()
+        {
+            if (CanGoPrevious())
+            {
+                _currentPage--;
+                UpdatePagination();
+            }
+        }
+
+        private void GoToPage(int page)
+        {
+            if (page >= 1 && page <= TotalPages)
+            {
+                _currentPage = page;
+                UpdatePagination();
+            }
+        }
+
+        // INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        protected void OnPropertyChanged([CallerMemberName] string n = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+    }
+
+    // RelayCommand for ICommand implementation
+    public class RelayCommand : ICommand
+    {
+        private readonly Action _execute;
+        private readonly Func<bool> _canExecute;
+        public event EventHandler CanExecuteChanged;
+
+        public RelayCommand(Action execute, Func<bool> canExecute = null)
+        {
+            _execute = execute; _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
+        public void Execute(object parameter) => _execute();
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Predicate<T> _canExecute;
+        public event EventHandler CanExecuteChanged;
+
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
+        {
+            _execute = execute; _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            if (parameter == null && typeof(T).IsValueType)
+                return _canExecute == null;
+            return _canExecute == null || _canExecute((T)parameter);
+        }
+
+        public void Execute(object parameter) => _execute((T)parameter);
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

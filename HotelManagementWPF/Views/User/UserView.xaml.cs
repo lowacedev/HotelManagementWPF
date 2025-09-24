@@ -27,10 +27,11 @@ namespace HotelManagementWPF.Views.Users
             DataContext = new UserViewModel(new WindowService());
         }
 
-        private void AddUserButton_Click(object sender, RoutedEventArgs e)
+
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // This will trigger both the Click event and Command if both are set
-            // The Command binding will handle the actual logic
+
         }
     }
 }

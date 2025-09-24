@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using DatabaseProject;
 namespace DatabaseProject
 {
     class DbConnections
@@ -16,6 +17,8 @@ namespace DatabaseProject
         private static SqlDataAdapter adapter = new SqlDataAdapter();
         public SqlTransaction DbTran;
         private static string strConnString = "Data Source=DESKTOP-8TM8KGG\\SQLEXPRESS;Initial Catalog=DB_HotelM;Integrated Security=True;Trust Server Certificate=True";
+
+
         public void createConn()
         {
             try
@@ -73,6 +76,30 @@ namespace DatabaseProject
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public void ExecuteNonQuery(string query, Dictionary<string, object> parameters)
+        {
+            try
+            {
+                createConn();
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    }
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log or throw)
+                throw ex;
+            }
+            finally
+            {
+                closeConn();
             }
         }
     }

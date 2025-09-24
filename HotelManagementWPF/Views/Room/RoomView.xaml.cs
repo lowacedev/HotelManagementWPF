@@ -9,7 +9,13 @@ namespace HotelManagementWPF.Views.Room
         public RoomView()
         {
             InitializeComponent();
-            DataContext = new RoomViewModel(new WindowService());
+            var windowService = new WindowService();
+            DataContext = new RoomViewModel(windowService);
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Optional: handle button clicks if needed
         }
     }
 }

@@ -273,7 +273,7 @@
                         <TextBlock Text="Room Number" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding RoomNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                         <TextBlock Text="Bed Type" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding BedType}" ItemsSource="{Binding BedTypeOptions}" Style="{StaticResource ModernComboBox}"/>
+                        <ComboBox SelectedItem="{Binding BedType}" ItemsSource="{Binding BedTypeOptions}" Style="{StaticResource ModernComboBox}" SelectionChanged="ComboBox_SelectionChanged"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Price per Night" Style="{StaticResource FormLabel}"/>

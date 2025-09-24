@@ -23,12 +23,18 @@ namespace HotelManagementWPF.Views.Room
         public EditRoomFormView(Models.Room room)
         {
             InitializeComponent();
-            DataContext = new EditRoomViewModel(room);
+            DataContext = new EditRoomViewModel(room.Id);
         }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
+    }
 }

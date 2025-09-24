@@ -120,8 +120,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/> <!-- Header row -->
-            <RowDefinition Height="*"/>  <!-- Main content row -->
+            <RowDefinition Height="60"/>
+            <!-- Header row -->
+            <RowDefinition Height="*"/>
+            <!-- Main content row -->
         </Grid.RowDefinitions>
 
         <!-- Sidebar -->
@@ -209,6 +211,19 @@
                         <TextBlock x:Name="ManagementHeader"
                                Text="Management" 
                                Style="{StaticResource SectionHeaderStyle}"/>
+                        <Button Style="{StaticResource NavButtonStyle}" 
+                            x:Name="BookingsButton"
+                            Click="NavigationButton_Click"
+                            Tag="Bookings">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/Icons/bookings.png" Width="20" Height="20" Margin="0,0,15,0"/>
+
+                                <TextBlock x:Name="BookingsText" 
+                                       Text="Bookings" 
+                                       Foreground="White" 
+                                       VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
 
                         <Button Style="{StaticResource NavButtonStyle}" 
                             x:Name="GuestsButton"
@@ -218,20 +233,6 @@
                                 <Image Source="Resources/Icons/guests.png" Width="20" Height="20" Margin="0,0,15,0"/>
                                 <TextBlock x:Name="GuestsText" 
                                        Text="Guests" 
-                                       Foreground="White" 
-                                       VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Style="{StaticResource NavButtonStyle}" 
-                            x:Name="UsersButton"
-                            Click="NavigationButton_Click"
-                            Tag="Users">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="Resources/Icons/users.png" Width="20" Height="20" Margin="0,0,15,0"/>
-
-                                <TextBlock x:Name="UsersText" 
-                                       Text="Users" 
                                        Foreground="White" 
                                        VerticalAlignment="Center"/>
                             </StackPanel>
@@ -250,16 +251,15 @@
                                        VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-
                         <Button Style="{StaticResource NavButtonStyle}" 
-                            x:Name="BookingsButton"
+                            x:Name="UsersButton"
                             Click="NavigationButton_Click"
-                            Tag="Bookings">
+                            Tag="Users">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="Resources/Icons/bookings.png" Width="20" Height="20" Margin="0,0,15,0"/>
+                                <Image Source="Resources/Icons/users.png" Width="20" Height="20" Margin="0,0,15,0"/>
 
-                                <TextBlock x:Name="BookingsText" 
-                                       Text="Bookings" 
+                                <TextBlock x:Name="UsersText" 
+                                       Text="Users" 
                                        Foreground="White" 
                                        VerticalAlignment="Center"/>
                             </StackPanel>
@@ -321,9 +321,9 @@
                 Background="White"
                 BorderBrush="#E0E0E0"
                 BorderThickness="0,0,0,1">
-            
+
             <Grid Margin="20,0">
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>

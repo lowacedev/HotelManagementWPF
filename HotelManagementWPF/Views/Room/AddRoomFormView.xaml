@@ -273,13 +273,28 @@
                         <TextBlock Text="Room Number" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding RoomNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                         <TextBlock Text="Bed Type" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding BedType}" ItemsSource="{Binding BedTypeOptions}" Style="{StaticResource ModernComboBox}"/>
+                        <ComboBox SelectedItem="{Binding BedType, Mode=TwoWay}" Style="{StaticResource ModernComboBox}">
+                            <ComboBox.ItemsSource>
+                                <x:Array Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                    <sys:String>Single</sys:String>
+                                    <sys:String>Double</sys:String>
+                                    <sys:String>Presidential Suite</sys:String>
+                                </x:Array>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Price per Night" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                         <TextBlock Text="Room Status" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding Status}" ItemsSource="{Binding StatusOptions}" Style="{StaticResource ModernComboBox}"/>
+                        <ComboBox SelectedItem="{Binding BedType, Mode=TwoWay}" Style="{StaticResource ModernComboBox}">
+                            <ComboBox.ItemsSource>
+                                <x:Array Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                    <sys:String>Available</sys:String>
+                                    <sys:String>Booked</sys:String>
+                                </x:Array>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
                     </StackPanel>
                 </Grid>
             </StackPanel>
@@ -291,7 +306,10 @@
                     Style="{StaticResource SecondaryButton}" 
                     Click="CancelButton_Click"
                     IsCancel="True"/>
-            <Button Content="Add Room" Style="{StaticResource PrimaryButton}" Command="{Binding AddRoomCommand}"/>
+            <Button Content="Add Room" 
+        Style="{StaticResource PrimaryButton}" 
+        Command="{Binding AddRoomCommand}" 
+        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Click="Button_Click"/>
         </StackPanel>
     </StackPanel>
 

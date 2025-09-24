@@ -20,13 +20,15 @@ namespace HotelManagementWPF.Services
         // Existing Room methods
         public void ShowAddRoomDialog()
         {
-            var window = new AddRoomFormView();
+            var mainViewModel = (Application.Current.MainWindow.DataContext as RoomViewModel);
+            var window = new AddRoomFormView(mainViewModel);
             window.ShowDialog();
         }
 
         public void ShowAddRoomForm()
         {
-            var addRoomForm = new AddRoomFormView();
+            var mainViewModel = (Application.Current.MainWindow.DataContext as RoomViewModel);
+            var addRoomForm = new AddRoomFormView(mainViewModel);
             addRoomForm.Owner = Application.Current.MainWindow;
             addRoomForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             addRoomForm.ShowDialog();
