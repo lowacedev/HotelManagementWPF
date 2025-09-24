@@ -72,6 +72,72 @@
             </Setter>
         </Style>
 
+        <!-- Modern PasswordBox with rounded corners -->
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="#F7F9FB"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Focusable="False" 
+                                        HorizontalScrollBarVisibility="Hidden" 
+                                        VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#2196F3"/>
+                                <Setter Property="Background" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#2196F3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Eye Toggle Button -->
+        <Style x:Key="EyeButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F0F0F0"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#E0E0E0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Simplified ComboBox that matches TextBox design exactly -->
         <Style x:Key="ModernComboBox" TargetType="ComboBox">
             <Setter Property="FontFamily" Value="Segoe UI"/>
@@ -269,15 +335,45 @@
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    
+                    <!-- Left Column: Full Name, Role, Email -->
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Full Name" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
                         <TextBlock Text="Role" Style="{StaticResource FormLabel}"/>
                         <ComboBox SelectedItem="{Binding Role}" ItemsSource="{Binding RoleOptions}" Style="{StaticResource ModernComboBox}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="2">
+                        
                         <TextBlock Text="Email Address" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                    </StackPanel>
+                    
+                    <!-- Right Column: Username and Password -->
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Username" Style="{StaticResource FormLabel}"/>
+                        <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
+                        <TextBlock Text="Password" Style="{StaticResource FormLabel}"/>
+                        <Grid>
+                            <PasswordBox x:Name="PasswordBox" 
+                                       Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
+                                       Style="{StaticResource ModernPasswordBox}"
+                                       Visibility="{Binding IsPasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverted}"/>
+                            
+                            <TextBox x:Name="PasswordTextBox" 
+                                   Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
+                                   Style="{StaticResource ModernTextBox}"
+                                   Visibility="{Binding IsPasswordVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            
+                            <Button x:Name="TogglePasswordButton" 
+                                  Style="{StaticResource EyeButton}"
+                                  HorizontalAlignment="Right" 
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,8,6"
+                                  Click="TogglePasswordVisibility_Click">
+                                <Image Source="/Resources/Icons/eye.png" Width="16" Height="16" Opacity="0.6"/>
+                            </Button>
+                        </Grid>
                     </StackPanel>
                 </Grid>
             </StackPanel>

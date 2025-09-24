@@ -28,5 +28,24 @@ namespace HotelManagementWPF.Views.Users
         {
             this.Close();
         }
+
+        private bool isPasswordVisible = false;
+        private void TogglePasswordVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            isPasswordVisible = !isPasswordVisible;
+
+            if (isPasswordVisible)
+            {
+                PasswordTextBox.Text = PasswordBox.Password;
+                PasswordTextBox.Visibility = Visibility.Visible;
+                PasswordBox.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                PasswordBox.Password = PasswordTextBox.Text;
+                PasswordBox.Visibility = Visibility.Visible;
+                PasswordTextBox.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }
