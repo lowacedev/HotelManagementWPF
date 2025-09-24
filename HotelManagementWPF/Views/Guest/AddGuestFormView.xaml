@@ -271,15 +271,18 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Full Name" Style="{StaticResource FormLabel}"/>
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        <TextBox x:Name="NameTextBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                         <TextBlock Text="Gender" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding Gender}" ItemsSource="{Binding GenderOptions}" Style="{StaticResource ModernComboBox}"/>
+                        <ComboBox x:Name="GenderComboBox" SelectedItem="{Binding Gender}" Style="{StaticResource ModernComboBox}">
+                            <ComboBoxItem Content="Male"/>
+                            <ComboBoxItem Content="Female"/>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Age" Style="{StaticResource FormLabel}"/>
-                        <TextBox Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        <TextBox x:Name="AgeTextBox" Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                         <TextBlock Text="Phone Number" Style="{StaticResource FormLabel}"/>
-                        <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        <TextBox x:Name="PhoneNumberTextBox" Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
@@ -291,7 +294,7 @@
                     Style="{StaticResource SecondaryButton}" 
                     Click="CancelButton_Click"
                     IsCancel="True"/>
-            <Button Content="Add Guest" Style="{StaticResource PrimaryButton}" Command="{Binding AddGuestCommand}"/>
+            <Button Content="Add Guest" Style="{StaticResource PrimaryButton}" Command="{Binding AddGuestCommand}" Click="Button_Click"/>
         </StackPanel>
     </StackPanel>
 

@@ -13,8 +13,8 @@ namespace HotelManagementWPF.ViewModels
 {
     public class GuestViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<Guest> _guests;
-        private ObservableCollection<Guest> _filteredGuests;
+        private ObservableCollection<GuestModel> _guests;
+        private ObservableCollection<GuestModel> _filteredGuests;
         private string _searchText = string.Empty;
         private int _currentPage = 1;
         private const int _itemsPerPage = 10;
@@ -26,7 +26,7 @@ namespace HotelManagementWPF.ViewModels
         public ICommand NextPageCommand { get; private set; }
         public ICommand GoToPageCommand { get; private set; }
 
-        public ObservableCollection<Guest> Guests
+        public ObservableCollection<GuestModel> Guests
         {
             get => _guests;
             set
@@ -37,7 +37,7 @@ namespace HotelManagementWPF.ViewModels
             }
         }
 
-        public ObservableCollection<Guest> FilteredGuests
+        public ObservableCollection<GuestModel> FilteredGuests
         {
             get => _filteredGuests;
             set
@@ -48,7 +48,7 @@ namespace HotelManagementWPF.ViewModels
             }
         }
 
-        public ObservableCollection<Guest> PaginatedGuests { get; set; } = new ObservableCollection<Guest>();
+        public ObservableCollection<GuestModel> PaginatedGuests { get; set; } = new ObservableCollection<GuestModel>();
         public ObservableCollection<int> PageNumbers { get; set; } = new ObservableCollection<int>();
 
         public string SearchText
@@ -67,14 +67,14 @@ namespace HotelManagementWPF.ViewModels
             _windowService = windowService;
             AddGuestCommand = new RelayCommand(OpenAddGuestForm);
 
-            // Initialize pagination collections
-            PaginatedGuests = new ObservableCollection<Guest>();
+            // Initialize collections
+            PaginatedGuests = new ObservableCollection<GuestModel>();
             PageNumbers = new ObservableCollection<int>();
 
             // Load guests from database
             LoadGuests();
 
-            // Initialize commands for pagination
+            // Initialize pagination commands
             PreviousPageCommand = new RelayCommand<int>(_ => PreviousPage(), _ => _currentPage > 1);
             NextPageCommand = new RelayCommand<int>(_ => NextPage(), _ => _currentPage < TotalPages);
             GoToPageCommand = new RelayCommand<int>(param => GoToPage(param), param => true);
@@ -83,8 +83,8 @@ namespace HotelManagementWPF.ViewModels
         private void OpenAddGuestForm()
         {
             _windowService.ShowAddGuestForm();
-            // After adding a guest, you might want to refresh the list:
-            // LoadGuests();
+            // After adding a guest, refresh the list:
+            LoadGuests();
         }
 
         private void ApplySearch()
@@ -93,7 +93,7 @@ namespace HotelManagementWPF.ViewModels
 
             if (string.IsNullOrWhiteSpace(_searchText))
             {
-                FilteredGuests = new ObservableCollection<Guest>(_guests);
+                FilteredGuests = new ObservableCollection<GuestModel>(_guests);
                 return;
             }
 
@@ -104,12 +104,12 @@ namespace HotelManagementWPF.ViewModels
                 guest.Gender.ToLower().Contains(searchLower)
             ).ToList();
 
-            FilteredGuests = new ObservableCollection<Guest>(filtered);
+            FilteredGuests = new ObservableCollection<GuestModel>(filtered);
         }
 
         private void LoadGuests()
         {
-            var db = new DbConnections(); // Ensure this is your correct database connection class
+            var db = new DbConnections();
             DataTable dt = new DataTable();
 
             string query = "SELECT name, age, gender, phoneNumber FROM tbl_Guest";
@@ -118,25 +118,24 @@ namespace HotelManagementWPF.ViewModels
             {
                 db.readDatathroughAdapter(query, dt);
 
-                var guestList = new ObservableCollection<Guest>();
+                var guestList = new ObservableCollection<GuestModel>();
                 foreach (DataRow row in dt.Rows)
                 {
-                    guestList.Add(new Guest
-                    {
-                        Id = 0, // set accordingly if you fetch ID too
-                        Name = row["name"].ToString(),
-                        Age = Convert.ToInt32(row["age"]),
-                        Gender = row["gender"].ToString(),
-                        PhoneNumber = row["phoneNumber"].ToString()
-                    });
+                    guestList.Add(new GuestModel(
+                        Id: 0, // Replace with actual ID if available
+                        Name: row["name"].ToString(),
+                        Age: Convert.ToInt32(row["age"]),
+                        Gender: row["gender"].ToString(),
+                        PhoneNumber: row["phoneNumber"].ToString()
+                    ));
                 }
 
                 Guests = guestList;
-                FilteredGuests = new ObservableCollection<Guest>(Guests);
+                FilteredGuests = new ObservableCollection<GuestModel>(Guests);
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Handle exceptions
                 Console.WriteLine(ex.Message);
             }
         }
@@ -166,7 +165,7 @@ namespace HotelManagementWPF.ViewModels
                 PageNumbers.Add(i);
             }
 
-            // Raise property changed for commands' can execute
+            // Notify commands
             (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
 
@@ -203,12 +202,6 @@ namespace HotelManagementWPF.ViewModels
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    public class Guest
-    {
-        public int Id { get; set; } // optional, if you have ID
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public string Gender { get; set; }
-        public string PhoneNumber { get; set; }
-    }
+    // Make sure this record is in a file accessible to your project
+    public record GuestModel(int Id, string Name, int Age, string Gender, string PhoneNumber);
 }

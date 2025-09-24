@@ -292,27 +292,30 @@
                 <!-- DataGrid -->
                 <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,40,0,0">
                     <DataGrid ItemsSource="{Binding PaginatedUsers}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              RowHeaderWidth="0"
-                              SelectionMode="Single"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="None"
-                              BorderThickness="0"
-                              Background="Transparent"
-                              RowBackground="Transparent"
-                              AlternatingRowBackground="Transparent"
-                              RowStyle="{StaticResource ModernDataGridRow}"
-                              ColumnHeaderStyle="{StaticResource ModernDataGridHeader}"
-                              EnableRowVirtualization="True"
-                              EnableColumnVirtualization="True"
-                              VirtualizingPanel.VirtualizationMode="Recycling"
-                              VirtualizingPanel.IsVirtualizing="True"
-                              ScrollViewer.CanContentScroll="True">
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  RowHeaderWidth="0"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="None"
+                  BorderThickness="0"
+                  Background="Transparent"
+                  RowBackground="Transparent"
+                  AlternatingRowBackground="Transparent"
+                  RowStyle="{StaticResource ModernDataGridRow}"
+                  ColumnHeaderStyle="{StaticResource ModernDataGridHeader}"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  ScrollViewer.CanContentScroll="True"
+                  HorizontalScrollBarVisibility="Auto"> 
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" 
-                                              Binding="{Binding Name}" 
-                                              Width="2.5*">
+                            <!-- Name Column -->
+                            <DataGridTextColumn Header="Name"
+                                Binding="{Binding Name}"
+                                MinWidth="130"
+                                Width="1*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="14"/>
@@ -323,9 +326,12 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Email" 
-                                              Binding="{Binding Email}" 
-                                              Width="3*">
+
+                            <!-- Email Column -->
+                            <DataGridTextColumn Header="Email"
+                                Binding="{Binding Email}"
+                                MinWidth="150"
+                                Width="2*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="13"/>
@@ -336,9 +342,12 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Role" 
-                                                Binding="{Binding Role}" 
-                                                Width="3*">
+
+                            <!-- Role Column -->
+                            <DataGridTextColumn Header="Role"
+                                Binding="{Binding Role}"
+                                MinWidth="100"
+                                Width="1.5*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="13"/>
@@ -349,9 +358,12 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Created Date" 
-                                              Binding="{Binding CreatedDate, StringFormat='{}{0:MMM dd, yyyy}'}"
-                                              Width="1.5*">
+
+                            <!-- Created Date Column -->
+                            <DataGridTextColumn Header="Created Date"
+                                Binding="{Binding CreatedDate, StringFormat='{}{0:MMM dd, yyyy}'}"
+                                MinWidth="150"
+                                Width="1.5*">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="13"/>
@@ -361,15 +373,16 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <!-- Edit Button Column -->
+
+                            <!-- Actions Column -->
                             <DataGridTemplateColumn Header="Actions" Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Style="{StaticResource EditButton}"
-                                                Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                CommandParameter="{Binding}"
-                                                ToolTip="Edit User"
-                                                Margin="16,0"/>
+                                Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                CommandParameter="{Binding}"
+                                ToolTip="Edit User"
+                                Margin="16,0"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

@@ -1,5 +1,6 @@
 ﻿using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels;
+using Syncfusion.Windows.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace HotelManagementWPF.Views.Users
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
     }
 }

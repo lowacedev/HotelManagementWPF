@@ -88,14 +88,21 @@ namespace HotelManagementWPF.Views
                 return;
             }
 
-            // TODO: Implement your login logic here
-            // For now, just show a placeholder message
-            MessageBox.Show($"Login attempted with:\nUsername: {username}\nPassword: {new string('*', password.Length)}",
-                "Login Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Hardcoded credential check
+            if (username == "admin" && password == "admin")
+            {
+                // Login successful, open MainWindow
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
 
-            // Example: Close login window and show main window
-            // this.DialogResult = true;
-            // this.Close();
+                // Close the login window
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Invalid username or password.", "Login Failed",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ForgotPassword_Click(object sender, RoutedEventArgs e)

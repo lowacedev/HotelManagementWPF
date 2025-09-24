@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DatabaseProject;
+using HotelManagementWPF.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using HotelManagementWPF.Services;
-using HotelManagementWPF.ViewModels.Base;
 
 namespace HotelManagementWPF.ViewModels
 {
@@ -23,7 +24,7 @@ namespace HotelManagementWPF.ViewModels
             _windowService = windowService;
             InitializeCommands();
             InitializeCollections();
-            LoadUsers();
+            LoadUsers(); // Load data from database
         }
 
         private void InitializeCommands()
@@ -108,38 +109,53 @@ namespace HotelManagementWPF.ViewModels
 
         private void ExecuteAddUser()
         {
-            _windowService.ShowAddUserForm();
-            // Optionally refresh users after adding
-            // LoadUsers();
+            //_windowService.ShowAddUserForm();
+            LoadUsers(); // refresh after adding
         }
 
         private void ExecuteEditUser(User user)
         {
             if (user == null) return;
             _windowService.ShowEditUserForm(user);
-
-
-            // Implement edit user functionality
-            // You can create a ShowEditUserForm method in IWindowService
-            // _windowService.ShowEditUserForm(user);
+            LoadUsers(); // refresh after editing
         }
 
+        // Method to load users directly from DB
         private void LoadUsers()
         {
-            // Sample data - replace with actual data loading
-            _users = new ObservableCollection<User>
-            {
-                new User { Id = 1, Name = "John Admin", Email = "john@hotel.com", Role = "Administrator", CreatedDate = DateTime.Now.AddDays(-30) },
-                new User { Id = 2, Name = "Sarah Manager", Email = "sarah@hotel.com", Role = "Manager", CreatedDate = DateTime.Now.AddDays(-25) },
-                new User { Id = 3, Name = "Mike Reception", Email = "mike@hotel.com", Role = "Receptionist", CreatedDate = DateTime.Now.AddDays(-20) },
-                new User { Id = 4, Name = "Lisa Staff", Email = "lisa@hotel.com", Role = "Staff", CreatedDate = DateTime.Now.AddDays(-15) },
-                new User { Id = 5, Name = "Tom Supervisor", Email = "tom@hotel.com", Role = "Supervisor", CreatedDate = DateTime.Now.AddDays(-10) },
-                new User { Id = 6, Name = "Emma Reception", Email = "emma@hotel.com", Role = "Receptionist", CreatedDate = DateTime.Now.AddDays(-8) },
-                new User { Id = 7, Name = "David Manager", Email = "david@hotel.com", Role = "Manager", CreatedDate = DateTime.Now.AddDays(-5) },
-                new User { Id = 8, Name = "Anna Staff", Email = "anna@hotel.com", Role = "Staff", CreatedDate = DateTime.Now.AddDays(-3) },
-            };
+            var usersFromDb = new List<User>();
 
+            try
+            {
+                using (var db = new DbConnections())
+                {
+                    string query = "SELECT user_id, name, role, email, username, password, GETDATE() as CreatedDate FROM tbl_User";
+                    DataTable dt = new DataTable();
+                    db.readDatathroughAdapter(query, dt);
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        usersFromDb.Add(new User
+                        {
+                            UserId = Convert.ToInt32(row["user_id"]),
+                            Name = row["name"].ToString(),
+                            Role = row["role"].ToString(),
+                            Email = row["email"].ToString(),
+                            Username = row["username"].ToString(),
+                            Password = row["password"].ToString(),
+                            CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // handle exception if needed
+            }
+
+            _users = new ObservableCollection<User>(usersFromDb);
             FilteredUsers = new ObservableCollection<User>(_users);
+            UpdatePagination();
         }
 
         private int TotalPages => (int)Math.Ceiling((double)(FilteredUsers?.Count ?? 0) / _itemsPerPage);
@@ -161,9 +177,7 @@ namespace HotelManagementWPF.ViewModels
             // Update page numbers
             PageNumbers.Clear();
             for (int i = 1; i <= TotalPages; i++)
-            {
                 PageNumbers.Add(i);
-            }
 
             OnPropertyChanged(nameof(PaginatedUsers));
             OnPropertyChanged(nameof(PageNumbers));
@@ -198,12 +212,15 @@ namespace HotelManagementWPF.ViewModels
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
+    // User class as already provided
     public class User
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
         public string Role { get; set; }
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

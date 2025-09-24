@@ -55,30 +55,26 @@
         <UniformGrid Grid.Row="1" Columns="4" Margin="0 0 0 20">
             <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
                 <StackPanel>
-                    <TextBlock Text="Single Sharing" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="2 Deals" Foreground="Gray"/>
-                    <TextBlock Text="$568 / day" FontWeight="Bold"/>
+                    <TextBlock Text="Total Sales" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="₱ 1,000,000" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
                 <StackPanel>
-                    <TextBlock Text="Double Sharing" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="2 Deals" Foreground="Gray"/>
-                    <TextBlock Text="$1,068 / day" FontWeight="Bold"/>
+                    <TextBlock Text="Revenue" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="₱ 200,000" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
                 <StackPanel>
-                    <TextBlock Text="Triple Sharing" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="1 Deal" Foreground="Gray"/>
-                    <TextBlock Text="$1,568 / day" FontWeight="Bold"/>
+                    <TextBlock Text="Gross" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="₱ 568,000" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
             <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
                 <StackPanel>
-                    <TextBlock Text="VIP Suite" FontWeight="Bold" FontSize="16"/>
-                    <TextBlock Text="1 Deal" Foreground="Gray"/>
-                    <TextBlock Text="$2,568 / day" FontWeight="Bold"/>
+                    <TextBlock Text="Net Income" FontWeight="Bold" FontSize="16"/>
+                    <TextBlock Text="₱ 187,568" FontWeight="Bold"/>
                 </StackPanel>
             </Border>
         </UniformGrid>
