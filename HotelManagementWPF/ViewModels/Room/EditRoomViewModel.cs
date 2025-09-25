@@ -1,4 +1,4 @@
-﻿using DatabaseProject; // your DbConnections namespace
+﻿using DatabaseProject;
 using HotelManagementWPF.Models;
 using System;
 using System.Collections.Generic;
@@ -11,59 +11,25 @@ namespace HotelManagementWPF.ViewModels
 {
     public class EditRoomViewModel : INotifyPropertyChanged
     {
-        private readonly int _roomId; // room id to load
-        private Room _originalRoom;
+        private readonly int _roomId;
         private readonly DbConnections _db;
 
         private string _roomNumber;
         private string _bedType;
         private decimal _price;
         private RoomStatus _status;
-        private Room room;
 
-        public EditRoomViewModel(int roomId)
+        public List<string> BedTypeOptions { get; } = new List<string>
         {
-            _roomId = roomId;
-            _db = new DbConnections();
+            "Single", "Double", "Queen", "King", "Twin", "Suite", "Deluxe", "Presidential Suite"
+        };
 
-            LoadRoomFromDatabase();
-
-            SaveChangesCommand = new RelayCommand(SaveChanges);
-        }
-
-
-        private void LoadRoomFromDatabase()
+        public List<RoomStatus> StatusOptions { get; } = new List<RoomStatus>
         {
-            var dt = new DataTable();
-            string query = $"SELECT * FROM tbl_Room WHERE room_id = {_roomId}";
-            _db.readDatathroughAdapter(query, dt);
+            RoomStatus.Available, RoomStatus.Booked, RoomStatus.Reserved,
+            RoomStatus.Waitlist, RoomStatus.Blocked
+        };
 
-            if (dt.Rows.Count > 0)
-            {
-                var row = dt.Rows[0];
-                _originalRoom = new Room
-                {
-                    RoomId = (int)row["room_id"], // no trailing space
-                    RoomNumber = row["roomNumber"].ToString(),
-                    BedType = row["roomType"].ToString(),
-                    Price = Convert.ToDecimal(row["price"]),
-                    Status = (RoomStatus)Enum.Parse(typeof(RoomStatus), row["roomStatus"].ToString()),
-                    ModifiedDate = DateTime.Now
-                };
-
-                // Populate properties for binding
-                RoomNumber = _originalRoom.RoomNumber;
-                BedType = _originalRoom.BedType;
-                Price = _originalRoom.Price;
-                Status = _originalRoom.Status;
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("Room not found!", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-            }
-        }
-
-        // Properties with INotifyPropertyChanged
         public string RoomNumber
         {
             get => _roomNumber;
@@ -88,52 +54,73 @@ namespace HotelManagementWPF.ViewModels
             set { _status = value; OnPropertyChanged(); }
         }
 
-        public List<string> BedTypeOptions => new List<string>
-        {
-            "Single", "Double", "Queen", "King", "Twin", "Suite", "Deluxe", "Presidential Suite"
-        };
-
-        public List<RoomStatus> StatusOptions => new List<RoomStatus>
-        {
-            RoomStatus.Available, RoomStatus.Booked, RoomStatus.Reserved,
-            RoomStatus.Waitlist, RoomStatus.Blocked
-        };
-
         public ICommand SaveChangesCommand { get; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public EditRoomViewModel(int roomId)
+        {
+            _roomId = roomId;
+            _db = new DbConnections();
+
+            LoadRoomFromDatabase();
+
+            SaveChangesCommand = new RelayCommand(SaveChanges);
+        }
+
+        private void LoadRoomFromDatabase()
+        {
+            var dt = new DataTable();
+            string query = $"SELECT * FROM tbl_Room WHERE room_id = {_roomId}";
+            _db.readDatathroughAdapter(query, dt);
+
+            if (dt.Rows.Count > 0)
+            {
+                var row = dt.Rows[0];
+
+                RoomNumber = row["roomNumber"].ToString();
+                BedType = row["roomType"].ToString();
+                Price = Convert.ToDecimal(row["price"]);
+                Status = (RoomStatus)Enum.Parse(typeof(RoomStatus), row["roomStatus"].ToString());
+
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Room not found!", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
 
         private void SaveChanges()
         {
             try
             {
-                // Update the database record
                 string updateQuery = @"
-            UPDATE tbl_Room SET
-                roomNumber = @RoomNumber,
-                roomType = @BedType,
-                price = @Price,
-                roomStatus = @Status
-            WHERE room_id = @RoomId";
+                    UPDATE tbl_Room SET
+                        roomNumber = @RoomNumber,
+                        roomType = @BedType,
+                        price = @Price,
+                        roomStatus = @Status
+                    WHERE room_id = @RoomId";
 
                 var parameters = new Dictionary<string, object>
-        {
-            { "@RoomNumber", RoomNumber },
-            { "@BedType", BedType },
-            { "@Price", Price },
-            { "@Status", Status.ToString() },
-            { "@RoomId", _roomId }
-        };
+                {
+                    { "@RoomNumber", RoomNumber },
+                    { "@BedType", BedType },
+                    { "@Price", Price },
+                    { "@Status", Status.ToString() },
+                    { "@RoomId", _roomId }
+                };
 
                 _db.ExecuteNonQuery(updateQuery, parameters);
 
                 System.Windows.MessageBox.Show($"Room {RoomNumber} updated successfully!", "Success", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-
 
                 // Close the window
                 if (System.Windows.Application.Current.MainWindow is System.Windows.Window window)
                 {
                     foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                     {
-                        if (w is HotelManagementWPF.Views.Room.EditRoomFormView && w.DataContext == this)
+                        if (w is Views.Room.EditRoomFormView && w.DataContext == this)
                         {
                             w.DialogResult = true;
                             w.Close();
@@ -148,7 +135,6 @@ namespace HotelManagementWPF.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

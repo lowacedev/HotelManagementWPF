@@ -138,7 +138,7 @@
                                         BorderBrush="#E0E0E0"
                                         CornerRadius="6"
                                         MinWidth="{TemplateBinding ActualWidth}"
-                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        MaxHeight="{Binding RelativeSource={RelativeSource AncestorType=ComboBox}, Path=MaxDropDownHeight}">
                                     <Border.Effect>
                                         <DropShadowEffect Color="Gray" BlurRadius="4" ShadowDepth="2" Opacity="0.3"/>
                                     </Border.Effect>
@@ -179,7 +179,7 @@
             </Setter>
         </Style>
 
-        <!-- Improved Primary Button -->
+        <!-- Primary Button Style -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="#2196F3"/>
             <Setter Property="Foreground" Value="White"/>
@@ -219,7 +219,7 @@
             </Setter>
         </Style>
 
-        <!-- Improved Secondary Button -->
+        <!-- Secondary Button Style -->
         <Style x:Key="SecondaryButton" TargetType="Button">
             <Setter Property="Background" Value="#E3F2FD"/>
             <Setter Property="Foreground" Value="#2196F3"/>
@@ -257,29 +257,38 @@
         </Style>
     </Window.Resources>
 
-    <!-- Main container with proper sizing -->
     <StackPanel Margin="18">
+        <!-- Card container -->
         <Border Style="{StaticResource Card}">
             <StackPanel>
-                <!-- Room Information -->
+                <!-- Room Information Header -->
                 <TextBlock Text="Room Information" Style="{StaticResource SectionHeader}"/>
+                <!-- Layout grid -->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+
+                    <!-- Left Column -->
                     <StackPanel Grid.Column="0">
+                        <!-- Room Number -->
                         <TextBlock Text="Room Number" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding RoomNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        <!-- Bed Type -->
                         <TextBlock Text="Bed Type" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding BedType}" ItemsSource="{Binding BedTypeOptions}" Style="{StaticResource ModernComboBox}" SelectionChanged="ComboBox_SelectionChanged"/>
+                        <ComboBox ItemsSource="{Binding BedTypeOptions}" SelectedItem="{Binding BedType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernComboBox}"/>
                     </StackPanel>
+
+                    <!-- Right Column -->
                     <StackPanel Grid.Column="2">
+                        <!-- Price per Night -->
                         <TextBlock Text="Price per Night" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        <!-- Room Status -->
                         <TextBlock Text="Room Status" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding Status}" ItemsSource="{Binding StatusOptions}" Style="{StaticResource ModernComboBox}"/>
+                        <ComboBox ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernComboBox}"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
@@ -287,12 +296,8 @@
 
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-            <Button Content="Cancel" 
-                    Style="{StaticResource SecondaryButton}" 
-                    Click="CancelButton_Click"
-                    IsCancel="True"/>
+            <Button Content="Cancel" Style="{StaticResource SecondaryButton}" Click="CancelButton_Click" IsCancel="True"/>
             <Button Content="Save Changes" Style="{StaticResource PrimaryButton}" Command="{Binding SaveChangesCommand}"/>
         </StackPanel>
     </StackPanel>
-
 </Window>

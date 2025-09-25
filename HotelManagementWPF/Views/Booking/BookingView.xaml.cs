@@ -1,10 +1,9 @@
+using HotelManagementWPF.ViewModels.Booking;
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using HotelManagementWPF.ViewModels.Booking;
 
 namespace HotelManagementWPF.Views.Booking
 {
@@ -13,11 +12,10 @@ namespace HotelManagementWPF.Views.Booking
         public BookingView()
         {
             InitializeComponent();
-            DataContext = new BookingViewModel();
+            // Set the DataContext to your ViewModel
+            this.DataContext = new BookingViewModel();
         }
     }
-
-    // Status to Background Color Converter for booking statuses
     public class StatusToBackgroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -26,10 +24,10 @@ namespace HotelManagementWPF.Views.Booking
             {
                 return status switch
                 {
-                    "Active" => new SolidColorBrush(Color.FromRgb(76, 175, 80)), // Green
-                    "Completed" => new SolidColorBrush(Color.FromRgb(52, 152, 219)), // Blue
-                    "Cancelled" => new SolidColorBrush(Color.FromRgb(231, 76, 60)), // Red
-                    _ => new SolidColorBrush(Color.FromRgb(149, 165, 166)) // Gray
+                    "Active" => new SolidColorBrush(Color.FromRgb(76, 175, 80)),
+                    "Completed" => new SolidColorBrush(Color.FromRgb(52, 152, 219)),
+                    "Cancelled" => new SolidColorBrush(Color.FromRgb(231, 76, 60)),
+                    _ => new SolidColorBrush(Color.FromRgb(149, 165, 166))
                 };
             }
             return new SolidColorBrush(Color.FromRgb(149, 165, 166));
@@ -41,12 +39,11 @@ namespace HotelManagementWPF.Views.Booking
         }
     }
 
-    // Status to Foreground Color Converter for booking statuses
     public class StatusToForegroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // All statuses use white text for better contrast
+            // All statuses have white foreground for contrast
             return new SolidColorBrush(Colors.White);
         }
 

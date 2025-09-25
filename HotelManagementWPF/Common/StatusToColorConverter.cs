@@ -30,4 +30,5 @@ namespace HotelManagementWPF.Common
             throw new NotImplementedException();
         }
     }
+
 }

@@ -19,7 +19,7 @@ namespace HotelManagementWPF.Services
 
         // Booking methods
         void ShowAddBookingForm();
-        void ShowEditBookingForm(BookingData booking);
+        void ShowEditBookingForm(Models.BookingData booking);
 
         // Guest methods
         void ShowAddGuestForm();

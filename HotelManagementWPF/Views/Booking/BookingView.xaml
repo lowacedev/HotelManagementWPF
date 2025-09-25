@@ -8,9 +8,7 @@
     <UserControl.Resources>
 
         <!-- Status to Background Converter -->
-        <local:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter"/>
-        <local:StatusToForegroundConverter x:Key="StatusToForegroundConverter"/>
-
+        
         <!-- Optimized Button Styles with Templates for Better Performance -->
         <Style x:Key="PillButton" TargetType="Button">
             <Setter Property="Background" Value="White" />
@@ -438,10 +436,8 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource StatusBadge}"
-                                        Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}"
                                         Margin="16,0">
                                     <TextBlock Text="{Binding Status}" 
-                                             Foreground="{Binding Status, Converter={StaticResource StatusToForegroundConverter}}" 
                                              FontWeight="SemiBold" 
                                              FontSize="12" 
                                              HorizontalAlignment="Center" 
@@ -456,7 +452,6 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Style="{StaticResource EditButton}"
-                                        Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding}"
                                         ToolTip="Edit Booking"
                                         Margin="16,0"/>

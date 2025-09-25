@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using HotelManagementWPF.Models;
+
 
 namespace HotelManagementWPF.Services
 {
@@ -36,9 +38,9 @@ namespace HotelManagementWPF.Services
             addRoomForm.ShowDialog();
         }
 
-        public void ShowEditRoomForm(Models.Room room)
+        public void ShowEditRoomForm(Room room)
         {
-            var editForm = new Views.Room.EditRoomFormView(room);
+            var editForm = new Views.Room.EditRoomFormView(room.Id);
             editForm.Owner = Application.Current.MainWindow;
             var result = editForm.ShowDialog();
             if (result == true)
@@ -59,7 +61,7 @@ namespace HotelManagementWPF.Services
             form.ShowDialog();
         }
 
-        public void ShowEditBookingForm(BookingData booking)
+        public void ShowEditBookingForm(HotelManagementWPF.Models.BookingData booking)
         {
             if (booking == null) return;
 
@@ -68,10 +70,10 @@ namespace HotelManagementWPF.Services
 
             // Pre-fill with booking data for editing
             vm.FullName = booking.Guest;
-            vm.RoomNumber = booking.Room;
+            vm.RoomNumber = booking.RoomNumber; // corrected property name
             vm.CheckInDate = booking.CheckIn;
             vm.CheckOutDate = booking.CheckOut;
-            // Set other properties as needed based on your BookingData model
+            // set other properties as needed
 
             form.DataContext = vm;
             form.Owner = Application.Current.MainWindow;
