@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0-rc.1.25451.107" />
     <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" />
+    <PackageReference Include="QuestPDF" Version="2025.12.0-alpha0" />
     <PackageReference Include="Syncfusion.SfScheduler.WPF" Version="31.1.19" />
   </ItemGroup>
 
