@@ -1,11 +1,13 @@
-﻿using HotelManagementWPF.Views.Room;
-using HotelManagementWPF.Views.Booking;
-using HotelManagementWPF.ViewModels.Booking;
-using HotelManagementWPF.Views.Guest;
-using HotelManagementWPF.Views.Users;
-using HotelManagementWPF.ViewModels;
-using HotelManagementWPF.ViewModels.Users;
+﻿using HotelManagementWPF.ViewModels;
 
+using HotelManagementWPF.ViewModels.Booking;
+using HotelManagementWPF.ViewModels.Supplier;
+using HotelManagementWPF.ViewModels.Users;
+using HotelManagementWPF.Views;
+using HotelManagementWPF.Views.Booking;
+using HotelManagementWPF.Views.Guest;
+using HotelManagementWPF.Views.Room;
+using HotelManagementWPF.Views.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,5 +110,24 @@ namespace HotelManagementWPF.Services
             editForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             editForm.ShowDialog();
         }
+
+        public void ShowAddSupplierForm()
+        {
+            var addSupplierForm = new Views.Inventory.Suppliers.AddSupplierFormView();
+            addSupplierForm.Owner = Application.Current.MainWindow;
+            addSupplierForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            addSupplierForm.ShowDialog();
+        }
+
+        public void ShowEditSupplierForm(SupplierData supplier)
+        {
+            var editSupplierForm = new Views.Inventory.Suppliers.AddSupplierFormView();
+            var viewModel = new ViewModels.Supplier.AddSupplierFormViewModel();
+            editSupplierForm.DataContext = viewModel;
+            editSupplierForm.Owner = Application.Current.MainWindow;
+            editSupplierForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            editSupplierForm.ShowDialog();
+        }
+
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using HotelManagementWPF.ViewModels;
+using HotelManagementWPF.ViewModels.Booking;
+using HotelManagementWPF.ViewModels.Supplier;
+using HotelManagementWPF.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HotelManagementWPF.ViewModels.Booking;
-using HotelManagementWPF.ViewModels;
-using HotelManagementWPF.Views;
 
 namespace HotelManagementWPF.Services
 {
@@ -26,5 +27,9 @@ namespace HotelManagementWPF.Services
         // User methods
         void ShowAddUserForm();
         void ShowEditUserForm(User user);
+
+        // Supplier methods  
+        void ShowAddSupplierForm();
+        void ShowEditSupplierForm(SupplierData supplier);
     }
 }

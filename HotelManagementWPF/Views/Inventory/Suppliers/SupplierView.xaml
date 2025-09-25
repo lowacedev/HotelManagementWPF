@@ -267,7 +267,7 @@
 
                 <Button Grid.Column="1" 
         Style="{StaticResource AddButton}" 
-        Command="{Binding AddEmployeeCommand}">
+        Command="{Binding AddSupplierCommand}">
                     <TextBlock Text="Add New Supplier" FontSize="13"/>
                 </Button>
             </Grid>
