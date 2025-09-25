@@ -11,7 +11,7 @@
         <common:GenderToBackgroundConverter x:Key="GenderToBackgroundConverter"/>
         <common:GenderToForegroundConverter x:Key="GenderToForegroundConverter"/>
 
-        <!-- Search TextBox Style (BookingView Style) -->
+        <!--  TextBox Style  -->
         <Style x:Key="SearchTextBox" TargetType="TextBox">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
@@ -21,7 +21,7 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="MinWidth" Value="250"/>
+            <Setter Property="Width" Value="400"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -257,6 +257,7 @@
             <!-- Search and Add Button -->
             <Grid Grid.Row="1" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -264,11 +265,10 @@
                 <!-- Search TextBox -->
                 <TextBox Grid.Column="0" 
                          Style="{StaticResource SearchTextBox}"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         MinWidth="250"/>
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Add Guest Button -->
-                <Button Grid.Column="1" 
+                <Button Grid.Column="2" 
                         Style="{StaticResource AddButton}" 
                         Command="{Binding AddGuestCommand}">
                     <TextBlock Text="Add New Guest" FontSize="13"/>
@@ -320,19 +320,31 @@
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="#5D6D7E"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Margin" Value="16,0"/>
+                                    <Setter Property="Margin" Value="0"/>
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource ModernDataGridHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
 
                         <!-- Gender Column with Converter -->
                         <DataGridTemplateColumn Header="Gender" Width="1.5*">
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource ModernDataGridHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource StatusBadge}"
                                             Background="{Binding Gender, Converter={StaticResource GenderToBackgroundConverter}}"
-                                            Margin="16,0">
+                                            Margin="0"
+                                            HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding Gender}" 
                                                  Foreground="{Binding Gender, Converter={StaticResource GenderToForegroundConverter}}" 
                                                  FontWeight="SemiBold" 
@@ -359,13 +371,19 @@
 
                         <!-- Actions Column -->
                         <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.HeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource ModernDataGridHeader}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTemplateColumn.HeaderStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource EditButton}"
                                             Command="{Binding DataContext.EditGuestCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                             CommandParameter="{Binding}"
                                             ToolTip="Edit Guest"
-                                            Margin="16,0"/>
+                                            Margin="16,0"
+                                            HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
