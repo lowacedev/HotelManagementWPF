@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace HotelManagementWPF.Services
 {
     public interface IWindowService
@@ -23,6 +24,7 @@ namespace HotelManagementWPF.Services
 
         // Guest methods
         void ShowAddGuestForm();
+        void ShowEditGuestForm(GuestModel guest);
 
         // User methods
         void ShowAddUserForm();

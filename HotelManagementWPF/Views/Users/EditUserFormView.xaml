@@ -290,7 +290,7 @@
         Style="{StaticResource SecondaryButton}" 
         Command="{Binding CancelCommand}"
         IsCancel="True"/>
-            <Button Content="Save Changes" Style="{StaticResource PrimaryButton}" Command="{Binding AddUserCommand}"/>
+            <Button Content="Save Changes" Style="{StaticResource PrimaryButton}" Command="{Binding SaveChangesCommand}"/>
         </StackPanel>
     </StackPanel>
 

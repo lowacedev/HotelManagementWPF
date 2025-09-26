@@ -1,5 +1,5 @@
 ﻿using HotelManagementWPF.ViewModels;
-
+using HotelManagementWPF.ViewModels.Guest;
 using HotelManagementWPF.ViewModels.Booking;
 using HotelManagementWPF.ViewModels.Supplier;
 using HotelManagementWPF.ViewModels.Users;
@@ -88,6 +88,19 @@ namespace HotelManagementWPF.Services
             addGuestForm.Owner = Application.Current.MainWindow;
             addGuestForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             addGuestForm.ShowDialog();
+        }
+
+        public void ShowEditGuestForm(GuestModel guest)
+        {
+            if (guest == null) return;
+
+            var editForm = new EditGuestFormView(guest);
+            editForm.Owner = Application.Current.MainWindow;
+            editForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var result = editForm.ShowDialog();
+
+            // Return true if changes were saved successfully
+            // This allows the calling code to refresh the guest list
         }
 
         // User methods

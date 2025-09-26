@@ -66,6 +66,7 @@ namespace HotelManagementWPF.ViewModels
         {
             _windowService = windowService;
             AddGuestCommand = new RelayCommand(OpenAddGuestForm);
+            EditGuestCommand = new RelayCommand<GuestModel>(OpenEditGuestForm);
 
             // Initialize collections
             PaginatedGuests = new ObservableCollection<GuestModel>();
@@ -84,6 +85,15 @@ namespace HotelManagementWPF.ViewModels
         {
             _windowService.ShowAddGuestForm();
             // After adding a guest, refresh the list:
+            LoadGuests();
+        }
+
+        private void OpenEditGuestForm(GuestModel guest)
+        {
+            if (guest == null) return;
+
+            _windowService.ShowEditGuestForm(guest);
+            // After editing a guest, refresh the list:
             LoadGuests();
         }
 
@@ -112,7 +122,7 @@ namespace HotelManagementWPF.ViewModels
             var db = new DbConnections();
             DataTable dt = new DataTable();
 
-            string query = "SELECT name, age, gender, phoneNumber FROM tbl_Guest";
+            string query = "SELECT guest_id, name, age, gender, phoneNumber FROM tbl_Guest";
 
             try
             {
@@ -122,7 +132,7 @@ namespace HotelManagementWPF.ViewModels
                 foreach (DataRow row in dt.Rows)
                 {
                     guestList.Add(new GuestModel(
-                        Id: 0, // Replace with actual ID if available
+                        Id: Convert.ToInt32(row["guest_id"]),   // ✅ use real ID
                         Name: row["name"].ToString(),
                         Age: Convert.ToInt32(row["age"]),
                         Gender: row["gender"].ToString(),

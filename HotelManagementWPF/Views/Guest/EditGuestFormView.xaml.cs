@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using HotelManagementWPF.ViewModels.Guest;
+using HotelManagementWPF.ViewModels;
 
 namespace HotelManagementWPF.Views.Guest
 {
     /// <summary>
     /// Interaction logic for EditGuestFormView.xaml
     /// </summary>
-    public partial class EditGuestFormView : UserControl
+    public partial class EditGuestFormView : Window
     {
         public EditGuestFormView()
         {
             InitializeComponent();
+        }
+
+        public EditGuestFormView(GuestModel guest) : this()
+        {
+            DataContext = new EditGuestFormViewModel(guest.Id);
         }
     }
 }
