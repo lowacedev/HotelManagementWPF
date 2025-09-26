@@ -27,7 +27,6 @@ namespace HotelManagementWPF
         {
             InitializeComponent();
 
-            // Load default dashboard at startup
             NavigateToSection("dashboard");
             this.WindowState = WindowState.Maximized;
         }

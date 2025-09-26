@@ -24,9 +24,9 @@ namespace HotelManagementWPF.Views.Booking
             {
                 return status switch
                 {
-                    "Active" => new SolidColorBrush(Color.FromRgb(76, 175, 80)),
-                    "Completed" => new SolidColorBrush(Color.FromRgb(52, 152, 219)),
-                    "Cancelled" => new SolidColorBrush(Color.FromRgb(231, 76, 60)),
+                    "Checkin" => new SolidColorBrush(Color.FromRgb(76, 175, 80)),
+                    "Checkout" => new SolidColorBrush(Color.FromRgb(52, 152, 219)),
+                    "Reservation" => new SolidColorBrush(Color.FromRgb(255, 255, 0)),
                     _ => new SolidColorBrush(Color.FromRgb(149, 165, 166))
                 };
             }

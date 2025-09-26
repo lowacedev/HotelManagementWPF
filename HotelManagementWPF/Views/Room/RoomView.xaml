@@ -1,4 +1,4 @@
-<UserControl x:Class="HotelManagementWPF.Views.Room.RoomView"
+﻿<UserControl x:Class="HotelManagementWPF.Views.Room.RoomView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:HotelManagementWPF.ViewModels"
@@ -316,8 +316,8 @@
                         </DataGridTextColumn>
 
                         <DataGridTextColumn Header="Price" 
-                                          Binding="{Binding Price, StringFormat=C}" 
-                                          Width="*">
+                  Binding="{Binding PricePerNight, StringFormat='₱ {0:N2}'}" 
+                  Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="14"/>

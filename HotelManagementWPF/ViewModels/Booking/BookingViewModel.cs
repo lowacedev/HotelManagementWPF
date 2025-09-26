@@ -5,8 +5,10 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows;
 using System.Linq;
+using System.Text; // For decoding byte arrays
 using HotelManagementWPF.ViewModels.Base;
 using HotelManagementWPF.Views.Booking;
+using HotelManagementWPF.Models; // Ensure this namespace is included for BookingData
 
 namespace HotelManagementWPF.ViewModels.Booking
 {
@@ -56,9 +58,9 @@ namespace HotelManagementWPF.ViewModels.Booking
         public ObservableCollection<int> PageNumbers { get; set; }
 
         public int TotalBookings => Bookings?.Count ?? 0;
-        public int ActiveBookings => Bookings?.Count(b => b.Status == "Active") ?? 0;
-        public int CompletedBookings => Bookings?.Count(b => b.Status == "Completed") ?? 0;
-        public int CancelledBookings => Bookings?.Count(b => b.Status == "Cancelled") ?? 0;
+        public int CheckinBookings => Bookings?.Count(b => b.StatusText == "Check-In") ?? 0;
+        public int CheckoutBookings => Bookings?.Count(b => b.StatusText == "Check-Out") ?? 0;
+        public int ReservationBookings => Bookings?.Count(b => b.StatusText == "Reservation") ?? 0;
 
         public ICommand FilterCommand { get; }
         public ICommand AddBookingCommand { get; }
@@ -72,59 +74,10 @@ namespace HotelManagementWPF.ViewModels.Booking
             PaginatedBookings = new ObservableCollection<BookingData>();
             PageNumbers = new ObservableCollection<int>();
 
-            // Initialize with sample data
-            Bookings = new ObservableCollection<BookingData>
-            {
-                new BookingData {
-                    Id = 1,
-                    Guest = "Said el hadrry",
-                    Room = "Room 1",
-                    CheckIn = new DateTime(2025, 2, 9),
-                    CheckOut = new DateTime(2025, 2, 11),
-                    Status = "Active"
-                },
-                new BookingData {
-                    Id = 2,
-                    Guest = "Said el hadrry",
-                    Room = "Room 2",
-                    CheckIn = new DateTime(2025, 2, 10),
-                    CheckOut = new DateTime(2025, 2, 19),
-                    Status = "Active"
-                },
-                new BookingData {
-                    Id = 3,
-                    Guest = "Jane Cooper",
-                    Room = "Room 4",
-                    CheckIn = new DateTime(2025, 2, 11),
-                    CheckOut = new DateTime(2025, 2, 16),
-                    Status = "Active"
-                },
-                new BookingData {
-                    Id = 4,
-                    Guest = "Said el hadrry",
-                    Room = "Room 6",
-                    CheckIn = new DateTime(2025, 2, 1),
-                    CheckOut = new DateTime(2025, 2, 9),
-                    Status = "Completed"
-                },
-                new BookingData {
-                    Id = 5,
-                    Guest = "John Smith",
-                    Room = "Room 3",
-                    CheckIn = new DateTime(2025, 1, 15),
-                    CheckOut = new DateTime(2025, 1, 20),
-                    Status = "Completed"
-                },
-                new BookingData {
-                    Id = 6,
-                    Guest = "Emma Wilson",
-                    Room = "Room 5",
-                    CheckIn = new DateTime(2025, 3, 1),
-                    CheckOut = new DateTime(2025, 3, 5),
-                    Status = "Cancelled"
-                }
-            };
+            // Load data from database
+            LoadBookingsFromDatabase();
 
+            // Initialize filtered list
             FilteredBookings = new ObservableCollection<BookingData>(Bookings);
 
             // Initialize commands
@@ -138,6 +91,15 @@ namespace HotelManagementWPF.ViewModels.Booking
             UpdatePagination();
         }
 
+        private void LoadBookingsFromDatabase()
+        {
+            // Fetch bookings from your database
+            var bookingsFromDb = BookingData.GetAllBookings();
+
+            // Assign to Bookings collection
+            Bookings = new ObservableCollection<BookingData>(bookingsFromDb);
+        }
+
         private void FilterBookings(string filter)
         {
             _currentFilter = filter;
@@ -149,28 +111,34 @@ namespace HotelManagementWPF.ViewModels.Booking
         {
             var filtered = Bookings.AsEnumerable();
 
-            // Apply status filter
+            // Filter by status
             if (_currentFilter != "All")
             {
-                filtered = filtered.Where(b => b.Status == _currentFilter);
+                filtered = filtered.Where(b =>
+                {
+                    var statusStr = b.StatusText;
+                    return statusStr == _currentFilter;
+                });
             }
 
-            // Apply search filter
+            // Filter by search text
             if (!string.IsNullOrWhiteSpace(_searchText))
             {
                 var searchLower = _searchText.ToLower();
                 filtered = filtered.Where(b =>
                     b.Guest.ToLower().Contains(searchLower) ||
-                    b.Room.ToLower().Contains(searchLower) ||
-                    b.Status.ToLower().Contains(searchLower));
+                    b.RoomNumber.ToLower().Contains(searchLower) ||
+                    b.StatusText.ToLower().Contains(searchLower));
             }
 
             FilteredBookings = new ObservableCollection<BookingData>(filtered);
+            _currentPage = 1;
             UpdatePagination();
+
             OnPropertyChanged(nameof(TotalBookings));
-            OnPropertyChanged(nameof(ActiveBookings));
-            OnPropertyChanged(nameof(CompletedBookings));
-            OnPropertyChanged(nameof(CancelledBookings));
+            OnPropertyChanged(nameof(CheckinBookings));
+            OnPropertyChanged(nameof(CheckoutBookings));
+            OnPropertyChanged(nameof(ReservationBookings));
         }
 
         private void AddBooking()
@@ -188,6 +156,10 @@ namespace HotelManagementWPF.ViewModels.Booking
             }
 
             form.ShowDialog();
+
+            // Reload data after adding
+            LoadBookingsFromDatabase();
+            ApplyFiltersAndSearch();
         }
 
         private void EditBooking(BookingData booking)
@@ -196,27 +168,26 @@ namespace HotelManagementWPF.ViewModels.Booking
 
             var form = new BookingFormView();
             var vm = new BookingFormViewModel();
-            // Pre-fill with booking data for editing
+            // Pre-fill with booking data
             vm.FullName = booking.Guest;
-            vm.RoomNumber = booking.Room;
+            vm.RoomNumber = booking.RoomNumber;
             vm.CheckInDate = booking.CheckIn;
             vm.CheckOutDate = booking.CheckOut;
             // Set other properties as needed
 
             form.DataContext = vm;
-
-            // Center the dialog - you'll need to pass the parent window
-            // This requires accessing the current window from the view
             form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            // Note: To properly set the owner, you'll need to modify this method
-            // to accept the parent window as a parameter, or use Application.Current.MainWindow
             if (Application.Current.MainWindow != null)
             {
                 form.Owner = Application.Current.MainWindow;
             }
 
             form.ShowDialog();
+
+            // Reload data after editing
+            LoadBookingsFromDatabase();
+            ApplyFiltersAndSearch();
         }
 
         private int TotalPages => (int)Math.Ceiling((double)(FilteredBookings?.Count ?? 0) / _itemsPerPage);
@@ -229,6 +200,7 @@ namespace HotelManagementWPF.ViewModels.Booking
             var skip = (_currentPage - 1) * _itemsPerPage;
             var paginatedItems = FilteredBookings.Skip(skip).Take(_itemsPerPage);
 
+            // Clear and add new items
             PaginatedBookings.Clear();
             foreach (var item in paginatedItems)
             {
@@ -273,51 +245,5 @@ namespace HotelManagementWPF.ViewModels.Booking
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    public class BookingData
-    {
-        public int Id { get; set; }
-        public required string Guest { get; set; }
-        public required string Room { get; set; }
-        public DateTime CheckIn { get; set; }
-        public DateTime CheckOut { get; set; }
-        public required string Status { get; set; }
-
-        public string CheckInFormatted => CheckIn.ToString("MMM dd, yyyy");
-        public string CheckOutFormatted => CheckOut.ToString("MMM dd, yyyy");
-        public int Nights => (CheckOut - CheckIn).Days;
-    }
-
-    // Keep the old classes for backward compatibility if needed elsewhere
-    public class RoomResource
-    {
-        public required int Id { get; set; }
-        public required string Name { get; set; }
-        public required string Type { get; set; }
-    }
-
-    public class BookingAppointment
-    {
-        public required string Subject { get; set; }
-        public required DateTime StartTime { get; set; }
-        public required DateTime EndTime { get; set; }
-        public required int RoomId { get; set; }
-        public required string StatusColor { get; set; }
-    }
-
-    public class AppointmentMapping
-    {
-        public required string Subject { get; set; }
-        public required string StartTime { get; set; }
-        public required string EndTime { get; set; }
-        public required string ResourceId { get; set; }
-        public required string AppointmentBackground { get; set; }
-    }
-
-    public class ResourceMapping
-    {
-        public required string Id { get; set; }
-        public required string Name { get; set; }
     }
 }

@@ -92,7 +92,29 @@ namespace DatabaseProject
                 closeConn();
             }
         }
-
+        public void readDataWithParameters(string query, DataTable tblName, Dictionary<string, object> parameters)
+        {
+            try
+            {
+                createConn();
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                        {
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+                    adapter.SelectCommand = cmd;
+                    adapter.Fill(tblName);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public void Dispose()
         {
             if (connection != null)
