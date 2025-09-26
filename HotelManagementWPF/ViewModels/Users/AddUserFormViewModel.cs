@@ -42,10 +42,9 @@ namespace HotelManagementWPF.ViewModels
             RoleOptions = new ObservableCollection<string>
             {
                 "Administrator",
-                "Manager",
-                "Supervisor",
-                "Receptionist",
-                "Staff"
+                "Front Desk",
+                "Staff Manager",
+                "HR Manager"
             };
         }
 

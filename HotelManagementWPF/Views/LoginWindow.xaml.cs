@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Data;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace HotelManagementWPF.Views
@@ -62,46 +64,80 @@ namespace HotelManagementWPF.Views
             }
         }
 
+        private void ClearErrorMessages()
+        {
+            UsernameErrorTextBlock.Visibility = Visibility.Collapsed;
+            PasswordErrorTextBlock.Visibility = Visibility.Collapsed;
+            UsernameErrorTextBlock.Text = "";
+            PasswordErrorTextBlock.Text = "";
+        }
+
+        private void ShowError(TextBlock errorBlock, string message)
+        {
+            errorBlock.Text = message;
+            errorBlock.Visibility = Visibility.Visible;
+        }
+
         private void Login_Click(object sender, RoutedEventArgs e)
         {
+            // Clear previous errors
+            ClearErrorMessages();
+
             string username = UsernameTextBox.Text;
             string password = _isPasswordVisible ? PasswordTextBox.Text : PasswordBox.Password;
+            bool hasError = false;
 
-            // Basic validation
             if (string.IsNullOrWhiteSpace(username))
             {
-                MessageBox.Show("Please enter your username.", "Validation Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                UsernameTextBox.Focus();
-                return;
+                ShowError(UsernameErrorTextBlock, "Please input username");
+                hasError = true;
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Please enter your password.", "Validation Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowError(PasswordErrorTextBlock, "Please input password");
+                hasError = true;
+            }
 
-                if (_isPasswordVisible)
-                    PasswordTextBox.Focus();
-                else
-                    PasswordBox.Focus();
+            if (hasError)
                 return;
-            }
 
-            // Hardcoded credential check
-            if (username == "admin" && password == "admin")
+            // Validate credentials against database
+            using (var db = new DatabaseProject.DbConnections())
             {
-                // Login successful, open MainWindow
-                MainWindow mainWindow = new MainWindow();
-                mainWindow.Show();
+                try
+                {
+                    db.createConn();
 
-                // Close the login window
-                this.Close();
-            }
-            else
+                    string query = "SELECT role FROM tbl_User WHERE username = @username AND password = @password";
+                    var parameters = new Dictionary<string, object>
             {
-                MessageBox.Show("Invalid username or password.", "Login Failed",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                {"@username", username},
+                {"@password", password}
+            };
+
+                    DataTable dt = new DataTable();
+                    db.readDataWithParameters(query, dt, parameters);
+
+                    if (dt.Rows.Count == 0)
+                    {
+                        // Invalid credentials
+                        ShowError(UsernameErrorTextBlock, "Invalid username or password");
+                        ShowError(PasswordErrorTextBlock, "Invalid username or password");
+                        return;
+                    }
+
+                    string role = dt.Rows[0]["role"].ToString();
+
+                    // Based on role, open main window with permissions
+                    var mainWindow = new MainWindow(role);
+                    mainWindow.Show();
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error during login: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

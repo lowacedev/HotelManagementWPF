@@ -15,7 +15,6 @@ using HotelManagementWPF.Views.Inventory.Reports;
 using HotelManagementWPF.Views.Payroll;
 using HotelManagementWPF.Views.Services;
 
-
 namespace HotelManagementWPF
 {
     public partial class MainWindow : Window
@@ -23,12 +22,85 @@ namespace HotelManagementWPF
         private bool _isSidebarCollapsed = false;
         private bool _isInventoryDropdownExpanded = false;
 
-        public MainWindow()
+        private string UserRole = ""; // To store the role of the logged-in user
+
+        public MainWindow(string role)
         {
             InitializeComponent();
-
+            UserRole = role; // Assign role passed from login
+            SetModuleVisibility(); // Set modules based on role
             NavigateToSection("dashboard");
             this.WindowState = WindowState.Maximized;
+        }
+
+        private void SetModuleVisibility()
+        {
+            // Hide all modules initially
+            DashboardButton.Visibility = Visibility.Collapsed;
+            BookingsButton.Visibility = Visibility.Collapsed;
+            GuestsButton.Visibility = Visibility.Collapsed;
+            RoomsButton.Visibility = Visibility.Collapsed;
+            UsersButton.Visibility = Visibility.Collapsed;
+            EmployeesButton.Visibility = Visibility.Collapsed;
+
+            InventoryButton.Visibility = Visibility.Collapsed;
+            ItemsButton.Visibility = Visibility.Collapsed;
+            SuppliersButton.Visibility = Visibility.Collapsed;
+            ReportsButton.Visibility = Visibility.Collapsed;
+            PayrollButton.Visibility = Visibility.Collapsed;
+            ServicesButton.Visibility = Visibility.Collapsed;
+
+            // Show modules based on role
+            switch (UserRole)
+            {
+                case "Administrator":
+                    // Show all modules
+                    DashboardButton.Visibility = Visibility.Visible;
+                    BookingsButton.Visibility = Visibility.Visible;
+                    GuestsButton.Visibility = Visibility.Visible;
+                    RoomsButton.Visibility = Visibility.Visible;
+                    UsersButton.Visibility = Visibility.Visible;
+                    EmployeesButton.Visibility = Visibility.Visible;
+                    InventoryButton.Visibility = Visibility.Visible;
+                    ItemsButton.Visibility = Visibility.Visible;
+                    SuppliersButton.Visibility = Visibility.Visible;
+                    ReportsButton.Visibility = Visibility.Visible;
+                    PayrollButton.Visibility = Visibility.Visible;
+                    ServicesButton.Visibility = Visibility.Visible;
+                    break;
+
+                case "Front Desk":
+                    // Show only specific modules
+                    DashboardButton.Visibility = Visibility.Visible;
+                    BookingsButton.Visibility = Visibility.Visible;
+                    GuestsButton.Visibility = Visibility.Visible;
+                    RoomsButton.Visibility = Visibility.Visible;
+                    break;
+
+                case "Staff Manager":
+                    // Show only Housekeeping/Services
+                    ServicesButton.Visibility = Visibility.Visible;
+                    break;
+
+                case "HR Manager":
+                    // Show Payroll and Employees
+                    PayrollButton.Visibility = Visibility.Visible;
+                    EmployeesButton.Visibility = Visibility.Visible;
+                    break;
+
+                case "Inventory Manager":
+                    // Show Inventory modules
+                    InventoryButton.Visibility = Visibility.Visible;
+                    ItemsButton.Visibility = Visibility.Visible;
+                    SuppliersButton.Visibility = Visibility.Visible;
+                    ReportsButton.Visibility = Visibility.Visible;
+                    break;
+
+                default:
+                    // Default: show dashboard
+                    DashboardButton.Visibility = Visibility.Visible;
+                    break;
+            }
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -45,8 +117,8 @@ namespace HotelManagementWPF
         {
             _isInventoryDropdownExpanded = !_isInventoryDropdownExpanded;
 
-            InventoryDropdownContent.Visibility = _isInventoryDropdownExpanded 
-                ? Visibility.Visible 
+            InventoryDropdownContent.Visibility = _isInventoryDropdownExpanded
+                ? Visibility.Visible
                 : Visibility.Collapsed;
 
             // Rotate the arrow
@@ -65,49 +137,35 @@ namespace HotelManagementWPF
                 ? new GridLength(60)
                 : new GridLength(220);
 
-            // Adjust the hamburger button position and logo panel margin when collapsed
+            // Adjust positions and visibility based on collapse state
             if (_isSidebarCollapsed)
             {
-                // Move hamburger button more to the left and adjust logo panel
                 LogoPanel.Margin = new Thickness(5, 0, 0, 0);
                 HamburgerButton.Margin = new Thickness(-15, 0, 0, 0);
-            }
-            else
-            {
-                // Reset to original positions
-                LogoPanel.Margin = new Thickness(0, 0, 0, 0);
-                HamburgerButton.Margin = new Thickness(0, 0, 0, 0);
-            }
+                HeaderLogoImage.Visibility = Visibility.Collapsed;
+                HeaderLogoText.Visibility = Visibility.Collapsed;
+                ManagementHeader.Visibility = Visibility.Collapsed;
+                OperationsHeader.Visibility = Visibility.Collapsed;
 
-            // Hide logo image and logo text when collapsed
-            HeaderLogoImage.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            HeaderLogoText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            ManagementHeader.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            OperationsHeader.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
+                // Hide text inside buttons
+                DashboardText.Visibility = Visibility.Collapsed;
+                GuestsText.Visibility = Visibility.Collapsed;
+                UsersText.Visibility = Visibility.Collapsed;
+                RoomsText.Visibility = Visibility.Collapsed;
+                BookingsText.Visibility = Visibility.Collapsed;
+                InventoryText.Visibility = Visibility.Collapsed;
+                PayrollText.Visibility = Visibility.Collapsed;
+                ServicesText.Visibility = Visibility.Collapsed;
+                EmployeesText.Visibility = Visibility.Collapsed;
 
-            // Hide or show the label text inside each button so the icons/images remain visible when collapsed
-            DashboardText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            GuestsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            UsersText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            RoomsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            BookingsText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            InventoryText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            PayrollText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            ServicesText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            EmployeesText.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
-
-            // When sidebar is collapsed, show inventory sub-items as individual buttons but hide their text
-            // When expanded, hide the sub-items (they'll be in the dropdown)
-            if (_isSidebarCollapsed)
-            {
-                // Show the inventory sub-items as separate buttons when collapsed
+                // Show inventory sub-items directly
                 InventoryDropdownContent.Visibility = Visibility.Visible;
-                InventoryDropdownContent.Margin = new Thickness(0, 0, 0, 0); // Remove left margin when collapsed
+                InventoryDropdownContent.Margin = new Thickness(0, 0, 0, 0);
                 ItemsText.Visibility = Visibility.Collapsed;
                 SuppliersText.Visibility = Visibility.Collapsed;
                 ReportsText.Visibility = Visibility.Collapsed;
-                
-                // Reset dropdown state since we're showing items directly
+
+                // Reset dropdown arrow if expanded
                 if (_isInventoryDropdownExpanded)
                 {
                     _isInventoryDropdownExpanded = false;
@@ -120,23 +178,36 @@ namespace HotelManagementWPF
             }
             else
             {
-                // When expanded, restore the left margin for proper indentation
-                InventoryDropdownContent.Margin = new Thickness(20, 0, 0, 0);
-                
-                // When expanded, hide sub-items (they'll be controlled by dropdown)
+                // Expanded sidebar
+                HeaderLogoImage.Visibility = Visibility.Visible;
+                HeaderLogoText.Visibility = Visibility.Visible;
+                ManagementHeader.Visibility = Visibility.Visible;
+                OperationsHeader.Visibility = Visibility.Visible;
+
+                // Show button texts
+                DashboardText.Visibility = Visibility.Visible;
+                GuestsText.Visibility = Visibility.Visible;
+                UsersText.Visibility = Visibility.Visible;
+                RoomsText.Visibility = Visibility.Visible;
+                BookingsText.Visibility = Visibility.Visible;
+                InventoryText.Visibility = Visibility.Visible;
+                PayrollText.Visibility = Visibility.Visible;
+                ServicesText.Visibility = Visibility.Visible;
+                EmployeesText.Visibility = Visibility.Visible;
+
+                // Collapse inventory sub-items
                 if (!_isInventoryDropdownExpanded)
                 {
                     InventoryDropdownContent.Visibility = Visibility.Collapsed;
                 }
-                ItemsText.Visibility = Visibility.Visible;
-                SuppliersText.Visibility = Visibility.Visible;
-                ReportsText.Visibility = Visibility.Visible;
+
+                InventoryDropdownContent.Margin = new Thickness(20, 0, 0, 0);
             }
 
-            // Hide dropdown arrow when collapsed
+            // Hide inventory dropdown arrow when collapsed
             InventoryDropdownButton.Visibility = _isSidebarCollapsed ? Visibility.Collapsed : Visibility.Visible;
 
-            // Optionally adjust alignment of images when collapsed (keeps them centered)
+            // Adjust icon alignment inside buttons
             var buttons = new[] { DashboardButton, GuestsButton, UsersButton, RoomsButton,
                                   BookingsButton, InventoryButton, PayrollButton, ServicesButton, EmployeesButton,
                                   ItemsButton, SuppliersButton, ReportsButton };
@@ -162,11 +233,14 @@ namespace HotelManagementWPF
         {
             switch (section.ToLower())
             {
+                case "dashboard":
+                    var dashboardView = new DashboardView();
+                    MainContentArea.Content = dashboardView;
+                    HeaderTitle.Text = "Dashboard";
+                    break;
+
                 case "rooms":
-                    var windowService = new WindowService();
-                    var roomViewModel = new RoomViewModel(windowService);
                     var roomView = new RoomView();
-                    roomView.DataContext = roomViewModel;
                     MainContentArea.Content = roomView;
                     HeaderTitle.Text = "Room Management";
                     break;
@@ -175,12 +249,6 @@ namespace HotelManagementWPF
                     var bookingView = new HotelManagementWPF.Views.Booking.BookingView();
                     MainContentArea.Content = bookingView;
                     HeaderTitle.Text = "Booking Management";
-                    break;
-
-                case "dashboard":
-                    var dashboardView = new DashboardView();
-                    MainContentArea.Content = dashboardView;
-                    HeaderTitle.Text = "Dashboard";
                     break;
 
                 case "guests":
@@ -228,15 +296,13 @@ namespace HotelManagementWPF
                 case "payroll":
                     var payrollView = new PayrollView();
                     MainContentArea.Content = payrollView;
-        
                     HeaderTitle.Text = "Payroll Management";
                     break;
 
                 case "services":
                     var serviceView = new ServiceView();
                     MainContentArea.Content = serviceView;
-                  
-                    HeaderTitle.Text = "Services Management";
+                    HeaderTitle.Text = "House Keeping";
                     break;
 
                 default:

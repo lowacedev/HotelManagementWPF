@@ -225,6 +225,12 @@
                         <StackPanel Margin="0,0,0,20">
                             <TextBlock Text="Username" FontSize="12" FontWeight="Medium" Foreground="#FF666666" Margin="2,0,0,8"/>
                             <TextBox x:Name="UsernameTextBox" Style="{StaticResource ModernTextBoxStyle}"/>
+                            <!-- Error message for Username -->
+                            <TextBlock x:Name="UsernameErrorTextBlock" 
+                                       Foreground="Red" 
+                                       FontSize="11" 
+                                       Visibility="Collapsed" 
+                                       Margin="2,4,0,0"/>
                         </StackPanel>
 
                         <!-- Password Field -->
@@ -235,14 +241,20 @@
                                 <TextBox x:Name="PasswordTextBox" Style="{StaticResource ModernTextBoxStyle}" 
                                        Visibility="Collapsed"/>
                                 <Button x:Name="TogglePasswordVisibilityButton" 
-                                      Style="{StaticResource EyeButtonStyle}"
-                                      HorizontalAlignment="Right" 
-                                      VerticalAlignment="Center" 
-                                      Margin="0,0,15,0"
-                                      Click="TogglePasswordVisibility_Click">
+                                        Style="{StaticResource EyeButtonStyle}"
+                                        HorizontalAlignment="Right" 
+                                        VerticalAlignment="Center" 
+                                        Margin="0,0,15,0"
+                                        Click="TogglePasswordVisibility_Click">
                                     <Image x:Name="EyeIcon" Source="/Resources/Icons/eye.png" Width="20" Height="20" Opacity="0.5"/>
                                 </Button>
                             </Grid>
+                            <!-- Error message for Password -->
+                            <TextBlock x:Name="PasswordErrorTextBlock" 
+                                       Foreground="Red" 
+                                       FontSize="11" 
+                                       Visibility="Collapsed" 
+                                       Margin="2,4,0,0"/>
                         </StackPanel>
 
                         <!-- Forgot Password Link -->
