@@ -109,7 +109,7 @@ namespace HotelManagementWPF.Views
                 {
                     db.createConn();
 
-                    string query = "SELECT role FROM tbl_User WHERE username = @username AND password = @password";
+                    string query = "SELECT role, name FROM tbl_User WHERE username = @username AND password = @password";
                     var parameters = new Dictionary<string, object>
             {
                 {"@username", username},
@@ -128,9 +128,10 @@ namespace HotelManagementWPF.Views
                     }
 
                     string role = dt.Rows[0]["role"].ToString();
+                    string fullName = dt.Rows[0]["name"].ToString();
 
                     // Based on role, open main window with permissions
-                    var mainWindow = new MainWindow(role);
+                    var mainWindow = new MainWindow(role, fullName);
                     mainWindow.Show();
                     this.Close();
                 }

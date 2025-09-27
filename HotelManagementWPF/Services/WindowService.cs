@@ -21,6 +21,7 @@ namespace HotelManagementWPF.Services
 {
     public class WindowService : IWindowService
     {
+
         // Existing Room methods
         public void ShowAddRoomDialog()
         {

@@ -1,11 +1,14 @@
 ﻿using DatabaseProject;
 using HotelManagementWPF.Services;
+using Syncfusion.Windows.Shared;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 
 namespace HotelManagementWPF.ViewModels
@@ -18,13 +21,80 @@ namespace HotelManagementWPF.ViewModels
         private int _currentPage = 1;
         private const int _itemsPerPage = 10;
         private readonly IWindowService _windowService;
+        private string _fullName;
+        public string FullName
+        {
+            get => _fullName;
+            set
+            {
+                if (_fullName != value)
+                {
+                    _fullName = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(FirstLetter));
+                }
+            }
+        }
+
+        // New property for just first name
+        private string _firstName;
+public string FirstName
+{
+    get => _firstName;
+    set
+    {
+        if (_firstName != value)
+        {
+            _firstName = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(FirstLetter)); // triggers update for first letter
+        }
+    }
+}
+
+        public string FirstLetter
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(FirstName))
+                    return "";
+                return FirstName.Substring(0, 1).ToUpper();
+            }
+        }
+        public void UpdateCurrentUser(string fullName, string role)
+        {
+            FirstName = fullName.Split(' ').FirstOrDefault() ?? "";
+            Role = role;
+        }
+        public void SetCurrentUserFullName(string fullName, string role)
+        {
+            FirstName = fullName.Split(' ').FirstOrDefault() ?? "";
+            Role = role;
+
+        }
+
+        private string _role;
+        public string Role
+        {
+            get => _role;
+            set
+            {
+                if (_role != value)
+                {
+                    _role = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public UserViewModel(IWindowService windowService)
         {
             _windowService = windowService;
             InitializeCommands();
             InitializeCollections();
-            LoadUsers(); // Load data from database
+
+            // Load users during initialization
+            LoadUsers();
         }
 
         private void InitializeCommands()
@@ -109,7 +179,6 @@ namespace HotelManagementWPF.ViewModels
 
         private void ExecuteAddUser()
         {
-            // Fixed: Uncommented the window service call
             _windowService.ShowAddUserForm();
             LoadUsers(); // refresh after adding
         }
@@ -122,10 +191,10 @@ namespace HotelManagementWPF.ViewModels
         }
 
         // Method to load users directly from DB
-        private void LoadUsers()
+        // When loading users, call SetCurrentUserFullName with both name and role
+        public void LoadUsers()
         {
             var usersFromDb = new List<User>();
-
             try
             {
                 using (var db = new DbConnections())
@@ -133,13 +202,13 @@ namespace HotelManagementWPF.ViewModels
                     string query = "SELECT user_id, name, role, email, username, password, GETDATE() as CreatedDate FROM tbl_User";
                     DataTable dt = new DataTable();
                     db.readDatathroughAdapter(query, dt);
-
                     foreach (DataRow row in dt.Rows)
                     {
+                        string fullNameFromDb = row["name"].ToString();
                         usersFromDb.Add(new User
                         {
                             UserId = Convert.ToInt32(row["user_id"]),
-                            Name = row["name"].ToString(),
+                            Name = fullNameFromDb,
                             Role = row["role"].ToString(),
                             Email = row["email"].ToString(),
                             Username = row["username"].ToString(),
@@ -151,16 +220,21 @@ namespace HotelManagementWPF.ViewModels
             }
             catch (Exception ex)
             {
-                // handle exception if needed
-                System.Windows.MessageBox.Show($"Error loading users: {ex.Message}", "Error",
-                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                MessageBox.Show($"Error loading users: {ex.Message}");
             }
 
-            _users = new ObservableCollection<User>(usersFromDb);
-            FilteredUsers = new ObservableCollection<User>(_users);
+            if (usersFromDb.Any())
+            {
+                var currentUser = usersFromDb.First();
+                SetCurrentUserFullName(currentUser.Name, currentUser.Role);
+            }
+
+            // Set both Users and FilteredUsers
+            Users = new ObservableCollection<User>(usersFromDb);
+            FilteredUsers = new ObservableCollection<User>(usersFromDb);
+            _currentPage = 1;
             UpdatePagination();
         }
-
         private int TotalPages => (int)Math.Ceiling((double)(FilteredUsers?.Count ?? 0) / _itemsPerPage);
 
         private void UpdatePagination()

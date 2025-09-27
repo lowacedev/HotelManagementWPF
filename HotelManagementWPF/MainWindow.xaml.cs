@@ -14,6 +14,8 @@ using HotelManagementWPF.Views.Inventory.Suppliers;
 using HotelManagementWPF.Views.Inventory.Reports;
 using HotelManagementWPF.Views.Payroll;
 using HotelManagementWPF.Views.Services;
+using HotelManagementWPF.Views;
+using HotelManagementWPF.ViewModels.Users;
 
 namespace HotelManagementWPF
 {
@@ -23,14 +25,24 @@ namespace HotelManagementWPF
         private bool _isInventoryDropdownExpanded = false;
 
         private string UserRole = ""; // To store the role of the logged-in user
+        private UserViewModel _viewModel; // Your ViewModel instance
 
-        public MainWindow(string role)
+        public MainWindow(string role, string fullName)
         {
             InitializeComponent();
-            UserRole = role; // Assign role passed from login
-            SetModuleVisibility(); // Set modules based on role
+            UserRole = role;
+            SetModuleVisibility();
             NavigateToSection("dashboard");
             this.WindowState = WindowState.Maximized;
+            IWindowService windowService = new WindowService();
+            _viewModel = new UserViewModel(windowService);
+            DataContext = _viewModel;
+
+            // After ViewModel loads users
+            _viewModel.UpdateCurrentUser(fullName, role);
+
+            // Set the user name (example)
+
         }
 
         private void SetModuleVisibility()
@@ -71,7 +83,6 @@ namespace HotelManagementWPF
 
                 case "Front Desk":
                     // Show only specific modules
-                    DashboardButton.Visibility = Visibility.Visible;
                     BookingsButton.Visibility = Visibility.Visible;
                     GuestsButton.Visibility = Visibility.Visible;
                     RoomsButton.Visibility = Visibility.Visible;
@@ -308,6 +319,29 @@ namespace HotelManagementWPF
                 default:
                     HeaderTitle.Text = "Hotel Management System";
                     break;
+            }
+        }
+        private void ActionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = (sender as ComboBox).SelectedItem as ComboBoxItem;
+            if (selectedItem != null)
+            {
+                string action = selectedItem.Content.ToString();
+
+                if (action == "Logout")
+                {
+                    // Confirm logout and navigate
+                    var result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // Open login window
+                        LoginWindow loginWindow = new LoginWindow();
+                        loginWindow.Show();
+                        this.Close(); // Close current window
+                    }
+                }
+                // Reset selection after action
+                ActionComboBox.SelectedIndex = -1;
             }
         }
 
