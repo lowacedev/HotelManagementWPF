@@ -278,7 +278,7 @@
                     BorderThickness="1" 
                     CornerRadius="8"
                     Margin="0,0,0,16">
-                <DataGrid ItemsSource="{Binding PaginatedUsers}"
+                <DataGrid ItemsSource="{Binding PaginatedEmployees}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           RowHeaderWidth="0"
@@ -314,7 +314,7 @@
 
                         <DataGridTextColumn Header="Age" 
                                           Binding="{Binding Age}" 
-                                          Width="3*">
+                                          Width="1.5*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
@@ -328,7 +328,7 @@
 
                         <DataGridTextColumn Header="Gender" 
                     Binding="{Binding Gender}" 
-                    Width="3*">
+                    Width="1.5*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
@@ -339,26 +339,10 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-
-
-                        <DataGridTextColumn Header="Gender" 
-                    Binding="{Binding Gender}" 
-                    Width="3*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Foreground" Value="#5D6D7E"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Margin" Value="16,0"/>
-                                    <Setter Property="FontFamily" Value="Consolas"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-
 
                         <DataGridTextColumn Header="Job Title" 
-                    Binding="{Binding jobTitle}" 
-                    Width="3*">
+                    Binding="{Binding JobTitle}" 
+                    Width="2*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
@@ -372,7 +356,7 @@
 
                         <DataGridTextColumn Header="Department" 
                     Binding="{Binding Department}" 
-                    Width="3*">
+                    Width="2*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
@@ -385,8 +369,8 @@
                         </DataGridTextColumn>
 
                         <DataGridTextColumn Header="Phone Number" 
-                    Binding="{Binding phonenumber}" 
-                    Width="3*">
+                    Binding="{Binding PhoneNumber}" 
+                    Width="2.5*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
@@ -398,12 +382,14 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
+                      
+
                         <!-- Edit Button Column -->
                         <DataGridTemplateColumn Header="Actions" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource EditButton}"
-                                            Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                          Command="{Binding DataContext.EditEmployeeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
                                             ToolTip="Edit User"
                                             Margin="16,0"/>

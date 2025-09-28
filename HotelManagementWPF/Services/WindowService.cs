@@ -145,5 +145,25 @@ namespace HotelManagementWPF.Services
             editSupplierForm.ShowDialog();
         }
 
+        public void ShowAddEmployeeForm()
+        {
+            var addEmployeeForm = new Views.Employees.AddEmployeeFormView();
+            addEmployeeForm.Owner = Application.Current.MainWindow;
+            addEmployeeForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            addEmployeeForm.ShowDialog();
+        }
+
+        public void ShowEditEmployeeForm(Models.EmployeeModel employee)
+        {
+            if (employee == null) return;
+
+            var editForm = new Views.Employees.EditEmployeeFormView(employee.Id);
+            editForm.Owner = Application.Current.MainWindow;
+            editForm.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var result = editForm.ShowDialog();
+
+          
+        }
+
     }
 }

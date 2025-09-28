@@ -10,18 +10,26 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HotelManagementWPF.ViewModels.Employee;
 
 namespace HotelManagementWPF.Views.Employees
 {
-    public partial class EmployeeView : UserControl
+    /// <summary>
+    /// Interaction logic for EditEmployeeFormView.xaml
+    /// </summary>
+    public partial class EditEmployeeFormView : Window
     {
-        public EmployeeView()
+        public EditEmployeeFormView(int staffId)
         {
             InitializeComponent();
-            DataContext = new EmployeeViewModel();
+            DataContext = new EditEmployeeFormViewModel(staffId);
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
         }
     }
 }
