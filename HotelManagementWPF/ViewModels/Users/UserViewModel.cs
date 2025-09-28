@@ -15,6 +15,7 @@ namespace HotelManagementWPF.ViewModels
 {
     public class UserViewModel : INotifyPropertyChanged
     {
+        public int CurrentUserId { get; set; }
         private ObservableCollection<User> _users;
         private ObservableCollection<User> _filteredUsers;
         private string _searchText = string.Empty;
@@ -35,6 +36,11 @@ namespace HotelManagementWPF.ViewModels
                 }
             }
         }
+        public void SetCurrentUser(int userId)
+        {
+            CurrentUserId = userId;
+        }
+
 
         // New property for just first name
         private string _firstName;
@@ -299,5 +305,7 @@ public string FirstName
         public string Username { get; set; }
         public string Password { get; set; }
         public DateTime CreatedDate { get; set; }
+        public static int CurrentUserId { get; set; }
+
     }
 }

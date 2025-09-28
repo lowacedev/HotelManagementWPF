@@ -143,14 +143,15 @@ namespace HotelManagementWPF.ViewModels.Booking
 
         private void AddBooking()
         {
+            // Your current code
             var form = new BookingFormView();
             var vm = new BookingFormViewModel();
             form.DataContext = vm;
 
-            // Center the dialog
             form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            if (Application.Current.MainWindow != null)
+            // Set Owner properly
+            if (Application.Current.MainWindow != null && Application.Current.MainWindow != form)
             {
                 form.Owner = Application.Current.MainWindow;
             }
