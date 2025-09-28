@@ -13,14 +13,24 @@ public class RelayCommand<T> : ICommand
         _canExecute = canExecute;
     }
 
-    public bool CanExecute(object parameter) => _canExecute == null || _canExecute((T)parameter);
-
-    public void Execute(object parameter) => _execute((T)parameter);
-
-    public event EventHandler CanExecuteChanged
+    public bool CanExecute(object parameter)
     {
-        add => CommandManager.RequerySuggested += value;
-        remove => CommandManager.RequerySuggested -= value;
+        if (_canExecute == null) return true;
+        if (parameter == null && typeof(T).IsValueType) return false;
+        return _canExecute((T)parameter);
     }
 
+    public void Execute(object parameter)
+    {
+        if (parameter == null && typeof(T).IsValueType)
+            return;
+        _execute((T)parameter);
+    }
+
+    public event EventHandler CanExecuteChanged;
+
+    public void RaiseCanExecuteChanged()
+    {
+        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

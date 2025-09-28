@@ -1,37 +1,54 @@
+using HotelManagementWPF.Models;
+using HotelManagementWPF.ViewModels.Base;
+using HotelManagementWPF.Views.Booking;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using System.Windows;
+using System.Diagnostics;
 using System.Linq;
-using System.Text; // For decoding byte arrays
-using HotelManagementWPF.ViewModels.Base;
-using HotelManagementWPF.Views.Booking;
-using HotelManagementWPF.Models; // Ensure this namespace is included for BookingData
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Input;
 
 namespace HotelManagementWPF.ViewModels.Booking
 {
     public class BookingViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<BookingData> _bookings;
-        private ObservableCollection<BookingData> _filteredBookings;
-        private string _currentFilter = "All";
-        private string _searchText = string.Empty;
+        private readonly int _itemsPerPage = 7; // Show 7 items per page
         private int _currentPage = 1;
-        private const int _itemsPerPage = 10;
 
-        public string SearchText
+        private ObservableCollection<BookingData> _bookings; // All bookings
+        private ObservableCollection<BookingData> _filteredBookings; // After filter/search
+        private ObservableCollection<BookingData> _paginatedBookings; // Current page
+        private ObservableCollection<int> _pageNumbers; // Page number list
+
+        private string _searchText = string.Empty;
+        private string _currentFilter = "All";
+
+        public BookingViewModel()
         {
-            get => _searchText;
-            set
-            {
-                _searchText = value;
-                OnPropertyChanged();
-                ApplyFiltersAndSearch();
-            }
+            // Initialize collections
+            Bookings = new ObservableCollection<BookingData>();
+            FilteredBookings = new ObservableCollection<BookingData>();
+            PaginatedBookings = new ObservableCollection<BookingData>();
+            PageNumbers = new ObservableCollection<int>();
+
+            // Load initial data
+            LoadBookingsFromDatabase();
+
+            // Initialize commands
+            FilterCommand = new RelayCommand<string>(FilterBookings);
+            AddBookingCommand = new RelayCommand(AddBooking);
+            EditBookingCommand = new RelayCommand<BookingData>(EditBooking);
+            PreviousPageCommand = new RelayCommand(PreviousPage, () => _currentPage > 1);
+            NextPageCommand = new RelayCommand(NextPage, () => _currentPage < TotalPages);
+            GoToPageCommand = new RelayCommand<int>(GoToPage);
+
+            // Apply initial filter/search
+            ApplyFiltersAndSearch();
         }
 
+        // Properties
         public ObservableCollection<BookingData> Bookings
         {
             get => _bookings;
@@ -39,7 +56,7 @@ namespace HotelManagementWPF.ViewModels.Booking
             {
                 _bookings = value;
                 OnPropertyChanged();
-                UpdatePagination();
+                ApplyFiltersAndSearch();
             }
         }
 
@@ -54,14 +71,43 @@ namespace HotelManagementWPF.ViewModels.Booking
             }
         }
 
-        public ObservableCollection<BookingData> PaginatedBookings { get; set; }
-        public ObservableCollection<int> PageNumbers { get; set; }
+        public ObservableCollection<BookingData> PaginatedBookings
+        {
+            get => _paginatedBookings;
+            set
+            {
+                _paginatedBookings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<int> PageNumbers
+        {
+            get => _pageNumbers;
+            set
+            {
+                _pageNumbers = value;
+                OnPropertyChanged();
+            }
+        }
 
         public int TotalBookings => Bookings?.Count ?? 0;
         public int CheckinBookings => Bookings?.Count(b => b.StatusText == "Check-In") ?? 0;
         public int CheckoutBookings => Bookings?.Count(b => b.StatusText == "Check-Out") ?? 0;
         public int ReservationBookings => Bookings?.Count(b => b.StatusText == "Reservation") ?? 0;
 
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                ApplyFiltersAndSearch();
+            }
+        }
+
+        // Commands
         public ICommand FilterCommand { get; }
         public ICommand AddBookingCommand { get; }
         public ICommand EditBookingCommand { get; }
@@ -69,37 +115,14 @@ namespace HotelManagementWPF.ViewModels.Booking
         public ICommand NextPageCommand { get; }
         public ICommand GoToPageCommand { get; }
 
-        public BookingViewModel()
-        {
-            PaginatedBookings = new ObservableCollection<BookingData>();
-            PageNumbers = new ObservableCollection<int>();
-
-            // Load data from database
-            LoadBookingsFromDatabase();
-
-            // Initialize filtered list
-            FilteredBookings = new ObservableCollection<BookingData>(Bookings);
-
-            // Initialize commands
-            FilterCommand = new RelayCommand<string>(FilterBookings);
-            AddBookingCommand = new RelayCommand(AddBooking);
-            EditBookingCommand = new RelayCommand<BookingData>(EditBooking);
-            PreviousPageCommand = new RelayCommand(PreviousPage, () => _currentPage > 1);
-            NextPageCommand = new RelayCommand(NextPage, () => _currentPage < TotalPages);
-            GoToPageCommand = new RelayCommand<int>(GoToPage);
-
-            UpdatePagination();
-        }
-
+        // Load data from database
         private void LoadBookingsFromDatabase()
         {
-            // Fetch bookings from your database
             var bookingsFromDb = BookingData.GetAllBookings();
-
-            // Assign to Bookings collection
             Bookings = new ObservableCollection<BookingData>(bookingsFromDb);
         }
 
+        // Filter bookings based on filter criteria
         private void FilterBookings(string filter)
         {
             _currentFilter = filter;
@@ -107,21 +130,18 @@ namespace HotelManagementWPF.ViewModels.Booking
             ApplyFiltersAndSearch();
         }
 
+        // Apply filters and search
         private void ApplyFiltersAndSearch()
         {
             var filtered = Bookings.AsEnumerable();
 
-            // Filter by status
             if (_currentFilter != "All")
             {
+                var filterLower = _currentFilter.ToLower();
                 filtered = filtered.Where(b =>
-                {
-                    var statusStr = b.StatusText;
-                    return statusStr == _currentFilter;
-                });
+                    b.StatusText != null && b.StatusText.ToLower() == filterLower);
             }
 
-            // Filter by search text
             if (!string.IsNullOrWhiteSpace(_searchText))
             {
                 var searchLower = _searchText.ToLower();
@@ -135,90 +155,55 @@ namespace HotelManagementWPF.ViewModels.Booking
             _currentPage = 1;
             UpdatePagination();
 
+            // Notify counts
             OnPropertyChanged(nameof(TotalBookings));
             OnPropertyChanged(nameof(CheckinBookings));
             OnPropertyChanged(nameof(CheckoutBookings));
             OnPropertyChanged(nameof(ReservationBookings));
         }
 
-        private void AddBooking()
-        {
-            // Your current code
-            var form = new BookingFormView();
-            var vm = new BookingFormViewModel();
-            form.DataContext = vm;
-
-            form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-            // Set Owner properly
-            if (Application.Current.MainWindow != null && Application.Current.MainWindow != form)
-            {
-                form.Owner = Application.Current.MainWindow;
-            }
-
-            form.ShowDialog();
-
-            // Reload data after adding
-            LoadBookingsFromDatabase();
-            ApplyFiltersAndSearch();
-        }
-
-        private void EditBooking(BookingData booking)
-        {
-            if (booking == null) return;
-
-            var form = new BookingFormView();
-            var vm = new BookingFormViewModel();
-            // Pre-fill with booking data
-            vm.FullName = booking.Guest;
-            vm.RoomNumber = booking.RoomNumber;
-            vm.CheckInDate = booking.CheckIn;
-            vm.CheckOutDate = booking.CheckOut;
-            // Set other properties as needed
-
-            form.DataContext = vm;
-            form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-            if (Application.Current.MainWindow != null)
-            {
-                form.Owner = Application.Current.MainWindow;
-            }
-
-            form.ShowDialog();
-
-            // Reload data after editing
-            LoadBookingsFromDatabase();
-            ApplyFiltersAndSearch();
-        }
-
-        private int TotalPages => (int)Math.Ceiling((double)(FilteredBookings?.Count ?? 0) / _itemsPerPage);
-
+        // Update pagination data
         private void UpdatePagination()
         {
-            if (FilteredBookings == null) return;
 
-            // Update paginated items
-            var skip = (_currentPage - 1) * _itemsPerPage;
-            var paginatedItems = FilteredBookings.Skip(skip).Take(_itemsPerPage);
-
-            // Clear and add new items
-            PaginatedBookings.Clear();
-            foreach (var item in paginatedItems)
+            if (FilteredBookings == null || !FilteredBookings.Any())
             {
-                PaginatedBookings.Add(item);
+                PaginatedBookings = new ObservableCollection<BookingData>();
+                if (PageNumbers == null)
+                    PageNumbers = new ObservableCollection<int>();
+                PageNumbers.Clear();
+                return;
             }
 
-            // Update page numbers
+            int totalPages = TotalPages;
+
+            // Clamp current page
+            if (_currentPage > totalPages) _currentPage = totalPages;
+            if (_currentPage < 1) _currentPage = 1;
+
+            // Get current page items
+            var skip = (_currentPage - 1) * _itemsPerPage;
+            var pageItems = FilteredBookings.Skip(skip).Take(_itemsPerPage).ToList();
+
+            // Assign to PaginatedBookings
+            PaginatedBookings = new ObservableCollection<BookingData>(pageItems);
+
+            // Generate page numbers
+            if (PageNumbers == null)
+                PageNumbers = new ObservableCollection<int>();
             PageNumbers.Clear();
-            for (int i = 1; i <= TotalPages; i++)
+            for (int i = 1; i <= totalPages; i++)
             {
                 PageNumbers.Add(i);
             }
 
-            OnPropertyChanged(nameof(PaginatedBookings));
-            OnPropertyChanged(nameof(PageNumbers));
+            // Update command CanExecute
         }
 
+        // Calculate total pages
+        private int TotalPages => (int)Math.Ceiling((double)(FilteredBookings?.Count ?? 0) / _itemsPerPage);
+
+        // Navigation methods
         private void PreviousPage()
         {
             if (_currentPage > 1)
@@ -243,6 +228,57 @@ namespace HotelManagementWPF.ViewModels.Booking
             UpdatePagination();
         }
 
+        // Add booking
+        private void AddBooking()
+        {
+            var form = new BookingFormView();
+            var vm = new BookingFormViewModel();
+            form.DataContext = vm;
+            form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            if (Application.Current.MainWindow != null)
+            {
+                form.Owner = Application.Current.MainWindow;
+            }
+
+            form.ShowDialog();
+
+            // Reload data
+            LoadBookingsFromDatabase();
+            ApplyFiltersAndSearch();
+        }
+
+        // Edit booking
+        private void EditBooking(BookingData booking)
+        {
+            if (booking == null) return;
+
+            var form = new BookingFormView();
+            var vm = new BookingFormViewModel();
+
+            // Pre-fill data
+            vm.FullName = booking.Guest;
+            vm.RoomNumber = booking.RoomNumber;
+            vm.CheckInDate = booking.CheckIn;
+            vm.CheckOutDate = booking.CheckOut;
+            // Add other properties as needed
+
+            form.DataContext = vm;
+            form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            if (Application.Current.MainWindow != null)
+            {
+                form.Owner = Application.Current.MainWindow;
+            }
+
+            form.ShowDialog();
+
+            // Reload data
+            LoadBookingsFromDatabase();
+            ApplyFiltersAndSearch();
+        }
+
+        // INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

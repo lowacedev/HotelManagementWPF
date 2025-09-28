@@ -14,6 +14,7 @@ namespace HotelManagementWPF.Views.Booking
             InitializeComponent();
             // Set the DataContext to your ViewModel
             this.DataContext = new BookingViewModel();
+
         }
     }
     public class StatusToBackgroundConverter : IValueConverter

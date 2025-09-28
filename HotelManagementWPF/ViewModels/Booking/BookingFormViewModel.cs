@@ -2,6 +2,7 @@ using DatabaseProject;
 using HotelManagementWPF.Data;
 using HotelManagementWPF.ViewModels.Base;
 using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,6 +10,8 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using HotelManagementWPF.Models; // for UserSession
+
 
 namespace HotelManagementWPF.ViewModels.Booking
 {
@@ -49,7 +52,7 @@ namespace HotelManagementWPF.ViewModels.Booking
             get => _gender;
             set { _gender = value; OnPropertyChanged(); }
         }
-        public ObservableCollection<string> GenderOptions { get; } = new() { "Male", "Female", "Other" };
+        public ObservableCollection<string> GenderOptions { get; } = new() { "Male", "Female" };
 
         // Payment Details
         private string _paymentMethod = "Cash";
@@ -58,7 +61,7 @@ namespace HotelManagementWPF.ViewModels.Booking
             get => _paymentMethod;
             set { _paymentMethod = value; OnPropertyChanged(); }
         }
-        public ObservableCollection<string> PaymentMethodOptions { get; } = new() { "Cash", "Credit Card", "Bank Transfer", "Online Payment" };
+        public ObservableCollection<string> PaymentMethodOptions { get; } = new() { "Cash", "Credit Card", "Online Payment" };
 
         private decimal _advancedPayment = 0;
         public decimal AdvancedPayment
@@ -74,13 +77,14 @@ namespace HotelManagementWPF.ViewModels.Booking
             set { _totalAmount = value; OnPropertyChanged(); }
         }
 
-        private string _paymentStatus = "Pending";
-        public string PaymentStatus
+        private string _Status = "Check-In";
+        public string status
         {
-            get => _paymentStatus;
-            set { _paymentStatus = value; OnPropertyChanged(); }
+            get => _Status;
+            set { _Status = value; OnPropertyChanged(); }
         }
-        public ObservableCollection<string> PaymentStatusOptions { get; } = new() { "Pending", "Partial", "Completed" };
+
+        public ObservableCollection<string> Status { get; } = new() { "Check-In", "Reservation" };
 
         // Stay Details
         private string _roomNumber = string.Empty;
@@ -153,6 +157,22 @@ namespace HotelManagementWPF.ViewModels.Booking
             }
         }
 
+        private int _numberOfGuests = 1; // default to 1
+        public int NumberOfGuests
+        {
+            get => _numberOfGuests;
+            set
+            {
+                if (_numberOfGuests != value)
+                {
+                    _numberOfGuests = value;
+                    OnPropertyChanged();
+                    // Optionally, recalculate total amount if needed
+                    CalculateTotalAmount();
+                }
+            }
+        }
+
         public DateTime CheckInDate { get; set; } = DateTime.Today;
         public DateTime CheckOutDate { get; set; } = DateTime.Today.AddDays(1);
         public int NumberOfNights => (CheckOutDate > CheckInDate) ? (CheckOutDate - CheckInDate).Days : 0;
@@ -163,6 +183,7 @@ namespace HotelManagementWPF.ViewModels.Booking
 
         public BookingFormViewModel()
         {
+
             CancelCommand = new RelayCommand(() => OnCancel());
             BookRoomCommand = new RelayCommand(async () => await SaveBookingAsync());
 
@@ -274,69 +295,117 @@ namespace HotelManagementWPF.ViewModels.Booking
             // Implement dialog close or reset logic here
         }
 
-        private async Task SaveBookingAsync()
+        public async Task SaveBookingAsync()
         {
-            var db = new DbConnections();
-
-            // Insert guest info
-            string insertGuestQuery = @"
-                INSERT INTO tbl_Guest (name, age, gender, phoneNumber, totalAmount, totalPaid)
-                VALUES (@Name, @Age, @Gender, @PhoneNumber, @TotalAmount, @TotalPaid);
-                SELECT CAST(SCOPE_IDENTITY() as int);";
-
-            var guestParams = new Dictionary<string, object>
+            try
             {
-                { "@Name", FullName },
-                { "@Age", Age ?? 0 },
-                { "@Gender", Gender },
-                { "@PhoneNumber", PhoneNumber },
-                { "@TotalAmount", TotalAmount },
-                { "@TotalPaid", AdvancedPayment }
-            };
+                // Validate current user ID
+                if (Session.CurrentUserId <= 0)
+                {
+                    MessageBox.Show("Please log in before booking.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-            int guestId = 0;
-            object result = await db.ExecuteScalarAsync(insertGuestQuery, guestParams);
-            if (result != null && int.TryParse(result.ToString(), out var id))
-            {
-                guestId = id;
+                var db = new DbConnections();
+
+                // Verify user exists
+                string checkUserQuery = "SELECT COUNT(1) FROM tbl_User WHERE user_id = @UserId";
+                var checkUserParams = new Dictionary<string, object> { { "@UserId", Session.CurrentUserId } };
+                DataTable dtCheck = new DataTable();
+                db.readDataWithParameters(checkUserQuery, dtCheck, checkUserParams);
+
+                int userCount = 0;
+                if (dtCheck.Rows.Count > 0)
+                    userCount = Convert.ToInt32(dtCheck.Rows[0][0]);
+
+                if (userCount == 0)
+                {
+                    MessageBox.Show("User does not exist. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Insert guest
+                string insertGuestQuery = @"
+            INSERT INTO tbl_Guest (name, age, gender, phoneNumber, totalAmount, totalPaid)
+            VALUES (@Name, @Age, @Gender, @PhoneNumber, @TotalAmount, @TotalPaid);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var guestParams = new Dictionary<string, object>
+        {
+            { "@Name", FullName },
+            { "@Age", Age ?? 0 },
+            { "@Gender", Gender },
+            { "@PhoneNumber", PhoneNumber },
+            { "@TotalAmount", TotalAmount },
+            { "@TotalPaid", AdvancedPayment }
+        };
+
+                object guestResult = await db.ExecuteScalarAsync(insertGuestQuery, guestParams);
+                int guestId = guestResult != null && int.TryParse(guestResult.ToString(), out var gId) ? gId : 0;
+
+                if (guestId == 0)
+                {
+                    MessageBox.Show("Failed to add guest.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Get room id
+                string getRoomIdQuery = "SELECT room_id FROM tbl_Room WHERE roomNumber = @RoomNumber;";
+                var roomIdParams = new Dictionary<string, object> { { "@RoomNumber", RoomNumber } };
+                object roomIdResult = await db.ExecuteScalarAsync(getRoomIdQuery, roomIdParams);
+                int roomId = roomIdResult != null && int.TryParse(roomIdResult.ToString(), out var rId) ? rId : 0;
+
+                if (roomId == 0)
+                {
+                    MessageBox.Show("Room not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Insert booking
+                string insertBookingQuery = @"
+            INSERT INTO tbl_Booking (room_id, guest_id, user_id, check_in, check_out, numberOfGuest, totalAmount, totalPaid, Status)
+            VALUES (@RoomId, @GuestId, @UserId, @CheckIn, @CheckOut, @NumberOfGuest, @TotalAmount, @TotalPaid, @Status);";
+
+                var bookingParams = new Dictionary<string, object>
+        {
+            { "@RoomId", roomId },
+            { "@GuestId", guestId },
+            { "@UserId", Session.CurrentUserId },
+            { "@CheckIn", CheckInDate },
+            { "@CheckOut", CheckOutDate },
+            { "@NumberOfGuest", NumberOfGuests },
+            { "@TotalAmount", TotalAmount },
+            { "@TotalPaid", AdvancedPayment },
+            { "@Status", status }
+        };
+
+                await db.ExecuteNonQueryAsync(insertBookingQuery, bookingParams);
+
+                // Update room status
+                string updateRoomStatusQuery = "UPDATE tbl_Room SET roomStatus = 'Booked' WHERE room_id = @RoomId;";
+                await db.ExecuteNonQueryAsync(updateRoomStatusQuery, new Dictionary<string, object> { { "@RoomId", roomId } });
+
+                // Show success message
+                MessageBox.Show("Room booked successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Close the form - assuming this method is in code-behind or can access window
+                CloseWindow();
             }
-
-            // Get RoomId
-            string getRoomQuery = "SELECT room_id FROM tbl_Room WHERE roomNumber = @RoomNumber;";
-            var roomParams = new Dictionary<string, object> { { "@RoomNumber", RoomNumber } };
-            object roomResult = await db.ExecuteScalarAsync(getRoomQuery, roomParams);
-            int roomId = 0;
-            if (roomResult != null && int.TryParse(roomResult.ToString(), out var rId))
+            catch (Exception ex)
             {
-                roomId = rId;
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else
-            {
-                throw new Exception("Room not found");
-            }
-
-            // Insert booking
-            string insertBookingQuery = @"
-                INSERT INTO tbl_Booking (room_id, guest_id, user_id, check_in, check_out, numberOfGuest, totalPaid, Status)
-                VALUES (@RoomId, @GuestId, @UserId, @CheckIn, @CheckOut, @NumberOfGuest, @TotalPaid, @Status);";
-
-            var bookingParams = new Dictionary<string, object>
-            {
-                { "@RoomId", roomId },
-                { "@GuestId", guestId },
-                { "@UserId", User.CurrentUserId },
-                { "@CheckIn", CheckInDate },
-                { "@CheckOut", CheckOutDate },
-                { "@NumberOfGuest", 1 },
-                { "@TotalPaid", AdvancedPayment },
-                { "@Status", "Pending" }
-            };
-            await db.ExecuteNonQueryAsync(insertBookingQuery, bookingParams);
-
-            // Update room status
-            string updateRoomStatusQuery = "UPDATE tbl_Room SET roomStatus = 'Booked' WHERE room_id = @RoomId;";
-            await db.ExecuteNonQueryAsync(updateRoomStatusQuery, new Dictionary<string, object> { { "@RoomId", roomId } });
         }
+
+        private void CloseWindow()
+        {
+            // Assuming your ViewModel has access to the Window
+            // For example, if using MVVM Light or similar, you might raise an event or use messaging
+            // Here's a simple approach if you're calling from code-behind:
+            // (this method should be called from code-behind, not ViewModel directly)
+            Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)?.Close();
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)

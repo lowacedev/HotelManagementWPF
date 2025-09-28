@@ -8,8 +8,9 @@
     <UserControl.Resources>
 
         <!-- Status to Background Converter -->
-        
-        <!-- Optimized Button Styles with Templates for Better Performance -->
+        <!-- (Assuming you have converters or resources here if needed) -->
+
+        <!-- Pill Button Style -->
         <Style x:Key="PillButton" TargetType="Button">
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderBrush" Value="#E0E0E0" />
@@ -43,6 +44,7 @@
             </Setter>
         </Style>
 
+        <!-- Add Button Style -->
         <Style x:Key="AddButton" TargetType="Button">
             <Setter Property="Background">
                 <Setter.Value>
@@ -98,7 +100,7 @@
             </Setter>
         </Style>
 
-        <!-- Three Dots Edit Button Style -->
+        <!-- Edit Button Style -->
         <Style x:Key="EditButton" TargetType="Button">
             <Setter Property="Width" Value="32" />
             <Setter Property="Height" Value="32" />
@@ -140,6 +142,7 @@
             </Setter>
         </Style>
 
+        <!-- Page Button Style -->
         <Style x:Key="PageButton" TargetType="Button">
             <Setter Property="Width" Value="40" />
             <Setter Property="Height" Value="40" />
@@ -169,7 +172,7 @@
             </Setter>
         </Style>
 
-        <!-- Optimized DataGrid Row Style -->
+        <!-- Updated DataGridRow Style with explicit selection background -->
         <Style x:Key="ModernDataGridRow" TargetType="DataGridRow">
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -177,15 +180,28 @@
             <Setter Property="Margin" Value="0" />
             <Setter Property="Padding" Value="0,12" />
             <Setter Property="Height" Value="56" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F8F9FA" />
-                </Trigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E3F2FD" />
-                    <Setter Property="BorderBrush" Value="#2196F3" />
-                </Trigger>
-            </Style.Triggers>
+
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridRow">
+                        <Border x:Name="DGR_Border" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                            <DataGridCellsPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="DGR_Border" Property="Background" Value="#F8F9FA"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="DGR_Border" Property="Background" Value="#D3D3D3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- Modern DataGrid Header Style -->
@@ -199,7 +215,7 @@
             <Setter Property="Height" Value="48" />
         </Style>
 
-        <!-- Status Badge Styles -->
+        <!-- Status Badge Style -->
         <Style x:Key="StatusBadge" TargetType="Border">
             <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Padding" Value="8,4" />
@@ -263,7 +279,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Border" Property="BorderBrush" Value="#3498DB"/>
                             </Trigger>
-                            <!-- Hide placeholder when text is not empty -->
+                            <!-- Show placeholder when text is empty -->
                             <Trigger Property="Text" Value="">
                                 <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible"/>
                             </Trigger>
@@ -272,6 +288,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
     </UserControl.Resources>
 
     <!-- Main Content -->
@@ -279,11 +296,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-
 
         <!-- Filter and Action Header -->
         <Grid Grid.Row="1" Margin="0,0,0,20">
@@ -293,7 +308,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Enhanced Filter Buttons -->
+            <!-- Filter Buttons -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
                 <Button Style="{StaticResource PillButton}" 
                         Command="{Binding FilterCommand}" 
@@ -305,7 +320,7 @@
                 </Button>
                 <Button Style="{StaticResource PillButton}" 
                         Command="{Binding FilterCommand}" 
-                        CommandParameter="Checkin">
+                        CommandParameter="Check-In">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8" Fill="#27AE60" Margin="0,0,6,0"/>
                         <TextBlock Text="{Binding CheckinBookings, StringFormat=Check-In ({0})}" FontWeight="Medium"/>
@@ -313,7 +328,7 @@
                 </Button>
                 <Button Style="{StaticResource PillButton}" 
                         Command="{Binding FilterCommand}" 
-                        CommandParameter="Checkout">
+                        CommandParameter="Check-Out">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Width="8" Height="8" Fill="#3498DB" Margin="0,0,6,0"/>
                         <TextBlock Text="{Binding CheckoutBookings, StringFormat=Check-Out ({0})}" FontWeight="Medium"/>
@@ -329,7 +344,7 @@
                 </Button>
             </StackPanel>
 
-            <!-- Search and Add Button Row -->
+            <!-- Search and Add Button -->
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -342,7 +357,7 @@
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          HorizontalAlignment="Left"/>
 
-                <!-- Enhanced Add Button -->
+                <!-- Add New Booking Button -->
                 <Button Grid.Column="1" 
                         Style="{StaticResource AddButton}" 
                         Command="{Binding AddBookingCommand}"
@@ -352,13 +367,14 @@
             </Grid>
         </Grid>
 
-        <!-- Optimized DataGrid with Virtualization -->
+        <!-- DataGrid with Virtualization and Custom RowStyle -->
         <Border Grid.Row="2" 
                 Background="White" 
+                Margin="0,0,0,16"
                 BorderBrush="#E0E0E0" 
                 BorderThickness="1" 
                 CornerRadius="8"
-                Margin="0,0,0,16">
+                Height="440">
             <DataGrid ItemsSource="{Binding PaginatedBookings}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
@@ -376,7 +392,10 @@
                       EnableColumnVirtualization="True"
                       VirtualizingPanel.VirtualizationMode="Recycling"
                       VirtualizingPanel.IsVirtualizing="True"
-                      ScrollViewer.CanContentScroll="True">
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      Height="Auto">
 
                 <DataGrid.Columns>
                     <!-- Guest Column -->
@@ -399,6 +418,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="16,0"/>
@@ -407,10 +427,11 @@
                     </DataGridTextColumn>
 
                     <!-- Room Type -->
-                    <DataGridTextColumn Header="Room Type" Binding="{Binding RoomType}" Width="*">
+                    <DataGridTextColumn Header="Room Type" Binding="{Binding RoomType}" Width="140">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="16,0"/>
@@ -418,13 +439,14 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!-- Check-in Column -->
+                    <!-- Check-in -->
                     <DataGridTextColumn Header="Check-in" 
                                         Binding="{Binding CheckInFormatted}" 
-                                        Width="1.5*">
+                                        Width="1*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="16,0"/>
@@ -432,25 +454,30 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
-                    <!-- Check-out Column -->
+                    <!-- Check-out -->
                     <DataGridTextColumn Header="Check-out" 
                                         Binding="{Binding CheckOutFormatted}" 
-                                        Width="1.5*">
+                                        Width="1*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="16,0"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+
                     <!-- Total Paid -->
-                    <DataGridTextColumn Header="Total Paid" Binding="{Binding TotalPaid, StringFormat='₱ {0:N2}'}" Width="*">
+                    <DataGridTextColumn Header="Total Paid" 
+                                        Binding="{Binding TotalPaid, StringFormat='₱ {0:N2}'}" 
+                                        Width="1*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="Foreground" Value="#2C3E50"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Foreground" Value="#5D6D7E"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Margin" Value="16,0"/>
                             </Style>
@@ -458,14 +485,14 @@
                     </DataGridTextColumn>
 
                     <!-- Status Column -->
-                    <DataGridTemplateColumn Header="Status" Width="Auto">
+                    <DataGridTemplateColumn Header="Status" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource StatusBadge}"
                                         Margin="16,0">
                                     <TextBlock Text="{Binding Status}" 
                                              FontWeight="SemiBold" 
-                                             FontSize="12" 
+                                             FontSize="13" 
                                              HorizontalAlignment="Center" 
                                              VerticalAlignment="Center"/>
                                 </Border>
@@ -516,12 +543,12 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Style="{StaticResource PageButton}" 
-                                Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding}">
                             <TextBlock Text="{Binding}" 
-                                     HorizontalAlignment="Center" 
-                                     VerticalAlignment="Center" 
-                                     FontWeight="Medium"/>
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       FontWeight="Medium"/>
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
