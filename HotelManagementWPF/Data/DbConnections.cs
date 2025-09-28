@@ -126,5 +126,44 @@ namespace DatabaseProject
                 connection.Dispose();
             }
         }
+        public async Task<object> ExecuteScalarAsync(string query, Dictionary<string, object> parameters = null)
+        {
+            return await Task.Run(() =>
+            {
+                object result;
+                createConn();
+                using (var cmd = new SqlCommand(query, connection))
+                {
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    }
+                    result = cmd.ExecuteScalar();
+                }
+                closeConn();
+                return result;
+            });
+        }
+
+        public async Task<int> ExecuteNonQueryAsync(string query, Dictionary<string, object> parameters = null)
+        {
+            return await Task.Run(() =>
+            {
+                int affectedRows;
+                createConn();
+                using (var cmd = new SqlCommand(query, connection))
+                {
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    }
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
+                closeConn();
+                return affectedRows;
+            });
+        }
     }
 }

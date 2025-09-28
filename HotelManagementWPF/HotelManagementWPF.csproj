@@ -35,6 +35,7 @@
     <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" />
     <PackageReference Include="QuestPDF" Version="2025.12.0-alpha0" />
     <PackageReference Include="Syncfusion.SfScheduler.WPF" Version="31.1.19" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
 
   <ItemGroup>
