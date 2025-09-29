@@ -10,8 +10,8 @@ namespace HotelManagementWPF.Models
 {
     public class Supplier : INotifyPropertyChanged
     {
-        private string _supplierName;
-        private string _contactPerson;
+        private string _name;
+      
         private string _location;
         private string _phoneNumber;
         private int _supplierId;
@@ -26,25 +26,17 @@ namespace HotelManagementWPF.Models
             }
         }
 
-        public string SupplierName
+        public string Name
         {
-            get => _supplierName;
+            get => _name;
             set
             {
-                _supplierName = value;
+                _name = value;
                 OnPropertyChanged();
             }
         }
 
-        public string ContactPerson
-        {
-            get => _contactPerson;
-            set
-            {
-                _contactPerson = value;
-                OnPropertyChanged();
-            }
-        }
+       
 
         public string Location
         {

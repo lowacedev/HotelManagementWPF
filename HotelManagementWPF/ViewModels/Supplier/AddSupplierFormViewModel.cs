@@ -1,40 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using HotelManagementWPF.ViewModels.Base;
+using DatabaseProject; // for DbConnections
 
 namespace HotelManagementWPF.ViewModels.Supplier
 {
     public class AddSupplierFormViewModel : INotifyPropertyChanged
     {
-        private string _supplierName;
-        private string _contactPerson;
+        private string _name;
         private string _location;
         private string _phoneNumber;
+ 
 
-        public string SupplierName
+
+        public string Name
         {
-            get => _supplierName;
+            get => _name;
             set
             {
-                _supplierName = value;
+                _name = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public string ContactPerson
-        {
-            get => _contactPerson;
-            set
-            {
-                _contactPerson = value;
-                OnPropertyChanged();
+                (AddSupplierCommand as RelayCommand<object>)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -45,6 +35,7 @@ namespace HotelManagementWPF.ViewModels.Supplier
             {
                 _location = value;
                 OnPropertyChanged();
+                (AddSupplierCommand as RelayCommand<object>)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -55,8 +46,12 @@ namespace HotelManagementWPF.ViewModels.Supplier
             {
                 _phoneNumber = value;
                 OnPropertyChanged();
+                (AddSupplierCommand as RelayCommand<object>)?.RaiseCanExecuteChanged();
             }
         }
+
+       
+
 
         public ICommand AddSupplierCommand { get; }
 
@@ -67,24 +62,39 @@ namespace HotelManagementWPF.ViewModels.Supplier
 
         private bool CanExecuteAddSupplier(object? parameter)
         {
-            return !string.IsNullOrWhiteSpace(SupplierName) &&
-                   !string.IsNullOrWhiteSpace(ContactPerson) &&
+            return !string.IsNullOrWhiteSpace(Name) &&
                    !string.IsNullOrWhiteSpace(Location) &&
                    !string.IsNullOrWhiteSpace(PhoneNumber);
+                
         }
 
         private void ExecuteAddSupplier(object? parameter)
         {
             try
             {
-                // Here you would typically call a service to save the supplier
-                // For now, we'll just show a message
-                MessageBox.Show($"Supplier '{SupplierName}' has been added successfully!", 
-                               "Success", 
-                               MessageBoxButton.OK, 
-                               MessageBoxImage.Information);
+                using (var db = new DbConnections())
+                {
+                    string query = @"INSERT INTO dbo.tbl_Supplier 
+                                     (name, location, phoneNumber) 
+                                     VALUES (@Name, @Location, @PhoneNumber)";
 
-                // Close the window if parameter is a Window
+                    var parameters = new Dictionary<string, object>
+                    {
+                        { "@Name", Name },
+                        { "@Location", Location },
+                        { "@PhoneNumber", PhoneNumber }
+                       
+                    };
+
+                    db.ExecuteNonQuery(query, parameters);
+                }
+
+                MessageBox.Show($"Supplier '{Name}' has been added successfully!",
+                                "Success",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+
+                // Close the window if parameter is passed as Window
                 if (parameter is Window window)
                 {
                     window.DialogResult = true;
@@ -93,16 +103,11 @@ namespace HotelManagementWPF.ViewModels.Supplier
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding supplier: {ex.Message}", 
-                               "Error", 
-                               MessageBoxButton.OK, 
-                               MessageBoxImage.Error);
+                MessageBox.Show($"Error adding supplier: {ex.Message}",
+                                "Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
             }
-        }
-
-        public bool CanAddSupplier()
-        {
-            return CanExecuteAddSupplier(null);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -112,7 +117,4 @@ namespace HotelManagementWPF.ViewModels.Supplier
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-    // Simple RelayCommand implementation
- 
 }

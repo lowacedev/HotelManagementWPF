@@ -40,13 +40,7 @@ namespace HotelManagementWPF.Views.Inventory.Suppliers
 
         private void AddSupplierButton_Click(object sender, RoutedEventArgs e)
         {
-            // The command will handle the logic, but this can be used for additional validation
-            var viewModel = DataContext as AddSupplierFormViewModel;
-            if (viewModel != null && viewModel.CanAddSupplier())
-            {
-                DialogResult = true;
-                Close();
-            }
+         
         }
     }
 }

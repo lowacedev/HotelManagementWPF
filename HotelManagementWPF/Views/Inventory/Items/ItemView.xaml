@@ -267,7 +267,7 @@
 
                 <Button Grid.Column="1" 
         Style="{StaticResource AddButton}" 
-        Command="{Binding AddEmployeeCommand}">
+        Command="{Binding AddItemCommand}">
                     <TextBlock Text="Add New Item" FontSize="13"/>
                 </Button>
             </Grid>
@@ -299,7 +299,7 @@
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Item Name" 
-                                          Binding="{Binding itemName}" 
+                                          Binding="{Binding ItemName}" 
                                           Width="2.5*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -327,7 +327,7 @@
                         </DataGridTextColumn>
 
                         <DataGridTextColumn Header="Supplier" 
-                    Binding="{Binding Supplier}" 
+                    Binding="{Binding SupplierName}" 
                     Width="3*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -347,7 +347,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource EditButton}"
-                                            Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Command="{Binding DataContext.EditItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
                                             ToolTip="Edit User"
                                             Margin="16,0"/>

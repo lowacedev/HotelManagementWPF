@@ -32,7 +32,7 @@ namespace HotelManagementWPF.Services
 
         // Supplier methods  
         void ShowAddSupplierForm();
-        void ShowEditSupplierForm(SupplierData supplier);
+        void ShowEditSupplierForm(Models.Supplier supplier);
 
         void ShowAddEmployeeForm();
         void ShowEditEmployeeForm(Models.EmployeeModel employee);

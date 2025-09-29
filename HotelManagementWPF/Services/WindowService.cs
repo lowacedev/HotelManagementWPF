@@ -135,7 +135,7 @@ namespace HotelManagementWPF.Services
             addSupplierForm.ShowDialog();
         }
 
-        public void ShowEditSupplierForm(SupplierData supplier)
+        public void ShowEditSupplierForm(Supplier supplier)
         {
             var editSupplierForm = new Views.Inventory.Suppliers.AddSupplierFormView();
             var viewModel = new ViewModels.Supplier.AddSupplierFormViewModel();

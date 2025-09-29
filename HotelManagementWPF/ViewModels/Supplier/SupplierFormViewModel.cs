@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels.Base;
+using DatabaseProject;
+using HotelManagementWPF.Models;
 
 namespace HotelManagementWPF.ViewModels.Supplier
 {
@@ -16,8 +17,8 @@ namespace HotelManagementWPF.ViewModels.Supplier
     {
         private readonly IWindowService _windowService;
         private string _searchText;
-        private ObservableCollection<SupplierData> _suppliers;
-        private ObservableCollection<SupplierData> _paginatedSuppliers;
+        private ObservableCollection<Models.Supplier> _suppliers;
+        private ObservableCollection<Models.Supplier> _paginatedSuppliers;
         private int _currentPage = 1;
         private int _itemsPerPage = 10;
         private int _totalPages;
@@ -33,7 +34,7 @@ namespace HotelManagementWPF.ViewModels.Supplier
             }
         }
 
-        public ObservableCollection<SupplierData> Suppliers
+        public ObservableCollection<Models.Supplier> Suppliers
         {
             get => _suppliers;
             set
@@ -44,7 +45,7 @@ namespace HotelManagementWPF.ViewModels.Supplier
             }
         }
 
-        public ObservableCollection<SupplierData> PaginatedUsers // Keep the same name as in XAML
+        public ObservableCollection<Models.Supplier> PaginatedUsers
         {
             get => _paginatedSuppliers;
             set
@@ -92,51 +93,77 @@ namespace HotelManagementWPF.ViewModels.Supplier
 
         // Commands
         public ICommand AddSupplierCommand { get; }
-        public ICommand EditUserCommand { get; } // Keep the same name as in XAML
+        public ICommand EditUserCommand { get; } // Kept as in XAML
         public ICommand PreviousPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand GoToPageCommand { get; }
+        public ICommand RefreshCommand { get; }
 
         public SupplierFormViewModel(IWindowService windowService = null)
         {
             _windowService = windowService ?? new WindowService();
 
-            // Initialize commands - using the correct constructor signature
+            // Initialize commands
             AddSupplierCommand = new RelayCommand<object>(ExecuteAddSupplier);
             EditUserCommand = new RelayCommand<object>(ExecuteEditSupplier);
             PreviousPageCommand = new RelayCommand<object>(ExecutePreviousPage, CanExecutePreviousPage);
             NextPageCommand = new RelayCommand<object>(ExecuteNextPage, CanExecuteNextPage);
             GoToPageCommand = new RelayCommand<object>(ExecuteGoToPage);
+            RefreshCommand = new RelayCommand<object>(param => LoadSuppliersFromDatabase());
 
-            // Initialize sample data
-            InitializeSampleData();
+            // Load data from database
+            LoadSuppliersFromDatabase();
         }
 
-        private void InitializeSampleData()
+        private void LoadSuppliersFromDatabase()
         {
-            Suppliers = new ObservableCollection<SupplierData>
+            try
             {
-                new SupplierData { supplierName = "ABC Suppliers", contactPerson = "John Smith", Location = "New York", phonenumber = "123-456-7890" },
-                new SupplierData { supplierName = "XYZ Trading", contactPerson = "Jane Doe", Location = "California", phonenumber = "987-654-3210" },
-                new SupplierData { supplierName = "Global Supply Co.", contactPerson = "Mike Johnson", Location = "Texas", phonenumber = "555-123-4567" },
-                // Add more sample data as needed
-            };
+                using (var db = new DbConnections())
+                {
+                    DataTable dt = new DataTable();
+                    string query = "SELECT supplier_id, name, location, phoneNumber FROM dbo.tbl_Supplier ORDER BY name";
+                    db.readDatathroughAdapter(query, dt);
+
+                    var supplierList = new ObservableCollection<Models.Supplier>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        supplierList.Add(new Models.Supplier
+                        {
+                            SupplierId = Convert.ToInt32(row["supplier_id"]),
+                            Name = row["name"].ToString(),
+                            Location = row["location"] != DBNull.Value ? row["location"].ToString() : string.Empty,
+                            PhoneNumber = row["phoneNumber"] != DBNull.Value ? row["phoneNumber"].ToString() : string.Empty
+                        });
+                    }
+
+                    Suppliers = supplierList;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Error loading suppliers: {ex.Message}",
+                                              "Error",
+                                              System.Windows.MessageBoxButton.OK,
+                                              System.Windows.MessageBoxImage.Error);
+
+                Suppliers = new ObservableCollection<Models.Supplier>();
+            }
         }
 
         private void ExecuteAddSupplier(object? parameter)
         {
             _windowService.ShowAddSupplierForm();
-            // After the form is closed, you might want to refresh the list
-            // For now, we'll just keep the existing data
+            LoadSuppliersFromDatabase();
         }
 
         private void ExecuteEditSupplier(object? parameter)
         {
-            if (parameter is SupplierData supplier)
+            if (parameter is Models.Supplier supplier)
             {
                 _windowService.ShowEditSupplierForm(supplier);
-                // After editing, you might want to refresh the list
-                // For now, the changes are applied directly to the object reference
+                LoadSuppliersFromDatabase();
             }
         }
 
@@ -184,29 +211,26 @@ namespace HotelManagementWPF.ViewModels.Supplier
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 filteredSuppliers = filteredSuppliers.Where(s =>
-                    s.supplierName?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true ||
-                    s.contactPerson?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true ||
-                    s.phonenumber?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true ||
+                    s.Name?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true ||
+                    s.PhoneNumber?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true ||
                     s.Location?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) == true);
             }
 
             var filteredList = filteredSuppliers.ToList();
 
-            // Calculate pagination
+            // Pagination
             TotalPages = (int)Math.Ceiling((double)filteredList.Count / _itemsPerPage);
             if (TotalPages == 0) TotalPages = 1;
 
-            // Ensure current page is valid
             if (CurrentPage > TotalPages)
                 CurrentPage = TotalPages;
 
-            // Get items for current page
             var paginatedItems = filteredList
                 .Skip((CurrentPage - 1) * _itemsPerPage)
                 .Take(_itemsPerPage)
                 .ToList();
 
-            PaginatedUsers = new ObservableCollection<SupplierData>(paginatedItems);
+            PaginatedUsers = new ObservableCollection<Models.Supplier>(paginatedItems);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -216,15 +240,4 @@ namespace HotelManagementWPF.ViewModels.Supplier
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-    // Data model for suppliers
-    public class SupplierData
-    {
-        public string supplierName { get; set; }
-        public string contactPerson { get; set; }
-        public string Location { get; set; }
-        public string phonenumber { get; set; }
-    }
-
-
 }

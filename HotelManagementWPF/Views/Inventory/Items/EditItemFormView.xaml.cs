@@ -10,21 +10,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HotelManagementWPF.ViewModels.Item;
 
 namespace HotelManagementWPF.Views.Inventory.Items
 {
     /// <summary>
-    /// Interaction logic for ItemView.xaml
+    /// Interaction logic for EditItemFormView.xaml
     /// </summary>
-    public partial class ItemView : UserControl
+    public partial class EditItemFormView : Window
     {
-        public ItemView()
+        public EditItemFormView(Models.Item itemToEdit)
         {
             InitializeComponent();
-            DataContext = new ItemViewModel();
+            DataContext = new EditItemFormViewModel(itemToEdit);
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
