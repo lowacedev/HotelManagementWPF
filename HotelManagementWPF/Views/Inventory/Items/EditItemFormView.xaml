@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Edit Item" Height="380" Width="520" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="#FAFAFA">
+        Title="Edit Item" Height="302" Width="520" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="#FAFAFA">
     <Window.Resources>
         <!-- Modern Card Style -->
         <Style x:Key="Card" TargetType="Border">
@@ -162,7 +162,7 @@
         </Style>
     </Window.Resources>
 
-    <StackPanel Margin="18">
+    <StackPanel Margin="18,18,18,-6">
         <Border Style="{StaticResource Card}">
             <StackPanel>
                 <TextBlock Text="Item Information" Style="{StaticResource SectionHeader}"/>

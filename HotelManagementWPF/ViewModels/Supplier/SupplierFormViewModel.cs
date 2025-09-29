@@ -93,7 +93,7 @@ namespace HotelManagementWPF.ViewModels.Supplier
 
         // Commands
         public ICommand AddSupplierCommand { get; }
-        public ICommand EditUserCommand { get; } // Kept as in XAML
+        public ICommand EditSupplierCommand { get; } // Kept as in XAML
         public ICommand PreviousPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand GoToPageCommand { get; }
@@ -105,7 +105,7 @@ namespace HotelManagementWPF.ViewModels.Supplier
 
             // Initialize commands
             AddSupplierCommand = new RelayCommand<object>(ExecuteAddSupplier);
-            EditUserCommand = new RelayCommand<object>(ExecuteEditSupplier);
+            EditSupplierCommand = new RelayCommand<object>(ExecuteEditSupplier);
             PreviousPageCommand = new RelayCommand<object>(ExecutePreviousPage, CanExecutePreviousPage);
             NextPageCommand = new RelayCommand<object>(ExecuteNextPage, CanExecuteNextPage);
             GoToPageCommand = new RelayCommand<object>(ExecuteGoToPage);

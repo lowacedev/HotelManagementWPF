@@ -8,6 +8,7 @@ using HotelManagementWPF.Views.Booking;
 using HotelManagementWPF.Views.Guest;
 using HotelManagementWPF.Views.Room;
 using HotelManagementWPF.Views.Users;
+using HotelManagementWPF.Views.Inventory.Suppliers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -137,7 +138,7 @@ namespace HotelManagementWPF.Services
 
         public void ShowEditSupplierForm(Supplier supplier)
         {
-            var editSupplierForm = new Views.Inventory.Suppliers.AddSupplierFormView();
+            var editSupplierForm = new Views.Inventory.Suppliers.EditSupplierFormView(supplier);
             var viewModel = new ViewModels.Supplier.AddSupplierFormViewModel();
             editSupplierForm.DataContext = viewModel;
             editSupplierForm.Owner = Application.Current.MainWindow;

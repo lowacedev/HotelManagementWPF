@@ -12,7 +12,7 @@ namespace DatabaseProject
         private SqlDataReader DbReader;
         private SqlDataAdapter adapter;
         public SqlTransaction DbTran;
-        private string strConnString = "Data Source=DESKTOP-I6QG41I\\SQLEXPRESS;Initial Catalog=DB_HotelM;Integrated Security=True;Trust Server Certificate=True";
+        private string strConnString = "Data Source=DESKTOP-8TM8KGG\\SQLEXPRESS;Initial Catalog=DB_HotelM;Integrated Security=True;Trust Server Certificate=True";
 
         public DbConnections()
         {
