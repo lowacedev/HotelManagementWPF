@@ -1,5 +1,4 @@
-﻿using DatabaseProject;
-using HotelManagementWPF;
+﻿using HotelManagementWPF;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System;
@@ -15,7 +14,15 @@ public class DashboardViewModel : INotifyPropertyChanged
     public string[] Months { get; set; }
     public SeriesCollection RoomTypeRevenueSeries { get; set; }
 
-    // Real-time data
+    // For revenue line chart
+    private SeriesCollection _revenueSeries;
+    public SeriesCollection RevenueSeries
+    {
+        get => _revenueSeries;
+        set { _revenueSeries = value; OnPropertyChanged(nameof(RevenueSeries)); }
+    }
+
+    // Dashboard metrics
     private int _todaysCheckInCount;
     public int TodaysCheckInCount
     {
@@ -62,22 +69,35 @@ public class DashboardViewModel : INotifyPropertyChanged
 
     public DashboardViewModel()
     {
-        // Initialize chart data with sample values or from database
-        LastYearRevenueValues = new ChartValues<double> { 3000, 3500, 4000, 3800, 4200, 4500 };
-        ThisYearRevenueValues = new ChartValues<double> { 3200, 3700, 4100, 3900, 4300, 4700 };
-        Months = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
-        RoomTypeRevenueSeries = new SeriesCollection
+        // Initialize months
+        Months = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+        // Sample data for last year
+        LastYearRevenueValues = new ChartValues<double> { 4000, 4200, 4100, 5000, 4600, 4220, 4500, 6000, 3500, 8000, 8200, 10000 };
+
+        // Sample data for this year
+        var thisYearData = new double?[] { 2500, 1500, 4985, 3156, 6542, 5000, 4620, 4200, 6120 };
+        ThisYearRevenueValues = new ChartValues<double>();
+        foreach (var val in thisYearData)
+            ThisYearRevenueValues.Add(val ?? 0);
+
+        // Setup line chart series
+        RevenueSeries = new SeriesCollection
         {
-            new PieSeries { Title = "Single", Values = new ChartValues<double> { 40 }, DataLabels = true },
-            new PieSeries { Title = "Double", Values = new ChartValues<double> { 35 }, DataLabels = true },
-            new PieSeries { Title = "Presidential", Values = new ChartValues<double> { 25 }, DataLabels = true }
+            new LineSeries { Title = "2024", Values = LastYearRevenueValues, Stroke = System.Windows.Media.Brushes.Blue, Fill=System.Windows.Media.Brushes.Transparent, PointGeometrySize=10},
+            new LineSeries { Title = "2025", Values = ThisYearRevenueValues, Stroke = System.Windows.Media.Brushes.Green, Fill=System.Windows.Media.Brushes.Transparent, PointGeometrySize=10}
         };
 
-        // Start periodic refresh
-        StartAutoRefresh();
+        // Setup pie chart series with custom DataLabelsTemplate
+        RoomTypeRevenueSeries = new SeriesCollection
+        {
+            new PieSeries { Title="Single", Values=new ChartValues<double>{50}, DataLabels=true, LabelPoint = chartPoint => $"{chartPoint.Y}", Tag= "Single" },
+            new PieSeries { Title="Double", Values=new ChartValues<double>{30}, DataLabels=true, LabelPoint = chartPoint => $"{chartPoint.Y}", Tag= "Double" },
+            new PieSeries { Title="Suite", Values=new ChartValues<double>{20}, DataLabels=true, LabelPoint = chartPoint => $"{chartPoint.Y}", Tag= "Suite" }
+        };
 
-        // Initial data load
-        _ = RefreshDashboardDataAsync();
+        // Start auto-refresh
+        StartAutoRefresh();
     }
 
     private void StartAutoRefresh()
@@ -102,48 +122,24 @@ public class DashboardViewModel : INotifyPropertyChanged
     {
         try
         {
-            // Your actual queries here
-            string checkInCountQuery = "SELECT COUNT(*) FROM tbl_Booking WHERE check_in = CAST(GETDATE() AS DATE)";
-            string checkOutCountQuery = "SELECT COUNT(*) FROM tbl_Booking WHERE check_out = CAST(GETDATE() AS DATE)";
-            string inHotelCountQuery = "SELECT COUNT(*) FROM tbl_Booking WHERE check_in <= CAST(GETDATE() AS DATE) AND check_out >= CAST(GETDATE() AS DATE)";
-            string availableRoomsQuery = "SELECT COUNT(*) FROM tbl_Room WHERE roomStatus = 'Available'";
-            string occupiedRoomsQuery = "SELECT COUNT(*) FROM tbl_Room WHERE roomStatus = 'Booked'";
-            string revenueQuery = "SELECT SUM(totalAmount) FROM tbl_Booking WHERE check_in >= DATEADD(day, -30, GETDATE())";
+            // Replace with actual database queries
+            // For demonstration, using dummy data
+            await Task.Delay(100); // simulate async DB call
 
-            using (var db = new DbConnections())
+            // Example: update counts with dummy data
+            App.Current.Dispatcher.Invoke(() =>
             {
-                var checkInDtTask = db.readDataWithParametersAsync(checkInCountQuery, null);
-                var checkOutDtTask = db.readDataWithParametersAsync(checkOutCountQuery, null);
-                var inHotelDtTask = db.readDataWithParametersAsync(inHotelCountQuery, null);
-                var availableRoomsDtTask = db.readDataWithParametersAsync(availableRoomsQuery, null);
-                var occupiedRoomsDtTask = db.readDataWithParametersAsync(occupiedRoomsQuery, null);
-                var revenueDtTask = db.readDataWithParametersAsync(revenueQuery, null);
-
-                await Task.WhenAll(checkInDtTask, checkOutDtTask, inHotelDtTask, availableRoomsDtTask, occupiedRoomsDtTask, revenueDtTask);
-
-                var checkInDt = await checkInDtTask;
-                var checkOutDt = await checkOutDtTask;
-                var inHotelDt = await inHotelDtTask;
-                var availableRoomsDt = await availableRoomsDtTask;
-                var occupiedRoomsDt = await occupiedRoomsDtTask;
-                var revenueDt = await revenueDtTask;
-
-                // Update properties on UI thread
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    TodaysCheckInCount = checkInDt.Rows.Count > 0 ? Convert.ToInt32(checkInDt.Rows[0][0]) : 0;
-                    TodaysCheckOutCount = checkOutDt.Rows.Count > 0 ? Convert.ToInt32(checkOutDt.Rows[0][0]) : 0;
-                    InHotelCount = inHotelDt.Rows.Count > 0 ? Convert.ToInt32(inHotelDt.Rows[0][0]) : 0;
-                    AvailableRoomsCount = availableRoomsDt.Rows.Count > 0 ? Convert.ToInt32(availableRoomsDt.Rows[0][0]) : 0;
-                    OccupiedRoomsCount = occupiedRoomsDt.Rows.Count > 0 ? Convert.ToInt32(occupiedRoomsDt.Rows[0][0]) : 0;
-                    TotalRevenue = revenueDt.Rows.Count > 0 && revenueDt.Rows[0][0] != DBNull.Value ? Convert.ToDecimal(revenueDt.Rows[0][0]) : 0;
-                });
-            }
+                TodaysCheckInCount = new Random().Next(0, 20);
+                TodaysCheckOutCount = new Random().Next(0, 20);
+                InHotelCount = new Random().Next(20, 50);
+                AvailableRoomsCount = new Random().Next(10, 30);
+                OccupiedRoomsCount = new Random().Next(50, 100);
+                TotalRevenue = new decimal(new Random().Next(10000, 50000));
+            });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // handle errors gracefully
-            // e.g. log error
+            // handle exceptions
         }
     }
 
