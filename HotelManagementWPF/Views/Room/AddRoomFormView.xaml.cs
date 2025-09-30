@@ -1,26 +1,25 @@
-﻿using HotelManagementWPF.Models;
-using HotelManagementWPF.ViewModels;
+﻿using HotelManagementWPF.ViewModels;
+using HotelManagementWPF.ViewModels.Room;
 using System.Windows;
 
 namespace HotelManagementWPF.Views.Room
 {
-    public partial class AddRoomFormView : Window
+public partial class AddRoomFormView : Window
+{
+    private readonly RoomViewModel _mainViewModel;
+
+    public AddRoomFormView(RoomViewModel mainViewModel, Action onRoomAdded)
     {
-        private readonly RoomViewModel _mainViewModel;
+        InitializeComponent();
+        _mainViewModel = mainViewModel;
 
-        public AddRoomFormView(RoomViewModel mainViewModel)
-        {
-            InitializeComponent();
-            _mainViewModel = mainViewModel;
-           // this.DataContext = new AddRoomViewModel(_mainViewModel);
+        // Create ViewModel with callback
+        var vm = new AddRoomViewModel(_mainViewModel, onRoomAdded);
+        vm.CloseAction += () => this.Dispatcher.Invoke(() => this.Close());
 
+        this.DataContext = vm;
+    }
 
- 
-            var vm = new AddRoomViewModel(_mainViewModel);
-            // Subscribe to close event
-            vm.CloseAction += () => this.Dispatcher.Invoke(() => this.Close());
-            this.DataContext = vm;
-        }
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             

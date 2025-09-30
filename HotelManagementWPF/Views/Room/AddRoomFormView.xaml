@@ -278,7 +278,7 @@
                                 <x:Array Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                                     <sys:String>Single</sys:String>
                                     <sys:String>Double</sys:String>
-                                    <sys:String>Presidential Suite</sys:String>
+                                    <sys:String>Suite</sys:String>
                                 </x:Array>
                             </ComboBox.ItemsSource>
                         </ComboBox>
@@ -287,7 +287,7 @@
                         <TextBlock Text="Price per Night" Style="{StaticResource FormLabel}"/>
                         <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
                         <TextBlock Text="Room Status" Style="{StaticResource FormLabel}"/>
-                        <ComboBox SelectedItem="{Binding BedType, Mode=TwoWay}" Style="{StaticResource ModernComboBox}">
+                        <ComboBox SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" Style="{StaticResource ModernComboBox}">
                             <ComboBox.ItemsSource>
                                 <x:Array Type="sys:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                                     <sys:String>Available</sys:String>

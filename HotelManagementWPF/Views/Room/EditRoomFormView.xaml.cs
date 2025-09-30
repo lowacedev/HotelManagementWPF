@@ -21,16 +21,15 @@ namespace HotelManagementWPF.Views.Room
     /// </summary>
     public partial class EditRoomFormView : Window
     {
+        public event Action RoomUpdated; // Event to notify update
+
         public int RoomId { get; set; }
-        public string RoomNumber { get; set; }
-        public string BedType { get; set; }
-        public decimal Price { get; set; }
-        public string Status { get; set; }
+
         public EditRoomFormView(int roomId)
         {
             InitializeComponent();
             this.DataContext = new HotelManagementWPF.ViewModels.EditRoomViewModel(roomId);
-
+            this.RoomId = roomId;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -39,9 +38,17 @@ namespace HotelManagementWPF.Views.Room
             Close();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            // Call ViewModel's save method
+            if (DataContext is HotelManagementWPF.ViewModels.EditRoomViewModel vm)
+            {
+                vm.SaveChanges();
 
+                // Set DialogResult to true to indicate success
+                this.DialogResult = true;
+                this.Close();
+            }
         }
     }
 }

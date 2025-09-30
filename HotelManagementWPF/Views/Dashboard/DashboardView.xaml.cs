@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
 namespace HotelManagementWPF.Views.Dashboard
 {
-    /// <summary>
-    /// Interaction logic for dashboard.xaml
-    /// </summary>
     public partial class DashboardView : UserControl
     {
+        private DashboardViewModel _viewModel;
+
         public DashboardView()
         {
             InitializeComponent();
+            _viewModel = new DashboardViewModel(); // Instantiate your ViewModel
+            this.DataContext = _viewModel; // Set DataContext once
+
+            // Trigger initial data load
+            _ = _viewModel.RefreshDashboardDataAsync();
         }
     }
 }

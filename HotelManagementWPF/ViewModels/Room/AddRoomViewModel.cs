@@ -8,7 +8,7 @@ using System.Windows.Input;
 using HotelManagementWPF.Models;
 using DatabaseProject;
 
-namespace HotelManagementWPF.ViewModels
+namespace HotelManagementWPF.ViewModels.Room
 {
     public class AddRoomViewModel : INotifyPropertyChanged
     {
@@ -26,7 +26,8 @@ namespace HotelManagementWPF.ViewModels
             RoomNumber = string.Empty;
             BedType = BedTypes[0];
             Price = 0;
-            Status = "Available";
+            // Initialize SelectedStatus with default value
+            SelectedStatus = "Available";
 
             AddRoomCommand = new RelayCommand(ExecuteAddRoom);
         }
@@ -54,11 +55,12 @@ namespace HotelManagementWPF.ViewModels
             set { _price = value; OnPropertyChanged(); }
         }
 
-        private string _status = "Available";
-        public string Status
+        // Property for Room Status selection
+        private string _selectedStatus;
+        public string SelectedStatus
         {
-            get => _status;
-            set { _status = value; OnPropertyChanged(); }
+            get => _selectedStatus;
+            set { _selectedStatus = value; OnPropertyChanged(); }
         }
 
         public ICommand AddRoomCommand { get; }
@@ -74,10 +76,10 @@ namespace HotelManagementWPF.ViewModels
 
                 var parameters = new Dictionary<string, object>
                 {
-                    { "@RoomNumber", this.RoomNumber },
-                    { "@BedType", this.BedType },
-                    { "@PricePerNight", this.Price },
-                    { "@Status", this.Status }
+                    { "@RoomNumber", RoomNumber },
+                    { "@BedType", BedType },
+                    { "@PricePerNight", Price },
+                    { "@Status", SelectedStatus } // Use SelectedStatus here
                 };
 
                 db.ExecuteNonQuery(insertQuery, parameters);
@@ -91,7 +93,7 @@ namespace HotelManagementWPF.ViewModels
                 RoomNumber = string.Empty;
                 BedType = BedTypes[0];
                 Price = 0;
-                Status = "Available";
+                SelectedStatus = "Available";
 
                 // Close the add window/dialog
                 CloseAction?.Invoke();

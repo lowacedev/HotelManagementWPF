@@ -361,23 +361,24 @@ namespace HotelManagementWPF.ViewModels.Booking
                     return;
                 }
 
-                // Insert booking
+                // Insert booking with dateCreated
                 string insertBookingQuery = @"
-            INSERT INTO tbl_Booking (room_id, guest_id, user_id, check_in, check_out, numberOfGuest, totalAmount, totalPaid, Status)
-            VALUES (@RoomId, @GuestId, @UserId, @CheckIn, @CheckOut, @NumberOfGuest, @TotalAmount, @TotalPaid, @Status);";
+                    INSERT INTO tbl_Booking (room_id, guest_id, user_id, check_in, check_out, numberOfGuest, totalAmount, totalPaid, Status, datecreated)
+                    VALUES (@RoomId, @GuestId, @UserId, @CheckIn, @CheckOut, @NumberOfGuest, @TotalAmount, @TotalPaid, @Status, @DateCreated);";
 
                 var bookingParams = new Dictionary<string, object>
-        {
-            { "@RoomId", roomId },
-            { "@GuestId", guestId },
-            { "@UserId", Session.CurrentUserId },
-            { "@CheckIn", CheckInDate },
-            { "@CheckOut", CheckOutDate },
-            { "@NumberOfGuest", NumberOfGuests },
-            { "@TotalAmount", TotalAmount },
-            { "@TotalPaid", AdvancedPayment },
-            { "@Status", status }
-        };
+{
+                    { "@RoomId", roomId },
+                    { "@GuestId", guestId },
+                    { "@UserId", Session.CurrentUserId },
+                    { "@CheckIn", CheckInDate },
+                    { "@CheckOut", CheckOutDate },
+                    { "@NumberOfGuest", NumberOfGuests },
+                    { "@TotalAmount", TotalAmount },
+                    { "@TotalPaid", AdvancedPayment },
+                    { "@Status", status },
+                    { "@DateCreated", DateTime.Now }
+                };
 
                 await db.ExecuteNonQueryAsync(insertBookingQuery, bookingParams);
 

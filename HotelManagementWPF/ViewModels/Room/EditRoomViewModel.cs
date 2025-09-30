@@ -21,7 +21,7 @@ namespace HotelManagementWPF.ViewModels
 
         public List<string> BedTypeOptions { get; } = new List<string>
         {
-            "Single", "Double", "Queen", "King", "Twin", "Suite", "Deluxe", "Presidential Suite"
+            "Single", "Double", "Presidential Suite"
         };
 
         public List<RoomStatus> StatusOptions { get; } = new List<RoomStatus>
@@ -90,7 +90,7 @@ namespace HotelManagementWPF.ViewModels
             }
         }
 
-        private void SaveChanges()
+        public void SaveChanges()
         {
             try
             {

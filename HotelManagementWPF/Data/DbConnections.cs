@@ -165,5 +165,28 @@ namespace DatabaseProject
                 return affectedRows;
             });
         }
+        public async Task<DataTable> readDataWithParametersAsync(string query, Dictionary<string, object> parameters)
+        {
+            var dt = new DataTable();
+            using (var connection = new SqlConnection(strConnString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                        {
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
     }
 }

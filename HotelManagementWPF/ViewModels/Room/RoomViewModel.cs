@@ -14,13 +14,14 @@ namespace HotelManagementWPF.ViewModels
 {
     public class RoomViewModel : INotifyPropertyChanged
     {
+
         private readonly DbConnections _db = new();
-        private ObservableCollection<Room> _allRooms = new();
-        private ObservableCollection<Room> _paginatedRooms = new();
+        private ObservableCollection<HotelManagementWPF.Models.Room> _allRooms = new();
+        private ObservableCollection<HotelManagementWPF.Models.Room> _paginatedRooms = new();
         private RoomStatus? _selectedFilter;
         private int _currentPage = 1;
         private readonly int _pageSize = 10;
-
+            
         public RoomViewModel(IWindowService windowService)
         {
             LoadRoomsCommand = new RelayCommand(() => LoadRooms());
@@ -29,12 +30,12 @@ namespace HotelManagementWPF.ViewModels
             GoToPageCommand = new RelayCommand<int>(page => GoToPage(page));
             FilterCommand = new RelayCommand<string>(param => FilterRooms(param));
             AddRoomCommand = new RelayCommand(() => windowService.ShowAddRoomForm());
-            EditRoomCommand = new RelayCommand<Room>(room => windowService.ShowEditRoomForm(room));
+            EditRoomCommand = new RelayCommand<HotelManagementWPF.Models.Room>(room => windowService.ShowEditRoomForm(room));
 
             LoadRooms();
         }
 
-        public ObservableCollection<Room> PaginatedRooms
+        public ObservableCollection<HotelManagementWPF.Models.Room> PaginatedRooms
         {
             get => _paginatedRooms;
             set { _paginatedRooms = value; OnPropertyChanged(); }
@@ -54,7 +55,7 @@ namespace HotelManagementWPF.ViewModels
         public int TotalPages => (int)Math.Ceiling((double)FilteredRooms.Count / _pageSize);
         public List<int> PageNumbers => Enumerable.Range(1, TotalPages).ToList();
 
-        private List<Room> FilteredRooms =>
+        private List<HotelManagementWPF.Models.Room> FilteredRooms =>
             _selectedFilter == null ? _allRooms.ToList() : _allRooms.Where(r => r.Status == _selectedFilter).ToList();
 
         public void LoadRooms()
@@ -68,7 +69,7 @@ namespace HotelManagementWPF.ViewModels
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    var room = new Room
+                    var room = new HotelManagementWPF.Models.Room
                     {
                         Id = Convert.ToInt32(row["room_id"]),
                         RoomNumber = "#" + row["roomNumber"].ToString(),
@@ -121,7 +122,6 @@ namespace HotelManagementWPF.ViewModels
 
             var pageRooms = FilteredRooms.Skip((_currentPage - 1) * _pageSize).Take(_pageSize).ToList();
 
-            // Refresh the collection for UI
             PaginatedRooms.Clear();
             foreach (var r in pageRooms)
                 PaginatedRooms.Add(r);
