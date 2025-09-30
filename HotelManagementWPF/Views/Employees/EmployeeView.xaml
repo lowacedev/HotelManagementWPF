@@ -354,6 +354,20 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
+                        <DataGridTextColumn Header="Hourly Shift" 
+                  
+                    Width="2*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Foreground" Value="#5D6D7E"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="16,0"/>
+                                    <Setter Property="FontFamily" Value="Consolas"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
                         <DataGridTextColumn Header="Department" 
                     Binding="{Binding Department}" 
                     Width="2*">
