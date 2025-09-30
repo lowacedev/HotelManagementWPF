@@ -7,6 +7,55 @@
              mc:Ignorable="d"
              d:DesignHeight="900" d:DesignWidth="1400">
 
+    <UserControl.Resources>
+        <!-- Modern DatePicker Style -->
+        <Style x:Key="ModernDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Border Background="#FFFFFF" 
+                                BorderBrush="#CCCCCC" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Padding="4">
+                            <Grid>
+                                <TextBox x:Name="PART_TextBox"
+                                         Text="{Binding Path=SelectedDate, RelativeSource={RelativeSource AncestorType=DatePicker}, Mode=TwoWay, StringFormat='d'}"
+                                         Background="Transparent" 
+                                         BorderThickness="0" 
+                                         VerticalContentAlignment="Center" 
+                                         FontSize="14"
+                                         Foreground="#333"
+                                         IsReadOnly="True"/>
+                                <Button x:Name="PART_Button"
+                                        Content="▼"
+                                        Width="20"
+                                        HorizontalAlignment="Right"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        FontSize="12"
+                                        Foreground="#555"
+                                        Padding="0"/>
+                                <Popup x:Name="PART_Popup"
+                                       Placement="Bottom"
+                                       IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=DatePicker}}"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       StaysOpen="False">
+                                    <Border Background="#FFFFFF" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="8" Margin="0,2,0,0">
+                                        <Calendar x:Name="PART_Calendar"
+                                                  SelectedDate="{Binding SelectedDate, RelativeSource={RelativeSource AncestorType=DatePicker}, Mode=TwoWay}"
+                                                  DisplayDate="{Binding DisplayDate, RelativeSource={RelativeSource AncestorType=DatePicker}}"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid Background="#F5F7FB" Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,8 +63,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Date Filter Section -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="0,0,0,10" Width="150">
+            <TextBlock Text="Filter Date:" VerticalAlignment="Top" FontSize="20" Margin="0,0,0,5" FontWeight="Bold"/>
+            <DatePicker SelectedDate="{Binding SelectedFilterDate, Mode=TwoWay}" 
+                        Width="150" Height="30" 
+                        Style="{StaticResource ModernDatePickerStyle}"/>
+        </StackPanel>
+
         <!-- Overview Section -->
-        <Border Background="White" CornerRadius="15" Padding="20" Margin="0 0 0 10">
+        <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,176,10">
             <Border.Effect>
                 <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.2"/>
             </Border.Effect>
@@ -130,8 +187,12 @@
             <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,10,0" Grid.Column="3">
                 <StackPanel>
                     <TextBlock Text="Room Type: Monthly Revenue" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
-
-                    <lvc:PieChart Height="245" Series="{Binding RoomTypeRevenueSeries}" FontSize="15"/>
+                    <!-- Pie chart with data labels and custom label style -->
+                    <lvc:PieChart 
+                        Height="245" 
+                        LegendLocation="Right" 
+                        Series="{Binding RoomTypeRevenueSeries}">
+                    </lvc:PieChart>
                 </StackPanel>
             </Border>
         </Grid>

@@ -1,18 +1,20 @@
 ﻿using DatabaseProject;
 using HotelManagementWPF.Models;
+using HotelManagementWPF.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows;
 
 namespace HotelManagementWPF.ViewModels
 {
     public class EditRoomViewModel : INotifyPropertyChanged
     {
-        private readonly int _roomId;
-        private readonly DbConnections _db;
+        private int _roomId;
+        private DbConnections _db; // Removed readonly for dynamic switching
 
         private string _roomNumber;
         private string _bedType;
@@ -58,14 +60,33 @@ namespace HotelManagementWPF.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public EditRoomViewModel(int roomId)
+        /// <summary>
+        /// Constructor to initialize ViewModel with database mode.
+        /// </summary>
+        /// <param name="roomId">ID of the room to edit</param>
+        /// <param name="connectToOnlineDb">true for online, false for local</param>
+        public EditRoomViewModel(int roomId, bool connectToOnlineDb = false)
         {
             _roomId = roomId;
-            _db = new DbConnections();
+            _db = new DbConnections(connectToOnlineDb); // Initialize with mode
 
             LoadRoomFromDatabase();
 
             SaveChangesCommand = new RelayCommand(SaveChanges);
+        }
+
+        /// <summary>
+        /// Switch between online and local database dynamically.
+        /// </summary>
+        /// <param name="isOnline">true for online, false for local</param>
+        public void SetOnlineMode(bool isOnline)
+        {
+            if (_db != null)
+            {
+                _db.Dispose(); // Dispose previous connection
+            }
+            _db = new DbConnections(isOnline); // Initialize new connection
+            LoadRoomFromDatabase(); // Reload data from new database
         }
 
         private void LoadRoomFromDatabase()
@@ -82,11 +103,10 @@ namespace HotelManagementWPF.ViewModels
                 BedType = row["roomType"].ToString();
                 Price = Convert.ToDecimal(row["price"]);
                 Status = (RoomStatus)Enum.Parse(typeof(RoomStatus), row["roomStatus"].ToString());
-
             }
             else
             {
-                System.Windows.MessageBox.Show("Room not found!", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                MessageBox.Show("Room not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -95,12 +115,12 @@ namespace HotelManagementWPF.ViewModels
             try
             {
                 string updateQuery = @"
-                    UPDATE tbl_Room SET
-                        roomNumber = @RoomNumber,
-                        roomType = @BedType,
-                        price = @Price,
-                        roomStatus = @Status
-                    WHERE room_id = @RoomId";
+                UPDATE tbl_Room SET
+                    roomNumber = @RoomNumber,
+                    roomType = @BedType,
+                    price = @Price,
+                    roomStatus = @Status
+                WHERE room_id = @RoomId";
 
                 var parameters = new Dictionary<string, object>
                 {
@@ -111,14 +131,24 @@ namespace HotelManagementWPF.ViewModels
                     { "@RoomId", _roomId }
                 };
 
+                // Log for debugging
+                System.Diagnostics.Debug.WriteLine("Executing SQL: " + updateQuery);
+                foreach (var param in parameters)
+                {
+                    System.Diagnostics.Debug.WriteLine($"{param.Key} = {param.Value}");
+                }
+
                 _db.ExecuteNonQuery(updateQuery, parameters);
 
-                System.Windows.MessageBox.Show($"Room {RoomNumber} updated successfully!", "Success", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                // Notify other ViewModels that a room was updated
+                RoomUpdateNotifier.NotifyRoomUpdated();
+
+                MessageBox.Show($"Room {RoomNumber} updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 // Close the window
-                if (System.Windows.Application.Current.MainWindow is System.Windows.Window window)
+                if (Application.Current.MainWindow is Window window)
                 {
-                    foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
+                    foreach (Window w in Application.Current.Windows)
                     {
                         if (w is Views.Room.EditRoomFormView && w.DataContext == this)
                         {
@@ -131,11 +161,23 @@ namespace HotelManagementWPF.ViewModels
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error updating: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine("Error in SaveChanges: " + ex.Message);
+                MessageBox.Show($"Error updating: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    // Static notifier class inside same file
+    public static class RoomUpdateNotifier
+    {
+        public static event Action RoomUpdated;
+
+        public static void NotifyRoomUpdated()
+        {
+            RoomUpdated?.Invoke();
+        }
     }
 }

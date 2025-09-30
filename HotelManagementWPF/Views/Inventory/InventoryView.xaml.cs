@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HotelManagementWPF.ViewModels.Inventory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,8 @@ namespace HotelManagementWPF.Views.Inventory
         public InventoryView()
         {
             InitializeComponent();
+            this.DataContext = new InventoryViewModel();
+
         }
     }
 }

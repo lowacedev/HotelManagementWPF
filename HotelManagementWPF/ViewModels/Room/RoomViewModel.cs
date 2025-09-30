@@ -9,19 +9,19 @@ using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows;
 
 namespace HotelManagementWPF.ViewModels
 {
     public class RoomViewModel : INotifyPropertyChanged
     {
-
         private readonly DbConnections _db = new();
         private ObservableCollection<HotelManagementWPF.Models.Room> _allRooms = new();
         private ObservableCollection<HotelManagementWPF.Models.Room> _paginatedRooms = new();
         private RoomStatus? _selectedFilter;
         private int _currentPage = 1;
         private readonly int _pageSize = 10;
-            
+
         public RoomViewModel(IWindowService windowService)
         {
             LoadRoomsCommand = new RelayCommand(() => LoadRooms());
@@ -32,6 +32,20 @@ namespace HotelManagementWPF.ViewModels
             AddRoomCommand = new RelayCommand(() => windowService.ShowAddRoomForm());
             EditRoomCommand = new RelayCommand<HotelManagementWPF.Models.Room>(room => windowService.ShowEditRoomForm(room));
 
+            // Subscribe to room update notifications
+            RoomUpdateNotifier.RoomUpdated += OnRoomUpdated;
+
+            LoadRooms();
+        }
+
+        // Unsubscribe when this ViewModel is disposed if needed
+        ~RoomViewModel()
+        {
+            RoomUpdateNotifier.RoomUpdated -= OnRoomUpdated;
+        }
+
+        private void OnRoomUpdated()
+        {
             LoadRooms();
         }
 
