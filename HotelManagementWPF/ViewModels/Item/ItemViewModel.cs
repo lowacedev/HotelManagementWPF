@@ -182,7 +182,7 @@ namespace HotelManagementWPF.ViewModels.Item
                             i.itemName, 
                             i.quantity, 
                             i.stockLevel,
-                            s.name as SupplierName
+                            s.name as Name
                         FROM tbl_Inventory_item i
                         INNER JOIN tbl_Supplier s ON i.supplier_id = s.supplier_id
                         ORDER BY i.itemName";
@@ -201,7 +201,7 @@ namespace HotelManagementWPF.ViewModels.Item
                                 ItemName = row["itemName"].ToString() ?? string.Empty,
                                 Quantity = Convert.ToInt32(row["quantity"]),
                                 StockLevel = row["stockLevel"].ToString() ?? string.Empty,
-                                Name = row["SupplierName"].ToString() ?? string.Empty
+                                Name = row["name"].ToString() ?? string.Empty
                             });
                         }
 

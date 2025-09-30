@@ -253,8 +253,8 @@ namespace HotelManagementWPF.ViewModels.Booking
         {
             if (booking == null) return;
 
-            var form = new BookingFormView();
-            var vm = new BookingFormViewModel();
+            var form = new EditBookingFormView(booking.Id);
+            var vm = new EditBookingFormViewModel(booking.Id);
 
             // Pre-fill data
             vm.FullName = booking.Guest;

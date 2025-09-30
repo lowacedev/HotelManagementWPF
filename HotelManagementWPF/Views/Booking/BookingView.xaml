@@ -505,9 +505,10 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Style="{StaticResource EditButton}"
-                                        CommandParameter="{Binding}"
-                                        ToolTip="Edit Booking"
-                                        Margin="16,0"/>
+        Command="{Binding DataContext.EditBookingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        CommandParameter="{Binding}"
+        ToolTip="Edit Booking"
+        Margin="16,0"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

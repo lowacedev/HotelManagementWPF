@@ -84,17 +84,9 @@ namespace HotelManagementWPF.Services
             if (booking == null) return;
             var mainWindow = Application.Current.MainWindow;
 
-            var form = new BookingFormView();
-            var vm = new BookingFormViewModel
-            {
-                FullName = booking.Guest,
-                RoomNumber = booking.RoomNumber,
-                CheckInDate = booking.CheckIn,
-                CheckOutDate = booking.CheckOut
-            };
-
-            form.DataContext = vm;
-            form.Owner = mainWindow; // Set owner here
+            // Pass the booking ID to the EditBookingFormView
+            var form = new EditBookingFormView(booking.Id); // Make sure BookingData has an Id property
+            form.Owner = mainWindow;
             form.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             form.ShowDialog();
         }
