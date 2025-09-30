@@ -3,10 +3,135 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HotelManagementWPF.Views.Inventory"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="900" d:DesignWidth="1400">
+    <Grid Background="#F5F7FB" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Overview Section -->
+        <Border Background="White" CornerRadius="15" Padding="20" Margin="0 0 0 10">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Total Inventory Items -->
+                <StackPanel>
+                    <TextBlock Text="Total Items" FontSize="15" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding TotalItemsCount}" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <!-- Out of Stock Items -->
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Out of Stock" FontSize="15" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding OutOfStockCount}" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <!-- Low Stock Items -->
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Low Stock" FontSize="15" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding LowStockCount}" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <!-- Overstock Items -->
+                <StackPanel Grid.Column="3">
+                    <TextBlock Text="Overstock" FontSize="15" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding OverstockCount}" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+                <!-- Recently Added Items -->
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="Recently Added" FontSize="15" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding RecentlyAddedCount}" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Inventory Summary -->
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0 0 0 10">
+            <!-- Total Inventory Value -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Total Inventory Value" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock Text="{Binding TotalInventoryValue, StringFormat='₱{0:N0}'}" Margin="10,10,0,0" FontWeight="SemiBold" Foreground="Blue" FontSize="30"/>
+                </StackPanel>
+            </Border>
+            <!-- Items Added This Month -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Items Added This Month" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock Text="{Binding ItemsAddedThisMonth}" Margin="10,10,0,0" FontWeight="SemiBold" Foreground="Blue" FontSize="30"/>
+                </StackPanel>
+            </Border>
+            <!-- Items Sold This Month -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Items Sold This Month" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock Text="{Binding ItemsSoldThisMonth}" Margin="10,10,0,0" FontWeight="SemiBold" Foreground="Blue" FontSize="30"/>
+                </StackPanel>
+            </Border>
+            <!-- Damaged Items -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Damaged Items" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock Text="{Binding DamagedItemsCount}" Margin="10,10,0,0" FontWeight="SemiBold" Foreground="Blue" FontSize="30"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Bottom Charts -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="0"/>
+                <ColumnDefinition Width="0"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Monthly Inventory Movement Line Chart -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="10,0,10,0" Grid.Column="0">
+                <StackPanel>
+                    <TextBlock Text="Monthly Inventory Movement" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
+                    <lvc:CartesianChart Height="285" LegendLocation="Right">
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries 
+                                Title="Items Added" 
+                                Values="{Binding ItemsAddedValues}" 
+                                Stroke="Green" 
+                                Fill="Transparent" 
+                                PointGeometrySize="10"/>
+                            <lvc:LineSeries 
+                                Title="Items Sold" 
+                                Values="{Binding ItemsSoldValues}" 
+                                Stroke="Red" 
+                                Fill="Transparent" 
+                                PointGeometrySize="10"/>
+                        </lvc:CartesianChart.Series>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Months" Labels="{Binding Months}" FontSize="15" Foreground="Black"/>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Count" FontSize="15" Foreground="Black"/>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                </StackPanel>
+            </Border>
+
+            <!-- Pie Chart for Inventory by Category -->
+            <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,10,0" Grid.Column="3">
+                <StackPanel>
+                    <TextBlock Text="Inventory by Category" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
+                    <lvc:PieChart Height="245" Series="{Binding CategoryDistributionSeries}" FontSize="15"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
