@@ -5,7 +5,6 @@
              xmlns:local="clr-namespace:HotelManagementWPF.Models"
              Background="White">
     <UserControl.Resources>
-        <!-- Your existing styles... (SearchTextBox, AddButton, EditButton, PageButton, DataGrid styles, etc.) -->
 
         <!-- Search TextBox Style -->
         <Style x:Key="SearchTextBox" TargetType="TextBox">
