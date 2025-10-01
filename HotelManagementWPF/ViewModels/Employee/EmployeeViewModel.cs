@@ -131,7 +131,7 @@ namespace HotelManagementWPF.ViewModels.Employee
                 using (var dbConnection = new DbConnections())
                 {
                     var dataTable = new DataTable();
-                    string query = "SELECT staff_id, name, age, gender, jobTitle, Department, phoneNumber FROM dbo.tbl_Staff ORDER BY name";
+                    string query = "SELECT staff_id, name, age, gender, jobTitle, hourlyShift, Department, phoneNumber FROM dbo.tbl_Staff ORDER BY name";
 
                     dbConnection.readDatathroughAdapter(query, dataTable);
 
@@ -145,7 +145,8 @@ namespace HotelManagementWPF.ViewModels.Employee
                             Gender = row["gender"] == DBNull.Value ? string.Empty : row["gender"].ToString(),
                             JobTitle = row["jobTitle"] == DBNull.Value ? string.Empty : row["jobTitle"].ToString(),
                             Department = row["Department"] == DBNull.Value ? string.Empty : row["Department"].ToString(),
-                            PhoneNumber = row["phoneNumber"] == DBNull.Value ? string.Empty : row["phoneNumber"].ToString()
+                            PhoneNumber = row["phoneNumber"] == DBNull.Value ? string.Empty : row["phoneNumber"].ToString(),
+                            HourlyShift = row["hourlyShift"] == DBNull.Value ? string.Empty : row["hourlyShift"].ToString()
                         };
                         Employees.Add(employee);
                     }

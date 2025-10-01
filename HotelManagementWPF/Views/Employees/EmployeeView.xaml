@@ -342,20 +342,20 @@
 
                         <DataGridTextColumn Header="Job Title" 
                     Binding="{Binding JobTitle}" 
-                    Width="2*">
+                    Width="3.4*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="#5D6D7E"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Margin" Value="16,0"/>
+                                    <Setter Property="Margin" Value="16, 0"/>
                                     <Setter Property="FontFamily" Value="Consolas"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
                         <DataGridTextColumn Header="Hourly Shift" 
-                  
+                    Binding="{Binding HourlyShift}" 
                     Width="2*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">

@@ -20,9 +20,18 @@ namespace HotelManagementWPF.Views.Services
     /// </summary>
     public partial class ServiceView : UserControl
     {
+        private HousekeepingViewModel viewModel = new HousekeepingViewModel();
+
         public ServiceView()
         {
             InitializeComponent();
+            this.DataContext = viewModel;
+            LoadData();
+        }
+
+        private async void LoadData()
+        {
+            await viewModel.LoadDataAsync();
         }
     }
 }

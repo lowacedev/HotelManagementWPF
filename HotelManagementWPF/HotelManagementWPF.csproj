@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Housekeeping\**" />
+    <EmbeddedResource Remove="Views\Housekeeping\**" />
+    <None Remove="Views\Housekeeping\**" />
+    <Page Remove="Views\Housekeeping\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Icons\billings.png" />
     <None Remove="Resources\Icons\bookings.png" />
     <None Remove="Resources\Icons\dashboard.png" />
@@ -60,10 +67,6 @@
     <Resource Include="Resources\Icons\services.png" />
     <Resource Include="Resources\Icons\suppliers.png" />
     <Resource Include="Resources\Icons\users.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Housekeeping\" />
   </ItemGroup>
 
   <ItemGroup>

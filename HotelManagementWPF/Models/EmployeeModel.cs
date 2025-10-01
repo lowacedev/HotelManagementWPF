@@ -13,6 +13,7 @@ namespace HotelManagementWPF.Models
         private string _jobTitle;
         private string _department;
         private string _phoneNumber;
+        private string _hourlyShift; // <-- Add this line
 
         public int Id
         {
@@ -80,6 +81,17 @@ namespace HotelManagementWPF.Models
             set
             {
                 _phoneNumber = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // New property for HourlyShift
+        public string HourlyShift
+        {
+            get => _hourlyShift;
+            set
+            {
+                _hourlyShift = value;
                 OnPropertyChanged();
             }
         }
