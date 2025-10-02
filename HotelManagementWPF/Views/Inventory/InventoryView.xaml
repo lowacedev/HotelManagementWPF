@@ -67,14 +67,14 @@
             <!-- Items Added This Month -->
             <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
                 <StackPanel>
-                    <TextBlock Text="Items Added This Month" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock Text="Item Restocks Added" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
                     <TextBlock Text="{Binding ItemsAddedThisMonth}" Margin="10,10,0,0" FontWeight="SemiBold" Foreground="Blue" FontSize="30"/>
                 </StackPanel>
             </Border>
             <!-- Items Sold This Month -->
             <Border Background="White" CornerRadius="15" Padding="20" Margin="10">
                 <StackPanel>
-                    <TextBlock Text="Items Sold This Month" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock Text="Items Used" Margin="10,0,0,0" FontWeight="Bold" FontSize="20"/>
                     <TextBlock Text="{Binding ItemsSoldThisMonth}" Margin="10,10,0,0" FontWeight="SemiBold" Foreground="Blue" FontSize="30"/>
                 </StackPanel>
             </Border>
@@ -109,8 +109,8 @@
                                 Fill="Transparent" 
                                 PointGeometrySize="10"/>
                             <lvc:LineSeries 
-                                Title="Items Sold" 
-                                Values="{Binding ItemsSoldValues}" 
+                                Title="Items Used" 
+                                Values="{Binding ItemsUsedValues}" 
                                 Stroke="Red" 
                                 Fill="Transparent" 
                                 PointGeometrySize="10"/>
@@ -129,7 +129,7 @@
             <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,10,0" Grid.Column="3">
                 <StackPanel>
                     <TextBlock Text="Inventory by Category" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
-                    <lvc:PieChart Height="245" Series="{Binding CategoryDistributionSeries}" FontSize="15"/>
+                    <lvc:PieChart Height="245" LegendLocation="Right" Series="{Binding CategoryDistributionSeries}" FontSize="15"/>
                 </StackPanel>
             </Border>
         </Grid>

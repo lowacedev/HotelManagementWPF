@@ -268,11 +268,11 @@
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Add Guest Button -->
-                <Button Grid.Column="2" 
+               <!--" <Button Grid.Column="2" 
                         Style="{StaticResource AddButton}" 
                         Command="{Binding AddGuestCommand}">
                     <TextBlock Text="Add New Guest" FontSize="13"/>
-                </Button>
+                </Button> -->
             </Grid>
 
             <!-- DataGrid with virtualization -->

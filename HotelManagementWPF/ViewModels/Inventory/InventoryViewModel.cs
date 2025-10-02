@@ -12,14 +12,14 @@ namespace HotelManagementWPF.ViewModels.Inventory
         public int OverstockCount { get; set; } = 30;
         public int RecentlyAddedCount { get; set; } = 20;
 
-        public decimal TotalInventoryValue { get; set; } = 1500000; // Example
+        public decimal TotalInventoryValue { get; set; } = 90000; // Example
 
         public int ItemsAddedThisMonth { get; set; } = 200;
         public int ItemsSoldThisMonth { get; set; } = 180;
         public int DamagedItemsCount { get; set; } = 5;
 
         public ChartValues<int> ItemsAddedValues { get; set; }
-        public ChartValues<int> ItemsSoldValues { get; set; }
+        public ChartValues<int> ItemsUsedValues { get; set; }
 
         public string[] Months { get; set; } = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
@@ -29,7 +29,7 @@ namespace HotelManagementWPF.ViewModels.Inventory
         {
             // Sample data for charts
             ItemsAddedValues = new ChartValues<int> { 20, 18, 22, 19, 25, 30, 28, 35, 40, 38, 42, 45 };
-            ItemsSoldValues = new ChartValues<int> { 15, 17, 20, 18, 22, 25, 23, 30, 28, 26, 30, 35 };
+            ItemsUsedValues = new ChartValues<int>{ 15, 17, 20, 18, 22, 25, 23, 30, 28};
 
             // Sample pie chart data
             CategoryDistributionSeries = new SeriesCollection

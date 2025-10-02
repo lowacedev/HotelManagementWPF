@@ -40,8 +40,7 @@ namespace HotelManagementWPF
 
             // After ViewModel loads users
             _viewModel.UpdateCurrentUser(fullName, role);
-
-            // Set the user name (example)
+          
 
         }
 
