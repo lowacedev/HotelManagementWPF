@@ -44,7 +44,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Padding" Value="10,12"/>
-            <Setter Property="Margin" Value="5,2"/>
+            <Setter Property="Margin" Value="5,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -147,12 +147,31 @@
                         BorderThickness="0,0,0,1">
                     <Grid Margin="20,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
+
+                        <!-- Collapse Button (always visible) -->
+                        <Button Grid.Column="0"
+                                x:Name="HamburgerButton"
+                                Click="HamburgerButton_Click"
+                                Background="Transparent" 
+                                BorderThickness="0" 
+                                Padding="4" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Width="28" Height="28">
+                            <Button.Content>
+                                <Path Data="M3,6 L21,6 M3,12 L21,12 M3,18 L21,18" 
+                                      Stroke="White" 
+                                      StrokeThickness="2" 
+                                      Stretch="Uniform"/>
+                            </Button.Content>
+                        </Button>
+                        
                         <!-- Logo -->
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" x:Name="LogoPanel">
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" x:Name="LogoPanel">
                             <Image Source="Resources/Icons/logo.png" 
                                    Width="41" Height="40" 
                                    x:Name="HeaderLogoImage"
@@ -169,23 +188,6 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <!-- Collapse Button (always visible) -->
-                        <Button Grid.Column="1"
-                                x:Name="HamburgerButton"
-                                Click="HamburgerButton_Click"
-                                Background="Transparent" 
-                                BorderThickness="0" 
-                                Padding="4" 
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                Width="28" Height="28">
-                            <Button.Content>
-                                <Path Data="M3,6 L21,6 M3,12 L21,12 M3,18 L21,18" 
-                                      Stroke="White" 
-                                      StrokeThickness="2" 
-                                      Stretch="Uniform"/>
-                            </Button.Content>
-                        </Button>
                     </Grid>
                 </Border>
 
@@ -393,6 +395,19 @@
                                        Text="House Keeping" 
                                        Foreground="White" 
                                        VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}" 
+                            x:Name="AccountingButton"
+                            Click="NavigationButton_Click"
+                            Tag="Accounting"
+                            Margin="5,2,0,2">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/Icons/account.png" Width="20" Height="20" Margin="0,0,15,0"/>
+                                <TextBlock x:Name="AccountingText" 
+                                   Text="Accounting" 
+                                   Foreground="White" 
+                                   VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>

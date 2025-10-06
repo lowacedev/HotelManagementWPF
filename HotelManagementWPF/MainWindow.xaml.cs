@@ -16,6 +16,8 @@ using HotelManagementWPF.Views.Payroll;
 using HotelManagementWPF.Views.Services;
 using HotelManagementWPF.Views;
 using HotelManagementWPF.ViewModels.Users;
+using HotelManagementWPF.Views.Accounting;
+
 
 namespace HotelManagementWPF
 {
@@ -247,6 +249,7 @@ namespace HotelManagementWPF
                     var dashboardView = new DashboardView();
                     MainContentArea.Content = dashboardView;
                     HeaderTitle.Text = "Dashboard";
+                    UpdateSelectedButton(DashboardButton);
                     break;
 
                 case "rooms":
@@ -313,6 +316,12 @@ namespace HotelManagementWPF
                     var serviceView = new ServiceView();
                     MainContentArea.Content = serviceView;
                     HeaderTitle.Text = "House Keeping";
+                    break;
+
+                case "accounting":
+                    var accountingView = new Views.Accounting.AccountingView();
+                    MainContentArea.Content = accountingView;
+                    HeaderTitle.Text = "Accounting";
                     break;
 
                 default:
