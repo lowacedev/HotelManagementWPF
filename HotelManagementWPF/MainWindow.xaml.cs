@@ -59,7 +59,7 @@ namespace HotelManagementWPF
             InventoryButton.Visibility = Visibility.Collapsed;
             ItemsButton.Visibility = Visibility.Collapsed;
             SuppliersButton.Visibility = Visibility.Collapsed;
-            ReportsButton.Visibility = Visibility.Collapsed;
+            //ReportsButton.Visibility = Visibility.Collapsed;
             PayrollButton.Visibility = Visibility.Collapsed;
             ServicesButton.Visibility = Visibility.Collapsed;
 
@@ -77,7 +77,7 @@ namespace HotelManagementWPF
                     InventoryButton.Visibility = Visibility.Visible;
                     ItemsButton.Visibility = Visibility.Visible;
                     SuppliersButton.Visibility = Visibility.Visible;
-                    ReportsButton.Visibility = Visibility.Visible;
+                 //   ReportsButton.Visibility = Visibility.Visible;
                     PayrollButton.Visibility = Visibility.Visible;
                     ServicesButton.Visibility = Visibility.Visible;
                     break;
@@ -105,7 +105,7 @@ namespace HotelManagementWPF
                     InventoryButton.Visibility = Visibility.Visible;
                     ItemsButton.Visibility = Visibility.Visible;
                     SuppliersButton.Visibility = Visibility.Visible;
-                    ReportsButton.Visibility = Visibility.Visible;
+                    //ReportsButton.Visibility = Visibility.Visible;
                     break;
 
                 default:
@@ -175,7 +175,7 @@ namespace HotelManagementWPF
                 InventoryDropdownContent.Margin = new Thickness(0, 0, 0, 0);
                 ItemsText.Visibility = Visibility.Collapsed;
                 SuppliersText.Visibility = Visibility.Collapsed;
-                ReportsText.Visibility = Visibility.Collapsed;
+                //ReportsText.Visibility = Visibility.Collapsed;
 
                 // Reset dropdown arrow if expanded
                 if (_isInventoryDropdownExpanded)
@@ -222,7 +222,8 @@ namespace HotelManagementWPF
             // Adjust icon alignment inside buttons
             var buttons = new[] { DashboardButton, GuestsButton, UsersButton, RoomsButton,
                                   BookingsButton, InventoryButton, PayrollButton, ServicesButton, EmployeesButton,
-                                  ItemsButton, SuppliersButton, ReportsButton };
+                                  ItemsButton, SuppliersButton //ReportsButton
+                                                                };
 
             foreach (var button in buttons)
             {
@@ -236,7 +237,10 @@ namespace HotelManagementWPF
             {
                 string section = button.Tag?.ToString() ?? "unknown";
 
+                // Highlight the clicked button
                 UpdateSelectedButton(button);
+
+                // Navigate to the section
                 NavigateToSection(section);
             }
         }
@@ -321,7 +325,7 @@ namespace HotelManagementWPF
                 case "accounting":
                     var accountingView = new Views.Accounting.AccountingView();
                     MainContentArea.Content = accountingView;
-                    HeaderTitle.Text = "Accounting";
+                    HeaderTitle.Text = "Accounting Management";
                     break;
 
                 default:
@@ -356,8 +360,8 @@ namespace HotelManagementWPF
         private void UpdateSelectedButton(Button selectedButton)
         {
             var buttons = new[] { DashboardButton, GuestsButton, UsersButton, EmployeesButton, RoomsButton,
-                      BookingsButton, InventoryButton, ItemsButton, SuppliersButton, ReportsButton,
-                      PayrollButton, ServicesButton };
+                      BookingsButton, InventoryButton, ItemsButton, SuppliersButton, //ReportsButton,
+                      PayrollButton, ServicesButton, AccountingButton };
 
             foreach (var button in buttons)
             {

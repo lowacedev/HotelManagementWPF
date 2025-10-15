@@ -1,13 +1,18 @@
 ﻿<UserControl x:Class="HotelManagementWPF.Views.Payroll.PayrollView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:HotelManagementWPF.ViewModels"
+             xmlns:vm="clr-namespace:HotelManagementWPF.ViewModels.Payroll"
              xmlns:local="clr-namespace:HotelManagementWPF.Views.Payroll"
              Background="White">
 
     <UserControl.Resources>
+        <!-- Define Centered Cell Style for DataGrid -->
+        <Style x:Key="CenteredCellStyle" TargetType="DataGridCell">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
 
-        <!-- Search TextBox -->
+        <!-- Search TextBox Style -->
         <Style x:Key="SearchTextBox" TargetType="TextBox">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
@@ -22,36 +27,36 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border x:Name="Border" 
-                                Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                CornerRadius="8">
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="8">
                             <Grid>
                                 <!-- Search Icon -->
                                 <Path Fill="#95A5A6"
-                                      Margin="12,0,0,0"
-                                      HorizontalAlignment="Left"
-                                      VerticalAlignment="Center"
-                                      Width="16" Height="16"
-                                      Stretch="Fill"
-                                      Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                  Margin="12,0,0,0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  Width="16" Height="16"
+                                  Stretch="Fill"
+                                  Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
 
                                 <!-- Placeholder Text -->
                                 <TextBlock x:Name="PlaceholderText"
-                                         Text="Search"
-                                         Foreground="#95A5A6"
-                                         VerticalAlignment="Center"
-                                         Margin="40,0,12,0"
-                                         IsHitTestVisible="False"
-                                         Visibility="Visible"/>
+                                     Text="Search"
+                                     Foreground="#95A5A6"
+                                     VerticalAlignment="Center"
+                                     Margin="40,0,12,0"
+                                     IsHitTestVisible="False"
+                                     Visibility="Visible"/>
 
                                 <!-- Text Input Area -->
                                 <ScrollViewer x:Name="PART_ContentHost"
-                                            Focusable="False"
-                                            HorizontalScrollBarVisibility="Hidden"
-                                            VerticalScrollBarVisibility="Hidden"
-                                            Margin="40,8,12,8"
-                                            VerticalAlignment="Center"/>
+                                        Focusable="False"
+                                        HorizontalScrollBarVisibility="Hidden"
+                                        VerticalScrollBarVisibility="Hidden"
+                                        Margin="40,8,12,8"
+                                        VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -72,6 +77,7 @@
             </Setter>
         </Style>
 
+        <!-- Add Button Style -->
         <Style x:Key="AddButton" TargetType="Button">
             <Setter Property="Background">
                 <Setter.Value>
@@ -90,9 +96,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Border" 
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <TextBlock Text="+" FontSize="16" FontWeight="Bold" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                 <ContentPresenter VerticalAlignment="Center"/>
@@ -127,7 +133,7 @@
             </Setter>
         </Style>
 
-        <!--  Edit  -->
+        <!-- Edit Button Style -->
         <Style x:Key="EditButton" TargetType="Button">
             <Setter Property="Width" Value="32" />
             <Setter Property="Height" Value="32" />
@@ -138,9 +144,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Border" 
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="6">
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="6">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Ellipse Width="3" Height="3" Fill="#95A5A6" Margin="0,1"/>
                                 <Ellipse Width="3" Height="3" Fill="#95A5A6" Margin="0,1"/>
@@ -169,6 +175,7 @@
             </Setter>
         </Style>
 
+        <!-- Page Button Style -->
         <Style x:Key="PageButton" TargetType="Button">
             <Setter Property="Width" Value="40" />
             <Setter Property="Height" Value="40" />
@@ -181,10 +188,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Border" 
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6">
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -198,7 +205,7 @@
             </Setter>
         </Style>
 
-        <!-- Optimized DataGrid Row Style -->
+        <!-- DataGrid Row Style -->
         <Style x:Key="ModernDataGridRow" TargetType="DataGridRow">
             <Setter Property="Background" Value="White" />
             <Setter Property="BorderThickness" Value="0,0,0,1" />
@@ -206,6 +213,8 @@
             <Setter Property="Margin" Value="0" />
             <Setter Property="Padding" Value="0,12" />
             <Setter Property="Height" Value="56" />
+            <!-- Add this line to center the content horizontally -->
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#F8F9FA" />
@@ -217,7 +226,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Modern DataGrid Header Style -->
+        <!-- DataGrid Header Style -->
         <Style x:Key="ModernDataGridHeader" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#F8F9FA" />
             <Setter Property="Foreground" Value="#2C3E50" />
@@ -238,44 +247,44 @@
         </Style>
     </UserControl.Resources>
 
-    <!-- Loading Overlay -->
+    <!-- Main container -->
     <Grid>
         <Grid x:Name="MainContent" Margin="24">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Search and Action Header -->
+            <!-- Header with Search and Add button -->
             <Grid Grid.Row="1" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Search TextBox (same sizing as BookingView) -->
-                <TextBox Grid.Column="0" 
-             Style="{StaticResource SearchTextBox}"
-             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-             Margin="0,0,12,0"
-             MinWidth="250"   
-             MaxWidth="400"   
-             HorizontalAlignment="Left"/>
+                <!-- Search TextBox -->
+                <TextBox Grid.Column="0"
+                         Style="{StaticResource SearchTextBox}"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         MinWidth="250"
+                         MaxWidth="400"
+                         HorizontalAlignment="Left"/>
 
-
-                <Button Grid.Column="1" 
-        Style="{StaticResource AddButton}" 
-        Command="{Binding AddEmployeeCommand}">
+                <!-- Add New Button -->
+                <Button Grid.Column="1"
+        Style="{StaticResource AddButton}"
+        Command="{Binding AddPayrollCommand}">
                     <TextBlock Text="Add New" FontSize="13"/>
                 </Button>
             </Grid>
-            <!-- Optimized DataGrid with Virtualization -->
-            <Border Grid.Row="2" 
-                    Background="White" 
-                    BorderBrush="#E0E0E0" 
-                    BorderThickness="1" 
+
+            <!-- DataGrid displaying payroll + staff info -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
                     CornerRadius="8"
                     Margin="0,0,0,16">
                 <DataGrid ItemsSource="{Binding PaginatedUsers}"
@@ -298,9 +307,8 @@
                           ScrollViewer.CanContentScroll="True">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" 
-                                          Binding="{Binding Name}" 
-                                          Width="2.5*">
+                        <!-- Staff Name -->
+                        <DataGridTextColumn Header="Staff Name" Binding="{Binding StaffName}" Width="170" CellStyle="{StaticResource CenteredCellStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="14"/>
@@ -312,85 +320,107 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Department" 
-                                          Binding="{Binding Department}" 
-                                          Width="3*">
+                        <!-- Department -->
+                        <DataGridTextColumn Header="Department" Binding="{Binding Department}" Width="150" CellStyle="{StaticResource CenteredCellStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="#5D6D7E"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="Margin" Value="16,0"/>
-                                    <Setter Property="FontFamily" Value="Consolas"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Gross" 
-                    Binding="{Binding Gross}" 
-                    Width="3*">
+                        <!-- Duty Hours -->
+                        <DataGridTextColumn Header="Duty Hours" Binding="{Binding DutyHours}" Width="120" CellStyle="{StaticResource CenteredCellStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="#5D6D7E"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="Margin" Value="16,0"/>
-                                    <Setter Property="FontFamily" Value="Consolas"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-
-                        <DataGridTextColumn Header="Deductions" 
-                    Binding="{Binding Deduction}" 
-                    Width="3*">
+                        <!-- Rate -->
+                        <DataGridTextColumn Header="Rate" Binding="{Binding Rate}" Width="120" CellStyle="{StaticResource CenteredCellStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="#5D6D7E"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="Margin" Value="16,0"/>
-                                    <Setter Property="FontFamily" Value="Consolas"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-
-                        <DataGridTextColumn Header="Net Pay" 
-                    Binding="{Binding netpay}" 
-                    Width="3*">
+                        <!-- Gross -->
+                        <DataGridTextColumn Header="Gross" Binding="{Binding TotalGrossPay}" Width="120" CellStyle="{StaticResource CenteredCellStyle}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
                                     <Setter Property="Foreground" Value="#5D6D7E"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="Margin" Value="16,0"/>
-                                    <Setter Property="FontFamily" Value="Consolas"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                      
+                        <!-- Deductions -->
+                        <DataGridTextColumn Header="Deductions" Binding="{Binding Deductions}" Width="120" CellStyle="{StaticResource CenteredCellStyle}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Foreground" Value="#5D6D7E"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
 
-                       
+                        <!-- Net Pay -->
+                        <DataGridTextColumn Header="Net Pay" Binding="{Binding TotalNetPay}" Width="110" CellStyle="{StaticResource CenteredCellStyle}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Foreground" Value="#5D6D7E"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
 
-                        <!-- Edit Button Column -->
+                        <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt, StringFormat=MM/dd/yyyy}" Width="2*" CellStyle="{StaticResource CenteredCellStyle}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="Foreground" Value="#7F8C8D"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="16,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Actions (Edit) -->
                         <DataGridTemplateColumn Header="Actions" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource EditButton}"
-                                            Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Command="{Binding DataContext.EditPayrollCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}"
-                                            ToolTip="Edit User"
+                                            ToolTip="Edit Record"
                                             Margin="16,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
 
-            <!-- Enhanced Pagination -->
+            <!-- Pagination controls -->
             <Grid Grid.Row="3" HorizontalAlignment="Center" Margin="0,8,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -398,16 +428,16 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" 
-                        Style="{StaticResource PageButton}" 
+                <!-- Previous Button -->
+                <Button Grid.Column="0"
+                        Style="{StaticResource PageButton}"
                         Command="{Binding PreviousPageCommand}"
                         Margin="0,0,12,0">
                     <TextBlock Text="&lt;" FontSize="16" FontWeight="Bold"/>
                 </Button>
 
-                <ItemsControl Grid.Column="1" 
-                              ItemsSource="{Binding PageNumbers}" 
-                              HorizontalAlignment="Center">
+                <!-- Page Numbers -->
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding PageNumbers}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
@@ -415,26 +445,25 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource PageButton}" 
-                                    Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            <Button Style="{StaticResource PageButton}"
+                                    Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     CommandParameter="{Binding}">
-                                <TextBlock Text="{Binding}" 
-                                         HorizontalAlignment="Center" 
-                                         VerticalAlignment="Center" 
-                                         FontWeight="Medium"/>
+                                <TextBlock Text="{Binding}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <Button Grid.Column="2" 
-                        Style="{StaticResource PageButton}" 
+                <!-- Next Button -->
+                <Button Grid.Column="2"
+                        Style="{StaticResource PageButton}"
                         Command="{Binding NextPageCommand}"
                         Margin="12,0,0,0">
                     <TextBlock Text="&gt;" FontSize="16" FontWeight="Bold"/>
                 </Button>
             </Grid>
         </Grid>
-
     </Grid>
 </UserControl>

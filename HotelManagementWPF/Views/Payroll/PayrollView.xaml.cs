@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HotelManagementWPF.ViewModels.Payroll;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,8 @@ namespace HotelManagementWPF.Views.Payroll
         public PayrollView()
         {
             InitializeComponent();
+            this.DataContext = new PayrollViewModel();
+
         }
     }
 }

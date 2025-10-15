@@ -24,7 +24,7 @@ namespace HotelManagementWPF.Views.Inventory.Items
         public ItemView()
         {
             InitializeComponent();
-            DataContext = new ItemViewModel();
+            DataContext = new ViewModels.Item.ItemViewModel();
         }
     }
 }

@@ -9,8 +9,6 @@ using System.Windows;
 using System.Windows.Input;
 using DatabaseProject;
 using HotelManagementWPF.Models;
-using HotelManagementWPF.ViewModels.Base;
-using HotelManagementWPF.Views.Inventory.Items;
 
 namespace HotelManagementWPF.ViewModels.Item
 {
@@ -35,12 +33,14 @@ namespace HotelManagementWPF.ViewModels.Item
             _paginatedItems = new ObservableCollection<Models.Item>();
             _pageNumbers = new ObservableCollection<int>();
 
-            // Initialize commands
+            // Commands
             AddItemCommand = new RelayCommand(OpenAddItemForm);
             EditItemCommand = new RelayCommand<Models.Item>(OpenEditItemForm, item => item != null);
             PreviousPageCommand = new RelayCommand(() => GoToPage(CurrentPage - 1), () => CurrentPage > 1);
             NextPageCommand = new RelayCommand(() => GoToPage(CurrentPage + 1), () => CurrentPage < TotalPages);
             GoToPageCommand = new RelayCommand<int>(GoToPage);
+            RestockCommand = new RelayCommand<Models.Item>(RestockItem);
+            IgnoreRestockCommand = new RelayCommand<Models.Item>(IgnoreRestockItem);
 
             LoadItemsAsync();
         }
@@ -48,7 +48,6 @@ namespace HotelManagementWPF.ViewModels.Item
         #region Properties
 
         public ObservableCollection<Models.Item> PaginatedUsers => _paginatedItems;
-
         public ObservableCollection<int> PageNumbers => _pageNumbers;
 
         public string SearchText
@@ -112,27 +111,27 @@ namespace HotelManagementWPF.ViewModels.Item
         public ICommand PreviousPageCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand GoToPageCommand { get; }
+        public ICommand RestockCommand { get; }
+        public ICommand IgnoreRestockCommand { get; }
 
         #endregion
 
-        #region Command Methods
+        #region Methods
 
         private void OpenAddItemForm()
         {
             try
             {
-                var addItemWindow = new AddItemFormView
+                var addItemWindow = new Views.Inventory.Items.AddItemFormView
                 {
                     Owner = Application.Current.MainWindow
                 };
-
                 addItemWindow.ShowDialog();
-                // Always refresh after dialog closes, regardless of result
                 LoadItemsAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening add item form: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error opening add item form: {ex.Message}");
             }
         }
 
@@ -140,18 +139,16 @@ namespace HotelManagementWPF.ViewModels.Item
         {
             try
             {
-                var editItemWindow = new EditItemFormView(item)
+                var editItemWindow = new Views.Inventory.Items.EditItemFormView(item)
                 {
                     Owner = Application.Current.MainWindow
                 };
-
                 editItemWindow.ShowDialog();
-                // Always refresh after dialog closes, regardless of result
                 LoadItemsAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening edit item form: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error opening edit item form: {ex.Message}");
             }
         }
 
@@ -162,10 +159,6 @@ namespace HotelManagementWPF.ViewModels.Item
                 CurrentPage = pageNumber;
             }
         }
-
-        #endregion
-
-        #region Data Loading and Filtering
 
         private async void LoadItemsAsync()
         {
@@ -182,6 +175,7 @@ namespace HotelManagementWPF.ViewModels.Item
                             i.itemName, 
                             i.quantity, 
                             i.stockLevel,
+                            i.restockQuantity,
                             s.name as Name
                         FROM tbl_Inventory_item i
                         INNER JOIN tbl_Supplier s ON i.supplier_id = s.supplier_id
@@ -196,12 +190,13 @@ namespace HotelManagementWPF.ViewModels.Item
                         {
                             _allItems.Add(new Models.Item
                             {
-                                ItemId = Convert.ToInt32(row["item_id"]),
-                                SupplierId = Convert.ToInt32(row["supplier_id"]),
-                                ItemName = row["itemName"].ToString() ?? string.Empty,
-                                Quantity = Convert.ToInt32(row["quantity"]),
-                                StockLevel = row["stockLevel"].ToString() ?? string.Empty,
-                                Name = row["name"].ToString() ?? string.Empty
+                                ItemId = row["item_id"] != DBNull.Value ? Convert.ToInt32(row["item_id"]) : 0,
+                                SupplierId = row["supplier_id"] != DBNull.Value ? Convert.ToInt32(row["supplier_id"]) : 0,
+                                ItemName = row["itemName"] != DBNull.Value ? row["itemName"].ToString() : string.Empty,
+                                Quantity = row["quantity"] != DBNull.Value ? Convert.ToInt32(row["quantity"]) : 0,
+                                StockLevel = row["stockLevel"] != DBNull.Value ? row["stockLevel"].ToString() : string.Empty,
+                                RestockQuantity = row["restockQuantity"] != DBNull.Value ? Convert.ToInt32(row["restockQuantity"]) : 0,
+                                Name = row["name"] != DBNull.Value ? row["name"].ToString() : string.Empty
                             });
                         }
 
@@ -211,7 +206,7 @@ namespace HotelManagementWPF.ViewModels.Item
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading items: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error loading items: {ex.Message}");
             }
             finally
             {
@@ -235,12 +230,10 @@ namespace HotelManagementWPF.ViewModels.Item
             var filteredList = filteredItems.ToList();
             TotalItems = filteredList.Count;
             TotalPages = (int)Math.Ceiling((double)TotalItems / ItemsPerPage);
-
             if (CurrentPage > TotalPages && TotalPages > 0)
             {
                 CurrentPage = 1;
             }
-
             UpdatePagination();
         }
 
@@ -275,24 +268,57 @@ namespace HotelManagementWPF.ViewModels.Item
         private void UpdatePageNumbers()
         {
             _pageNumbers.Clear();
-
             if (TotalPages <= 0) return;
-
             int startPage = Math.Max(1, CurrentPage - 2);
             int endPage = Math.Min(TotalPages, CurrentPage + 2);
-
             for (int i = startPage; i <= endPage; i++)
             {
                 _pageNumbers.Add(i);
             }
         }
 
-        #endregion
+        private void RestockItem(Models.Item item)
+        {
+            if (item != null)
+            {
+                item.RestockQuantity += 10; // default restock amount
+                item.Quantity += 10;
+                UpdateItemRestock(item);
+                FilterAndPaginateItems();
+            }
+        }
+
+        private void IgnoreRestockItem(Models.Item item)
+        {
+            // You can implement ignore logic if needed
+        }
+        private void UpdateItemRestock(Models.Item item)
+        {
+            try
+            {
+                string query = $"UPDATE tbl_Inventory_item SET restockQuantity = @restockQuantity, quantity = @quantity WHERE item_id = @itemId";
+
+                var parameters = new Dictionary<string, object>
+        {
+            { "@restockQuantity", item.RestockQuantity },
+            { "@quantity", item.Quantity },
+            { "@itemId", item.ItemId }
+        };
+
+                _dbConnection.ExecuteNonQuery(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to update item: {ex.Message}");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
     }
 }

@@ -359,15 +359,7 @@
                                     </StackPanel>
                                 </Button>
 
-                                <Button Style="{StaticResource NavButtonStyle}" 
-                x:Name="ReportsButton"
-                Click="NavigationButton_Click"
-                Tag="Reports">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="Resources/Icons/reports.png" Width="18" Height="18" Margin="0,0,12,0"/>
-                                        <TextBlock x:Name="ReportsText" Text="Reports" Foreground="White" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
+                             
                             </StackPanel>
                         </Grid>
                         <Button Style="{StaticResource NavButtonStyle}" 

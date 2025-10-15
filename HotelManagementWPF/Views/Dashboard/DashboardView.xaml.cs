@@ -9,11 +9,11 @@ namespace HotelManagementWPF.Views.Dashboard
         public DashboardView()
         {
             InitializeComponent();
-            _viewModel = new DashboardViewModel(); // Instantiate your ViewModel
-            this.DataContext = _viewModel; // Set DataContext once
+            _viewModel = new DashboardViewModel();
+            this.DataContext = _viewModel;
 
-            // Trigger initial data load
-            _ = _viewModel.RefreshDashboardDataAsync();
+            // Call async initialization without awaiting in constructor
+            _ = _viewModel.InitializeAsync();
         }
     }
 }

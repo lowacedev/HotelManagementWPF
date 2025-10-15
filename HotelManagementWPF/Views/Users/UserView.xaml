@@ -332,7 +332,7 @@
                     <DataGridTextColumn Header="Name"
                                         Binding="{Binding Name}"
                                         MinWidth="130"
-                                        Width="1.5*">
+                                        Width="2*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="14"/>
@@ -348,7 +348,7 @@
                     <DataGridTextColumn Header="Email"
                                         Binding="{Binding Email}"
                                         MinWidth="180"
-                                        Width="2.5*">
+                                        Width="2*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>
@@ -364,7 +364,7 @@
                     <DataGridTextColumn Header="Role"
                                         Binding="{Binding Role}"
                                         MinWidth="100"
-                                        Width="1.2*">
+                                        Width="1.5*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="13"/>

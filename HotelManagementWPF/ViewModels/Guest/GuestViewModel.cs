@@ -213,5 +213,24 @@ namespace HotelManagementWPF.ViewModels
     }
 
     // Make sure this record is in a file accessible to your project
-    public record GuestModel(int Id, string Name, int Age, string Gender, string PhoneNumber);
+    public record GuestModel(int Id, string Name, int Age, string Gender, string PhoneNumber)
+    {
+        public string FormattedPhoneNumber
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(PhoneNumber))
+                    return string.Empty;
+
+                var digits = new string(PhoneNumber.Where(char.IsDigit).ToArray());
+
+                if (digits.Length == 11)
+                {
+                    return $"{digits.Substring(0, 4)} {digits.Substring(4, 3)} {digits.Substring(7, 4)}";
+                }
+                // fallback if number length doesn't match expected pattern
+                return PhoneNumber;
+            }
+        }
+    }
 }

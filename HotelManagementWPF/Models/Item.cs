@@ -16,6 +16,8 @@ namespace HotelManagementWPF.Models
 
         // Navigation property for display
         public string Name { get; set; } = string.Empty;
+        public int RestockQuantity { get; set; } // Add this property
+
     }
 
 }

@@ -195,6 +195,7 @@
             <Setter Property="BorderBrush" Value="#E0E0E0" />
             <Setter Property="BorderThickness" Value="0,0,0,2" />
             <Setter Property="Height" Value="48" />
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
 
         <!-- Status Badge Styles -->
@@ -290,13 +291,14 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Room Number" 
                                           Binding="{Binding RoomNumber}" 
-                                          Width="2*">
+                                          Width="120">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="14"/>
                                     <Setter Property="FontWeight" Value="SemiBold"/>
                                     <Setter Property="Foreground" Value="#2C3E50"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="Margin" Value="16,0"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
@@ -304,37 +306,39 @@
 
                         <DataGridTextColumn Header="Bed Type" 
                                           Binding="{Binding BedType}" 
-                                          Width="2*">
+                                          Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
-                                    <Setter Property="Foreground" Value="#5D6D7E"/>
+                                    <Setter Property="Foreground" Value="#000000"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="Margin" Value="16,0"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
                         <DataGridTextColumn Header="Price" 
-                  Binding="{Binding PricePerNight, StringFormat='₱ {0:N2}'}" 
-                  Width="*">
+                              Binding="{Binding PricePerNight, StringFormat='₱ {0:N2}'}" 
+                              Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="14"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="Foreground" Value="#27AE60"/>
+                                    <Setter Property="Foreground" Value="#000000"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+
                                     <Setter Property="Margin" Value="16,0"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTemplateColumn Header="Status" Width="Auto">
+                        <DataGridTemplateColumn Header="Status" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource StatusBadge}"
                                             Background="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}"
-                                            Margin="16,0">
+                                            Margin="16,0" HorizontalAlignment="Center">
                                         <TextBlock Text="{Binding Status}" 
                                                  Foreground="{Binding Status, Converter={StaticResource StatusToForegroundConverter}}" 
                                                  FontWeight="SemiBold" 
@@ -347,13 +351,13 @@
                         </DataGridTemplateColumn>
 
                         <!-- Edit Button Column -->
-                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                        <DataGridTemplateColumn Header="Actions" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource EditButton}"
                                             Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                             CommandParameter="{Binding}"
-                                            ToolTip="Edit Room"
+                                            ToolTip="Edit Room" HorizontalAlignment="Center"
                                             Margin="16,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

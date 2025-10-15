@@ -370,7 +370,7 @@
 
                         <DataGridTextColumn Header="Department" 
                     Binding="{Binding Department}" 
-                    Width="2*">
+                    Width="2.5*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>
@@ -383,8 +383,8 @@
                         </DataGridTextColumn>
 
                         <DataGridTextColumn Header="Phone Number" 
-                    Binding="{Binding PhoneNumber}" 
-                    Width="2.5*">
+                            Binding="{Binding PhoneNumber}" 
+                            Width="2.5*">   
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="13"/>

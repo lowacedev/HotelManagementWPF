@@ -310,7 +310,28 @@ namespace DatabaseProject
                 // Keep pending records if error
             }
         }
-
+        public async Task readDatathroughAdapterAsync(string query, DataTable tblName)
+        {
+            try
+            {
+                using (var conn = new SqlConnection(useOnlineDb ? strOnlineConnString : strConnString))
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (var adapter = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => adapter.Fill(tblName));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in readDatathroughAdapterAsync: " + ex.Message);
+                throw;
+            }
+        }
         public void Dispose()
         {
             if (connection != null)

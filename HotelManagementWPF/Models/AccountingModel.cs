@@ -1,29 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HotelManagementWPF.Models
 {
-    public class TotalSale
+    public class TotalSaleDisplay
     {
-        public string Date { get; set; }
-        public string Item { get; set; }
-        public string Amount { get; set; }
+        public string GuestName { get; set; }
+        public string RoomNumber { get; set; }
+        public string RoomType { get; set; }
+        public string TotalPaid { get; set; }
+        public string DateCreated { get; set; }
+
+        // New property for filtering
+        public DateTime DateObject { get; set; }
     }
 
-    public class InventoryExpense
+    public class InventoryExpenseDisplay
     {
-        public string Item { get; set; }
+        public string ItemName { get; set; }
         public int Quantity { get; set; }
-        public string Cost { get; set; }
+        public string PricePerItem { get; set; }
+        public string TotalPrice { get; set; }
+        public string Restock { get; set; } // static for now
+        public decimal TotalPriceValue { get; set; }
+
+        // New property for filtering
+        public DateTime RestockDate { get; set; }
     }
 
-    public class LaborExpense
+    public class LaborExpenseDisplay
     {
-        public string Employee { get; set; }
-        public int Hours { get; set; }
-        public string Cost { get; set; }
+        public string StaffName { get; set; }
+        public string Department { get; set; }
+        public int DutyHours { get; set; }
+        public string Rate { get; set; }
+        public string Gross { get; set; }
+        public string Deductions { get; set; }
+        public string NetPay { get; set; }
+        public string CreatedAt { get; set; }
+
+        // New property for filtering
+        public DateTime CreatedAtObject { get; set; }
     }
 }
