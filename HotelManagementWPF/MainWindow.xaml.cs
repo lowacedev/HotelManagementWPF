@@ -1,23 +1,22 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+﻿using HotelManagementWPF.Models;
 using HotelManagementWPF.Services;
 using HotelManagementWPF.ViewModels;
-using HotelManagementWPF.Views.Room;
+using HotelManagementWPF.Views;
+using HotelManagementWPF.Views.Accounting;
 using HotelManagementWPF.Views.Dashboard;
-using HotelManagementWPF.Views.Guest;
-using HotelManagementWPF.Views.Users;
 using HotelManagementWPF.Views.Employees;
+using HotelManagementWPF.Views.Guest;
 using HotelManagementWPF.Views.Inventory;
 using HotelManagementWPF.Views.Inventory.Items;
-using HotelManagementWPF.Views.Inventory.Suppliers;
 using HotelManagementWPF.Views.Inventory.Reports;
+using HotelManagementWPF.Views.Inventory.Suppliers;
 using HotelManagementWPF.Views.Payroll;
+using HotelManagementWPF.Views.Room;
 using HotelManagementWPF.Views.Services;
-using HotelManagementWPF.Views;
-using HotelManagementWPF.ViewModels.Users;
-using HotelManagementWPF.Views.Accounting;
-
+using HotelManagementWPF.Views.Users;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace HotelManagementWPF
 {
@@ -27,7 +26,7 @@ namespace HotelManagementWPF
         private bool _isInventoryDropdownExpanded = false;
 
         private string UserRole = ""; // To store the role of the logged-in user
-        private UserViewModel _viewModel; // Your ViewModel instance
+        private UserViewModel _userViewModel; // Your ViewModel instance
 
         public MainWindow(string role, string fullName)
         {
@@ -37,13 +36,12 @@ namespace HotelManagementWPF
             NavigateToSection("dashboard");
             this.WindowState = WindowState.Maximized;
             IWindowService windowService = new WindowService();
-            _viewModel = new UserViewModel(windowService);
-            DataContext = _viewModel;
+            ISessionService sessionService = new SessionService();
+            _userViewModel = new UserViewModel(windowService, sessionService);
+            DataContext = _userViewModel;
 
             // After ViewModel loads users
-            _viewModel.UpdateCurrentUser(fullName, role);
-          
-
+            _userViewModel.UpdateCurrentUser(fullName, role);
         }
 
         private void SetModuleVisibility()
@@ -77,7 +75,7 @@ namespace HotelManagementWPF
                     InventoryButton.Visibility = Visibility.Visible;
                     ItemsButton.Visibility = Visibility.Visible;
                     SuppliersButton.Visibility = Visibility.Visible;
-                 //   ReportsButton.Visibility = Visibility.Visible;
+                    //   ReportsButton.Visibility = Visibility.Visible;
                     PayrollButton.Visibility = Visibility.Visible;
                     ServicesButton.Visibility = Visibility.Visible;
                     break;
@@ -275,7 +273,7 @@ namespace HotelManagementWPF
                     break;
 
                 case "users":
-                    var userView = new UserView();
+                    var userView = new UserView(_userViewModel); // Pass the existing view model
                     MainContentArea.Content = userView;
                     HeaderTitle.Text = "User Management";
                     break;
@@ -333,6 +331,7 @@ namespace HotelManagementWPF
                     break;
             }
         }
+
         private void ActionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedItem = (sender as ComboBox).SelectedItem as ComboBoxItem;
@@ -342,6 +341,25 @@ namespace HotelManagementWPF
 
                 if (action == "Logout")
                 {
+                    // Log logout activity
+                    if (Session.IsLoggedIn)
+                    {
+                        try
+                        {
+                            using (var db = new DatabaseProject.DbConnections())
+                            {
+                                db.InsertUserActivity(Session.CurrentUserId, $"{Session.CurrentUserName} logged out");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Warning: Failed to log logout activity: {ex.Message}");
+                        }
+
+                        // Clear session
+                        Session.Clear();
+                    }
+
                     // Confirm logout and navigate
                     var result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)

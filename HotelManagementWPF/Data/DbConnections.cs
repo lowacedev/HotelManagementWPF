@@ -332,6 +332,44 @@ namespace DatabaseProject
                 throw;
             }
         }
+        public void InsertUserActivity(int userId, string activityDescription)
+        {
+            try
+            {
+                createConn();
+
+                // First, verify the user exists
+                string checkUserQuery = "SELECT COUNT(1) FROM tbl_User WHERE user_id = @UserId";
+                using (SqlCommand checkCmd = new SqlCommand(checkUserQuery, connection))
+                {
+                    checkCmd.Parameters.AddWithValue("@UserId", userId);
+                    var userExists = (int)checkCmd.ExecuteScalar();
+
+                    if (userExists == 0)
+                    {
+                        throw new Exception($"User with ID {userId} does not exist in tbl_User.");
+                    }
+                }
+
+                // Now insert the activity
+                string query = "INSERT INTO tbl_UserActivityLog (user_id, ActivityDescription, ActivityTimestamp) VALUES (@UserId, @ActivityDescription, GETDATE())";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@ActivityDescription", activityDescription);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in InsertUserActivity: " + ex.Message);
+                throw; // Re-throw so caller can handle it
+            }
+            finally
+            {
+                closeConn();
+            }
+        }
         public void Dispose()
         {
             if (connection != null)

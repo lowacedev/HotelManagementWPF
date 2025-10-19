@@ -1,38 +1,29 @@
-﻿using HotelManagementWPF.Services;
-using HotelManagementWPF.ViewModels;
-using Syncfusion.Windows.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using HotelManagementWPF.ViewModels;
 
 namespace HotelManagementWPF.Views.Users
 {
-    /// <summary>
-    /// Interaction logic for UserView.xaml
-    /// </summary>
     public partial class UserView : UserControl
     {
-        public UserView()
+        private UserViewModel _viewModel;
+        private bool _hasLoaded = false;
+
+        public UserView(UserViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = new UserViewModel(new WindowService());
+            _viewModel = viewModel;
+            DataContext = _viewModel;
+            this.Loaded += UserView_Loaded;
         }
 
-
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void UserView_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            if (!_hasLoaded)
+            {
+                _hasLoaded = true;
+                _viewModel.OnViewLoaded();
+            }
         }
     }
 }

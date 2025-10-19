@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HotelManagementWPF.Models;
+using DatabaseProject;
 
 namespace HotelManagementWPF.Views
 {
@@ -132,8 +133,21 @@ namespace HotelManagementWPF.Views
                     string role = dt.Rows[0]["role"].ToString();
                     string fullName = dt.Rows[0]["name"].ToString();
 
-                    // Set session user id
-                    Session.CurrentUserId = userId;
+                    // Set session data
+                    Session.SetUser(userId, fullName, role);
+
+                    // Log the login activity with proper validation
+                    try
+                    {
+                        using (var dbLog = new DbConnections())
+                        {
+                            dbLog.InsertUserActivity(userId, $"{fullName} logged in as {role}");
+                        }
+                    }
+                    catch (Exception logEx)
+                    {
+                        Console.WriteLine($"Warning: Failed to log login activity: {logEx.Message}");
+                    }
 
                     // Debug: Verify user ID
                     Console.WriteLine($"Logged in user ID: {Session.CurrentUserId}");

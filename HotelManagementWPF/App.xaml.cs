@@ -1,7 +1,9 @@
-﻿using System.Configuration;
+﻿using HotelManagementWPF.Services;
+using HotelManagementWPF.ViewModels;
+using Syncfusion.Licensing;
+using System.Configuration;
 using System.Data;
 using System.Windows;
-using Syncfusion.Licensing;
 
 namespace HotelManagementWPF
 {
@@ -10,6 +12,9 @@ namespace HotelManagementWPF
     /// </summary>
     public partial class App : Application
     {
+        private readonly ISessionService _sessionService = new SessionService();
+        private readonly IWindowService _windowService = new WindowService();
+
         public App()
         {
             // Register Syncfusion license
@@ -22,6 +27,7 @@ namespace HotelManagementWPF
         /// </summary>
         protected override void OnStartup(StartupEventArgs e)
         {
+
             base.OnStartup(e);
 
             // You can create and show your main window here.
